@@ -129,7 +129,7 @@
         ["Atome", "Molécule"],
         ["Gravité", "Apesanteur"],
         ["Instinct", "Intuition"],
-        ["Émotion", "Sentiment"]
+        ["Émotion", "Sentiment"],
         ["Paradoxe", "Contradiction"],
         ["Honneur", "Fierté"],
         ["Vengeance", "Justice"],
@@ -486,52 +486,52 @@
         ["Harrison Ford", "Henry Ford"],
         ["Matthew Perry", "Katy Perry"],
         ["Cillian Murphy", "Eddie Murphy"],
-        ["Michael Schumacher", "Michael Jordan"]
-        ["Antoine Griezmann", "Antoine Dupont"]
-        ["Teddy Riner", "Teddy Thomas"]
-        ["Lewis Hamilton", "Carl Lewis"]
-        ["Mark Zuckerberg", "Mark Wahlberg"]
-        ["Tim Cook", "Tim Burton"]
-        ["Jeff Bezos", "Jeff Goldblum"]
-        ["David Guetta", "David Bowie"]
-        ["Justin Bieber", "Justin Timberlake"]
-        ["DJ Snake", "DJ Khaled"]
-        ["John Lennon", "John Legend"]
-        ["Adele", "Adèle Castillon"]
-        ["Lady Gaga", "Lady Diana"]
-        ["Bruno Mars", "Bruno Le Maire"]
-        ["George Michael", "George Clooney"]
-        ["Logan Paul", "Paul Walker"]
-        ["Charlie D'Amelio", "Charlie Chaplin"]
-        ["Seb la Frite", "Sébastien Loeb"]
-        ["Mcfly", "Marty McFly"]
-        ["David Lafarge", "David Guetta"]
-        ["Antoine Daniel", "Antoine Dupont"]
-        ["Zack Nani", "Zack Snyder"]
-        ["Pierre Croce", "Pierre Richard"]
-        ["Thomas Angelvy", "Thomas Pesquet"]
-        ["Mister MV", "Mister V"]
-        ["Domingo", "Doflamingo"]
-        ["Adrien Nougaret", "Adrien Brody"]
-        ["Corentin Houssein", "Barack Hussein Obama"]
-        ["Ayrton Senna", "John Cena"]
-        ["Victor Wembanyama", "Victor Hugo"]
-        ["Serena Williams", "Robbie Williams"]
-        ["Bruce Willis", "Bruce Lee"]
-        ["Camille Cottin", "Camille Combal"]
-        ["Marion Cotillard", "Marion Maréchal"]
-        ["Morgan Freeman", "Morgane Make Up"]
-        ["Martin Scorsese", "Martin Luther King"]
-        ["Gordon Ramsay", "James Gordon"]
-        ["Ethan Hunt", "Ethan Hawke"]
-        ["John Wick", "John Travolta"]
-        ["Indiana Jones", "Bridget Jones"]
-        ["James Bond", "LeBron James"]
-        ["Jason Bourne", "Jason Statham"]
-        ["Luke Skywalker", "Luke Evans"]
-        ["Sarah Connor", "Sarah Cameron"]
-        ["Lara Croft", "Lara Fabian"]
-        ["Kevin Costner", "Kevin De Bruyne"]
+        ["Michael Schumacher", "Michael Jordan"],
+        ["Antoine Griezmann", "Antoine Dupont"],
+        ["Teddy Riner", "Teddy Thomas"],
+        ["Lewis Hamilton", "Carl Lewis"],
+        ["Mark Zuckerberg", "Mark Wahlberg"],
+        ["Tim Cook", "Tim Burton"],
+        ["Jeff Bezos", "Jeff Goldblum"],
+        ["David Guetta", "David Bowie"],
+        ["Justin Bieber", "Justin Timberlake"],
+        ["DJ Snake", "DJ Khaled"],
+        ["John Lennon", "John Legend"],
+        ["Adele", "Adèle Castillon"],
+        ["Lady Gaga", "Lady Diana"],
+        ["Bruno Mars", "Bruno Le Maire"],
+        ["George Michael", "George Clooney"],
+        ["Logan Paul", "Paul Walker"],
+        ["Charlie D'Amelio", "Charlie Chaplin"],
+        ["Seb la Frite", "Sébastien Loeb"],
+        ["Mcfly", "Marty McFly"],
+        ["David Lafarge", "David Guetta"],
+        ["Antoine Daniel", "Antoine Dupont"],
+        ["Zack Nani", "Zack Snyder"],
+        ["Pierre Croce", "Pierre Richard"],
+        ["Thomas Angelvy", "Thomas Pesquet"],
+        ["Mister MV", "Mister V"],
+        ["Domingo", "Doflamingo"],
+        ["Adrien Nougaret", "Adrien Brody"],
+        ["Corentin Houssein", "Barack Hussein Obama"],
+        ["Ayrton Senna", "John Cena"],
+        ["Victor Wembanyama", "Victor Hugo"],
+        ["Serena Williams", "Robbie Williams"],
+        ["Bruce Willis", "Bruce Lee"],
+        ["Camille Cottin", "Camille Combal"],
+        ["Marion Cotillard", "Marion Maréchal"],
+        ["Morgan Freeman", "Morgane Make Up"],
+        ["Martin Scorsese", "Martin Luther King"],
+        ["Gordon Ramsay", "James Gordon"],
+        ["Ethan Hunt", "Ethan Hawke"],
+        ["John Wick", "John Travolta"],
+        ["Indiana Jones", "Bridget Jones"],
+        ["James Bond", "LeBron James"],
+        ["Jason Bourne", "Jason Statham"],
+        ["Luke Skywalker", "Luke Evans"],
+        ["Sarah Connor", "Sarah Cameron"],
+        ["Lara Croft", "Lara Fabian"],
+        ["Kevin Costner", "Kevin De Bruyne"],
         ["Frank Martin", "Frank Sinatra"]
       ]
     },
@@ -563,33 +563,33 @@
         ["50 Cent", "50 centimes"],
         ["Eminem", "M&M's"],
         ["James Bond", "Bon"],
-        ["Stephen King", "Burger King"]
-        ["Emmanuel Macron", "Macaron"]
-        ["Katy Perry", "Perrier"]
-        ["Elton John", "Jaune"]
-        ["Tom Cruise", "Croisière"]
-        ["Tiger Woods", "Bois"]
-        ["Megan Fox", "Renard"]
-        ["Steve Jobs", "Pôle Emploi"]
-        ["Justin Timberlake", "Lac"]
-        ["Gérard Depardieu", "Dieu"]
-        ["Brad Pitt", "Pitre"]
-        ["Kylian Mbappé", "Canapé"]
-        ["Léa Salamé", "Salami"]
-        ["Gilles Lellouche", "Louche"]
-        ["Alain Delon", "Melon"]
-        ["Florent Pagny", "Panier"]
-        ["Paul Mirabel", "Mirabelle"]
-        ["Vincent Cassel", "Vaisselle"]
-        ["Cyril Lignac", "Cognac"]
-        ["Jean Castex", "Casse-tête"]
-        ["Teddy Riner", "Dîner"]
-        ["Matt Damon", "Démon"]
-        ["Snoop Dogg", "Hot-dog"]
-        ["Travis Scott", "Scoot"]
-        ["Post Malone", "Boîte aux lettres"]
-        ["Ice Spice", "Piment"]
-        ["Machine Gun Kelly", "Fusil"]
+        ["Stephen King", "Burger King"],
+        ["Emmanuel Macron", "Macaron"],
+        ["Katy Perry", "Perrier"],
+        ["Elton John", "Jaune"],
+        ["Tom Cruise", "Croisière"],
+        ["Tiger Woods", "Bois"],
+        ["Megan Fox", "Renard"],
+        ["Steve Jobs", "Pôle Emploi"],
+        ["Justin Timberlake", "Lac"],
+        ["Gérard Depardieu", "Dieu"],
+        ["Brad Pitt", "Pitre"],
+        ["Kylian Mbappé", "Canapé"],
+        ["Léa Salamé", "Salami"],
+        ["Gilles Lellouche", "Louche"],
+        ["Alain Delon", "Melon"],
+        ["Florent Pagny", "Panier"],
+        ["Paul Mirabel", "Mirabelle"],
+        ["Vincent Cassel", "Vaisselle"],
+        ["Cyril Lignac", "Cognac"],
+        ["Jean Castex", "Casse-tête"],
+        ["Teddy Riner", "Dîner"],
+        ["Matt Damon", "Démon"],
+        ["Snoop Dogg", "Hot-dog"],
+        ["Travis Scott", "Scoot"],
+        ["Post Malone", "Boîte aux lettres"],
+        ["Ice Spice", "Piment"],
+        ["Machine Gun Kelly", "Fusil"],
         ["Rick Ross", "Gros"]
       ]
     },

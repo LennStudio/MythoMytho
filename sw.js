@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_VERSION = "undercover-v1.1";
+var CACHE_VERSION = "undercover-v1.2";
 var APP_SHELL_CACHE = CACHE_VERSION + "-shell";
 var RUNTIME_CACHE = CACHE_VERSION + "-runtime";
 
