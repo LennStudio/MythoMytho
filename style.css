@@ -327,7 +327,7 @@ button {
     border-radius: var(--radius-s);
     padding: 8px 10px;
     font-family: 'Courier Prime', monospace;
-    font-size: .85rem;
+    font-size: 1rem; /* >= 16px : évite le zoom automatique d'iOS au focus */
 }
 
 .name-field input::placeholder {
@@ -1310,6 +1310,45 @@ summary.setup-block__head::marker {
 .toast--show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+}
+
+.update-toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--red-deep);
+    color: var(--cream);
+    padding: 10px 12px 10px 16px;
+    border-radius: var(--radius-s);
+    font-size: .78rem;
+    box-shadow: var(--shadow-card);
+    z-index: 40;
+    max-width: 92vw;
+}
+
+.update-toast[hidden] {
+    display: none;
+}
+
+.update-toast__btn {
+    background: var(--cream);
+    color: var(--ink);
+    border: 0;
+    border-radius: var(--radius-s);
+    padding: 7px 12px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.update-toast__btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
 }
 
 .visually-hidden {

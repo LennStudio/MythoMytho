@@ -14,13 +14,22 @@
     })();
   </script>
   <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Undercover — jeu de déduction</title>
   <meta name="description" content="Jeu de déduction façon Mr. White, à jouer entre amis sur un seul appareil.">
   <meta name="theme-color" content="#f1ecdd">
+  <script>
+    (function () {
+      try {
+        if (window.localStorage.getItem('undercover_theme_v1') === 'dark') {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#10161a');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="icons/icon-apple-touch.png">
+  <link rel="icon" href="assets/logo-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo-apple-touch.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Undercover">

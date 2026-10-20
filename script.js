@@ -2422,9 +2422,65 @@
   renderNameFields();
   renderSetupRecap();
 
+  function showUpdateToast(worker) {
+    if (document.getElementById('updateToast')) return;
+
+    var box = document.createElement('div');
+    box.id = 'updateToast';
+    box.className = 'update-toast';
+    box.setAttribute('role', 'status');
+
+    var text = document.createElement('span');
+    text.textContent = 'Nouvelle version disponible.';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'update-toast__btn';
+    btn.textContent = 'Recharger';
+    btn.addEventListener('click', function () {
+      btn.disabled = true;
+      worker.postMessage({ type: 'SKIP_WAITING' });
+    });
+
+    box.appendChild(text);
+    box.appendChild(btn);
+    document.body.appendChild(box);
+    announce('Nouvelle version disponible.');
+  }
+
   if ('serviceWorker' in navigator) {
+    var swRefreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (swRefreshing) return;
+      swRefreshing = true;
+      window.location.reload();
+    });
+
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js').catch(function () {});
+      navigator.serviceWorker.register('sw.js').then(function (reg) {
+        // Une mise à jour peut déjà attendre (onglet ouvert depuis longtemps).
+        if (reg.waiting && navigator.serviceWorker.controller) {
+          showUpdateToast(reg.waiting);
+        }
+
+        reg.addEventListener('updatefound', function () {
+          var installing = reg.installing;
+          if (!installing) return;
+          installing.addEventListener('statechange', function () {
+            // "controller" est nul à la toute première installation : pas de toast dans ce cas.
+            if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateToast(installing);
+            }
+          });
+        });
+
+        // Vérifie aussi quand l'app revient au premier plan (PWA rarement rechargée).
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'visible') {
+            reg.update().catch(function () {});
+          }
+        });
+      }).catch(function () {});
     });
   }
 })();
