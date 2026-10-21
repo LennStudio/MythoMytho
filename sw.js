@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_VERSION = "undercover-v1.2.1";
+var CACHE_VERSION = "undercover-v1.3";
 var APP_SHELL_CACHE = CACHE_VERSION + "-shell";
 var RUNTIME_CACHE = CACHE_VERSION + "-runtime";
 
@@ -10,7 +10,8 @@ var APP_SHELL_FILES = [
     "./index.html",
     "./style.css",
     "./script.js",
-    "./manifest.json"
+    "./manifest.json",
+    "./words.json"
 ];
 
 // Icônes : mises en cache au mieux, sans jamais bloquer l'installation.
@@ -141,7 +142,7 @@ self.addEventListener("fetch", function (event) {
     }
 });"use strict";
 
-var CACHE_VERSION = "undercover-v1.3";
+var CACHE_VERSION = "undercover-v1.4";
 var APP_SHELL_CACHE = CACHE_VERSION + "-shell";
 var RUNTIME_CACHE = CACHE_VERSION + "-runtime";
 
@@ -151,7 +152,8 @@ var APP_SHELL_FILES = [
     "./index.html",
     "./style.css",
     "./script.js",
-    "./manifest.json"
+    "./manifest.json",
+    "./words.json"
 ];
 
 // Icônes : mises en cache au mieux, sans jamais bloquer l'installation.

@@ -72,6 +72,7 @@
             <button type="button" id="scoreLogToggle" class="rules-toggle">
               Journal des scores
             </button>
+            <button type="button" id="installBtn" class="rules-toggle" hidden>Installer l'app</button>
             <button type="button" id="rulesToggle" class="rules-toggle" aria-expanded="false" aria-controls="rulesText">
               Comment jouer<span class="rules-toggle__chevron" aria-hidden="true"></span>
             </button>
@@ -120,6 +121,22 @@
             <p class="hint-text hint-text--role">Sélectionnez un ou plusieurs thèmes : les mots seront piochés parmi
               ceux-ci. Une paire ne revient jamais tant que tout le stock du thème choisi n'a pas été utilisé.</p>
             <div id="themesGrid" class="toggle-list toggle-list--compact"></div>
+
+            <div class="difficulty">
+              <h3 class="difficulty__title">Difficulté des paires</h3>
+              <div class="segmented" role="radiogroup" aria-label="Difficulté des paires">
+                <label class="segmented__item"><input type="radio" name="difficulty" value="0" checked><span>Toutes</span></label>
+                <label class="segmented__item"><input type="radio" name="difficulty" value="1"><span>Facile</span></label>
+                <label class="segmented__item"><input type="radio" name="difficulty" value="2"><span>Moyenne</span></label>
+                <label class="segmented__item"><input type="radio" name="difficulty" value="3"><span>Difficile</span></label>
+              </div>
+              <p class="hint-text" id="difficultyHint"></p>
+            </div>
+
+            <div class="custom-pairs-row">
+              <button type="button" id="customManageBtn" class="btn btn--ghost btn--small">Gérer « Mes paires »</button>
+              <span class="hint-text" id="customCountHint"></span>
+            </div>
           </div>
         </details>
 
@@ -144,6 +161,15 @@
             <p class="hint-text hint-text--role">Ne reçoit aucun mot : il doit improviser pour ne pas se faire
               repérer.
             </p>
+            <div class="toggle-list toggle-list--single">
+              <label class="toggle-item">
+                <input type="checkbox" id="mrWhiteGuess" checked>
+                <span>
+                  <strong>Dernière chance de Mr. White</strong>
+                  <small>Éliminé, il peut saisir ou dicter le mot des Civils : s'il le trouve, il gagne seul.</small>
+                </span>
+              </label>
+            </div>
 
             <div class="field-row field-row--tight">
               <h3>Espion</h3>
@@ -239,6 +265,58 @@
                 <button type="button" id="timerPlus" aria-label="Augmenter la durée du minuteur">+</button>
               </div>
             </div>
+            <div id="timerExtras" class="timer-extras">
+              <label class="toggle-item toggle-item--switch">
+                <input type="checkbox" id="timerSound" checked>
+                <span>
+                  <strong>Son de fin</strong>
+                  <small>Joue une courte sonnerie à la fin du temps, en plus de la vibration.</small>
+                </span>
+              </label>
+            </div>
+          </div>
+        </details>
+
+        <details class="setup-block" id="privacyBlock">
+          <summary class="setup-block__head">
+            <span class="setup-block__num">6</span>
+            <h2>Confidentialité des cartes</h2>
+            <span class="setup-block__summary" id="privacySummary">Standard</span>
+            <span class="setup-block__chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="setup-block__body">
+            <div class="toggle-list toggle-list--single">
+              <label class="toggle-item">
+                <input type="radio" name="privacy" value="standard" checked>
+                <span>
+                  <strong>Standard</strong>
+                  <small>Le mot reste affiché jusqu'à « Cacher &amp; passer au suivant ».</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="radio" name="privacy" value="auto">
+                <span>
+                  <strong>Masquage automatique</strong>
+                  <small>Le mot se masque tout seul après quelques secondes. Il reste possible de le réafficher.</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="radio" name="privacy" value="hold">
+                <span>
+                  <strong>Maintenir pour révéler</strong>
+                  <small>Le mot n'apparaît que tant que le doigt reste appuyé sur le bouton.</small>
+                </span>
+              </label>
+            </div>
+            <div class="counter-field counter-field--timer" id="autoHideField">
+              <label class="counter-field__label" for="autoHideSelect">Masquer après</label>
+              <select id="autoHideSelect" class="field-select">
+                <option value="5">5 secondes</option>
+                <option value="8">8 secondes</option>
+                <option value="12">12 secondes</option>
+                <option value="20">20 secondes</option>
+              </select>
+            </div>
           </div>
         </details>
 
@@ -329,6 +407,7 @@
   <div id="wordModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalOwner" aria-hidden="true">
     <div class="modal__scrim"></div>
     <div class="modal__panel">
+      <div class="modal__autobar" id="autoHideBar" hidden><span></span></div>
       <div class="modal__stamp">confidentiel</div>
       <div class="modal__owner" id="modalOwner">Carte de —</div>
       <div class="modal__role" id="modalRole">Civil</div>
@@ -336,6 +415,9 @@
       <div class="modal__word" id="modalWord">—</div>
       <div class="modal__badges" id="modalBadges"></div>
       <p class="modal__privacy">Assure-toi que personne d'autre ne regarde l'écran avant de continuer.</p>
+      <div class="modal__reveal-row" id="revealRow" hidden>
+        <button type="button" id="revealBtn" class="btn btn--gold modal__reveal">Maintenir pour révéler</button>
+      </div>
       <div class="modal__buttons">
         <button type="button" id="hideWordBtn" class="btn btn--primary">Cacher &amp; passer au suivant <span
             class="btn-arrow">→</span></button>
@@ -372,8 +454,18 @@
         <h4 class="score-section-title">Classement des joueurs</h4>
         <ul class="score-leaderboard" id="scoreLeaderboard"></ul>
 
+        <h4 class="score-section-title" id="scoreRolesTitle">Taux de victoire par rôle</h4>
+        <ul class="score-leaderboard score-roles" id="scoreRoles"></ul>
+        <p class="score-note" id="scoreNote">Les taux et séries ne comptent que les manches enregistrées depuis
+          l'ajout des statistiques.</p>
+
         <h4 class="score-section-title">Historique des manches</h4>
         <ul class="score-history" id="scoreHistory"></ul>
+      </div>
+
+      <div class="modal__buttons score-export">
+        <button type="button" id="scoreExportJson" class="btn btn--ghost btn--small">Exporter en JSON</button>
+        <button type="button" id="scoreExportCsv" class="btn btn--ghost btn--small">Exporter en CSV</button>
       </div>
 
       <div class="modal__buttons">
@@ -410,6 +502,82 @@
       <p class="modal__privacy" id="elimContinueText">La partie continue.</p>
       <div class="modal__buttons">
         <button type="button" id="elimContinueBtn" class="btn btn--primary">Continuer <span
+            class="btn-arrow">→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="guessModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="guessTitle" aria-hidden="true">
+    <div class="modal__scrim"></div>
+    <div class="modal__panel">
+      <div class="modal__stamp">dernière chance</div>
+      <div class="modal__owner" id="guessTitle">Mr. White</div>
+      <p class="modal__privacy" id="guessIntro">Devine le mot des Civils. Si tu le trouves, tu gagnes seul(e) la partie !</p>
+      <div class="guess__row" id="guessInputRow">
+        <input type="text" id="guessInput" class="guess__input" maxlength="40" autocomplete="off" autocapitalize="off"
+          spellcheck="false" placeholder="Le mot des Civils…" aria-label="Mot des Civils">
+        <button type="button" id="guessMicBtn" class="btn btn--ghost btn--small guess__mic" hidden
+          aria-pressed="false">Dicter</button>
+      </div>
+      <p class="guess__result" id="guessResult" role="status" aria-live="polite"></p>
+      <div class="modal__buttons">
+        <button type="button" id="guessSkipBtn" class="btn btn--ghost">Renoncer</button>
+        <button type="button" id="guessSubmitBtn" class="btn btn--primary">Valider <span
+            class="btn-arrow">→</span></button>
+        <button type="button" id="guessContinueBtn" class="btn btn--primary" hidden>Continuer <span
+            class="btn-arrow">→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="customModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="customTitle" aria-hidden="true">
+    <div class="modal__scrim" id="customScrim"></div>
+    <div class="modal__panel summary-panel custom-panel">
+      <h3 id="customTitle">Mes paires</h3>
+      <p class="summary-sub">Vos propres paires de mots, enregistrées sur cet appareil. Elles apparaissent dans le
+        thème « Mes paires ».</p>
+
+      <div class="custom-import" id="customImportBanner" hidden>
+        <p id="customImportText"></p>
+        <div class="modal__buttons">
+          <button type="button" id="customImportDismiss" class="btn btn--ghost btn--small">Ignorer</button>
+          <button type="button" id="customImportConfirm" class="btn btn--primary btn--small">Ajouter</button>
+        </div>
+      </div>
+
+      <div class="custom-form">
+        <div class="custom-form__words">
+          <input type="text" id="customWordA" class="paper-input" maxlength="40" autocomplete="off"
+            placeholder="Mot des Civils" aria-label="Premier mot">
+          <input type="text" id="customWordB" class="paper-input" maxlength="40" autocomplete="off"
+            placeholder="Mot de l'Undercover" aria-label="Second mot">
+        </div>
+        <div class="custom-form__row">
+          <select id="customDifficulty" class="field-select" aria-label="Difficulté de la paire">
+            <option value="1">Facile</option>
+            <option value="2" selected>Moyenne</option>
+            <option value="3">Difficile</option>
+          </select>
+          <button type="button" id="customAddBtn" class="btn btn--primary btn--small">Ajouter la paire</button>
+        </div>
+        <p class="hint-text custom-form__hint">Les deux mots sont tirés au hasard entre Civils et Undercover à chaque
+          manche : leur ordre n'a pas d'importance.</p>
+      </div>
+
+      <h4 class="score-section-title" id="customCount">0 paire</h4>
+      <p class="score-empty" id="customEmpty">Aucune paire pour l'instant. Ajoutez-en une ci-dessus, ou importez un
+        fichier / un lien de partage.</p>
+      <ul class="custom-list" id="customList"></ul>
+
+      <div class="modal__buttons custom-tools">
+        <button type="button" id="customExportBtn" class="btn btn--ghost btn--small">Exporter</button>
+        <button type="button" id="customImportBtn" class="btn btn--ghost btn--small">Importer</button>
+        <button type="button" id="customShareBtn" class="btn btn--ghost btn--small">Partager par lien</button>
+        <input type="file" id="customImportFile" accept="application/json,.json" hidden>
+      </div>
+
+      <div class="modal__buttons">
+        <button type="button" id="customCloseBtn" class="btn btn--primary">Fermer <span
             class="btn-arrow">→</span></button>
       </div>
     </div>

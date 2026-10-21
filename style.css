@@ -1763,3 +1763,386 @@ summary.setup-block__head::marker {
         min-height: 64px;
     }
 }
+
+/* ===== Ajouts : difficulté, confidentialité, dernière chance, mes paires, stats ===== */
+[hidden] {
+    display: none !important;
+}
+
+.toggle-list--single {
+    grid-template-columns: 1fr;
+    margin: 0 0 18px;
+}
+
+.toggle-item input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    margin-top: 2px;
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+    position: relative;
+    background: var(--bg);
+    border: 1.5px solid var(--gold-soft);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+}
+
+.toggle-item input[type="radio"]::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--ink);
+    transform: scale(0);
+    transition: transform .18s cubic-bezier(.4, 1.8, .6, 1);
+}
+
+.toggle-item input[type="radio"]:checked {
+    background: var(--gold);
+    border-color: var(--gold);
+}
+
+.toggle-item input[type="radio"]:checked::after {
+    transform: scale(1);
+}
+
+.toggle-item input:focus-visible,
+.segmented__item input:focus-visible + span {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+.difficulty {
+    margin-top: 20px;
+}
+
+.difficulty__title {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.segmented {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.segmented__item {
+    flex: 1 1 70px;
+    cursor: pointer;
+}
+
+.segmented__item input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.segmented__item span {
+    display: block;
+    text-align: center;
+    padding: 8px 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: .95rem;
+    color: var(--gold);
+    background: var(--bg);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-s);
+    transition: background .15s, color .15s, border-color .15s;
+}
+
+.segmented__item input:checked + span {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--ink);
+}
+
+.custom-pairs-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.btn--small {
+    padding: 8px 16px;
+    font-size: .9rem;
+}
+
+.themes-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 8px 0;
+}
+
+.timer-extras {
+    margin-top: 12px;
+}
+
+.field-select {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-s);
+    padding: 8px 10px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+}
+
+.modal__panel .field-select,
+.paper-input,
+.guess__input {
+    background: #fbf7ea;
+    color: var(--ink);
+    border: 1px solid var(--paper-shadow);
+}
+
+.paper-input,
+.guess__input {
+    border-radius: var(--radius-s);
+    padding: 9px 11px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.paper-input:focus,
+.guess__input:focus {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+}
+
+/* Confidentialité des cartes */
+.modal__autobar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--paper-shadow);
+    border-radius: var(--radius-m) var(--radius-m) 0 0;
+    overflow: hidden;
+}
+
+.modal__autobar span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--red);
+}
+
+.modal--masked .modal__role,
+.modal--masked .modal__word-label,
+.modal--masked .modal__word,
+.modal--masked .modal__badges {
+    visibility: hidden;
+}
+
+.modal__reveal-row {
+    margin-bottom: 14px;
+}
+
+.modal__reveal {
+    width: 100%;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Dernière chance de Mr. White */
+.guess__row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.guess__result {
+    min-height: 1.4em;
+    margin: 0 0 18px;
+    font-size: .8rem;
+    line-height: 1.5;
+}
+
+.guess__result--ok {
+    color: #2f5c2d;
+    font-weight: 700;
+}
+
+.guess__result--ko {
+    color: var(--red-deep);
+}
+
+.game-over-banner--mrwhite {
+    border-color: rgba(220, 220, 220, .55);
+    background: rgba(220, 220, 220, .1);
+}
+
+.game-over-banner--mrwhite .game-over-banner__title {
+    color: var(--cream);
+}
+
+[data-theme="light"] .game-over-banner--mrwhite .game-over-banner__title {
+    color: var(--ink);
+}
+
+/* Mes paires */
+.custom-panel {
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+}
+
+.custom-import {
+    background: rgba(182, 146, 78, .16);
+    border: 1px solid var(--gold-soft);
+    border-radius: var(--radius-s);
+    padding: 12px;
+    margin-bottom: 14px;
+    font-size: .8rem;
+}
+
+.custom-import p {
+    margin-bottom: 10px;
+}
+
+.custom-form__words {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.custom-form__row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-form__hint {
+    margin-top: 8px;
+    color: var(--ink-soft);
+}
+
+.custom-list {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    max-height: 26vh;
+    overflow-y: auto;
+    border-top: 1px solid var(--paper-shadow);
+}
+
+.custom-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 2px;
+    border-bottom: 1px solid var(--paper-shadow);
+    font-size: .8rem;
+}
+
+.custom-list__words {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.custom-list__diff {
+    font-size: .62rem;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: #e3dcc4;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.custom-list__diff--1 {
+    background: #dfe8d6;
+    color: #3c5a34;
+}
+
+.custom-list__diff--3 {
+    background: #f1d6cf;
+    color: var(--red-deep);
+}
+
+.custom-list__del {
+    appearance: none;
+    border: none;
+    background: none;
+    color: var(--red-deep);
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 2px 8px;
+    cursor: pointer;
+}
+
+.custom-tools {
+    margin-bottom: 14px;
+}
+
+/* Statistiques du journal */
+.score-leaderboard li,
+.score-roles li {
+    flex-wrap: wrap;
+}
+
+.score-leaderboard__meta {
+    flex-basis: 100%;
+    font-family: 'Courier Prime', monospace;
+    font-size: .62rem;
+    color: var(--ink-soft);
+}
+
+.score-note {
+    font-size: .64rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 6px 0 0;
+}
+
+.score-export {
+    margin: 14px 0 10px;
+}
+
+.score-export .btn--ghost {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+}
+
+.custom-tools .btn--ghost {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+}
+
+.custom-import .btn--ghost {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+}
+
+@media (max-width: 480px) {
+    .custom-form__words {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn--gold {
+    background: var(--gold);
+    color: var(--ink);
+}
+
+.btn--gold:hover {
+    filter: brightness(1.08);
+}

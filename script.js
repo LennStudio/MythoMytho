@@ -1,657 +1,109 @@
 (function () {
   "use strict";
 
-  var WORD_THEMES = [{
-      key: "classique",
-      label: "Général",
-      desc: "Le pack classique : objets, animaux, lieux, quotidien.",
-      pairs: [
-        ["Tinder", "LinkedIn"],
-        ["Instagram", "TikTok"],
-        ["Chat", "Chien"],
-        ["Café", "Thé"],
-        ["Pizza", "Burger"],
-        ["Plage", "Montagne"],
-        ["Été", "Hiver"],
-        ["Voiture", "Moto"],
-        ["Piscine", "Mer"],
-        ["Guitare", "Piano"],
-        ["Médecin", "Infirmier"],
-        ["Lion", "Tigre"],
-        ["Avion", "Train"],
-        ["Pomme", "Poire"],
-        ["Lune", "Soleil"],
-        ["Livre", "Journal"],
-        ["Stylo", "Crayon"],
-        ["Football", "Rugby"],
-        ["Neige", "Pluie"],
-        ["Chocolat", "Vanille"],
-        ["Château", "Maison"],
-        ["Pirate", "Corsaire"],
-        ["Vélo", "Trottinette"],
-        ["Fromage", "Beurre"],
-        ["Whisky", "Vodka"],
-        ["Sushi", "Ramen"],
-        ["Ordinateur", "Tablette"],
-        ["Dentiste", "Chirurgien"],
-        ["Rivière", "Lac"],
-        ["Étoile", "Planète"],
-        ["Pain de mie", "Baguette"],
-        ["Cinéma", "Théâtre"],
-        ["Requin", "Dauphin"],
-        ["Camion", "Bus"],
-        ["Hôtel", "Auberge"],
-        ["Perroquet", "Aigle"],
-        ["Salade", "Soupe"],
-        ["Montre", "Bracelet"],
-        ["Parapluie", "Manteau"],
-        ["Bougie", "Lampe"],
-        ["Sapin", "Palmier"],
-        ["Robot", "Extraterrestre"],
-        ["Policier", "Pompier"],
-        ["Violon", "Violoncelle"],
-        ["Tornade", "Ouragan"],
-        ["Compte", "Comte"],
-        ["Paris", "Marseille"],
-        ["Lego", "Playmobil"],
-        ["Croissant", "Pain au chocolat"],
-        ["Apple", "Samsung"],
-        ["Uber", "Uber Eats"],
-        ["Coca", "Pepsi"],
-        ["Océan", "Mer"],
-        ["Criminel", "Délinquant"],
-        ["Manette", "Souris"],
-        ["Cathédrale", "Église"],
-        ["Shampoing", "Gel douche"],
-        ["Boulangerie", "Pâtisserie"],
-        ["Lunettes", "Lentilles"],
-        ["Miroir", "Vitre"],
-        ["Terre", "Mars"],
-        ["Koh-Lanta", "Fort Boyard"],
-        ["Raclette", "Tartiflette"],
-        ["Futuroscope", "Disneyland"],
-        ["Pain au chocolat", "Chocolatine"],
-        ["Réussite", "Échec"],
-        ["Licence", "Master"],
-        ["Pâtes", "Nouilles"],
-        ["Calvitie", "Mulet"],
-        ["Mac", "Windows"],
-        ["Burger King", "McDonald's"],
-        ["Pacsé", "Marié"],
-        ["Fourchette", "Couteau"],
-        ["Escalier", "Ascenceur"],
-        ["Culpabilité", "Honte"],
-        ["Sympathie", "Empathie"],
-        ["Illusion", "Hallucination"],
-        ["Mythe", "Légende"],
-        ["Sable", "Poussière"],
-        ["Grotte", "Caverne"],
-        ["Brouillard", "Brume"],
-        ["Venin", "Poison"],
-        ["Bactérie", "Virus"],
-        ["Température", "Chaleur"],
-        ["Sagesse", "Intelligence"],
-        ["Éthique", "Morale"],
-        ["Météore", "Météorite"],
-        ["Fleuve", "Torrent"],
-        ["Fosse", "Gouffre"],
-        ["Nuance", "Subtilité"],
-        ["Hasard", "Coïncidence"],
-        ["Destin", "Fatalité"],
-        ["Angoisse", "Anxiété"],
-        ["Peur", "Phobie"],
-        ["Folie", "Délire"],
-        ["Ombre", "Pénombre"],
-        ["Reflet", "Silhouette"],
-        ["Écho", "Résonance"],
-        ["Infini", "Éternité"],
-        ["Galaxie", "Constellation"],
-        ["Âme", "Esprit"],
-        ["Croyance", "Foi"],
-        ["Mensonge", "Omission"],
-        ["Secret", "Mystère"],
-        ["Auteur", "Écrivain"],
-        ["Magazine", "Revue"],
-        ["Pendule", "Horloge"],
-        ["Crâne", "Squelette"],
-        ["Labyrinthe", "Dédale"],
-        ["Prison", "Donjon"],
-        ["Cimetière", "Crypte"],
-        ["Désert", "Aridité"],
-        ["Falaise", "Ravin"],
-        ["Givre", "Verglas"],
-        ["Avalanche", "Glissement"],
-        ["Typhon", "Cyclone"],
-        ["Tsunami", "Raz-de-marée"],
-        ["Magma", "Lave"],
-        ["Astéroïde", "Comète"],
-        ["Cosmos", "Univers"],
-        ["Atome", "Molécule"],
-        ["Gravité", "Apesanteur"],
-        ["Instinct", "Intuition"],
-        ["Émotion", "Sentiment"],
-        ["Paradoxe", "Contradiction"],
-        ["Honneur", "Fierté"],
-        ["Vengeance", "Justice"],
-        ["Souvenir", "Mémoire"],
-        ["Rêve", "Songe"],
-        ["Idée", "Concept"],
-        ["Théorie", "Hypothèse"],
-        ["Méthode", "Technique"],
-        ["Stratégie", "Tactique"],
-        ["Objectif", "But"],
-        ["Moyen", "Outil"],
-        ["Principe", "Règle"],
-        ["Loi", "Norme"],
-        ["Devoir", "Obligation"],
-        ["Droit", "Privilège"],
-        ["Liberté", "Indépendance"],
-        ["Égalité", "Équité"],
-        ["Pouvoir", "Autorité"],
-        ["Force", "Puissance"],
-        ["Courage", "Bravoure"],
-        ["Audace", "Témérité"],
-        ["Patience", "Persévérance"],
-        ["Tolérance", "Acceptation"],
-        ["Respect", "Estime"],
-        ["Amour", "Passion"],
-        ["Amitié", "Camaraderie"],
-        ["Alliance", "Coalition"],
-        ["Contrat", "Accord"],
-        ["Promesse", "Engagement"],
-        ["Trahison", "Tromperie"],
-        ["Falsification", "Hypocrisie"],
-        ["Erreur", "Faute"],
-        ["Pardon", "Clémence"],
-        ["Punition", "Châtiment"],
-        ["Récompense", "Prix"],
-        ["Don", "Cadeau"],
-        ["Talent", "Génie"],
-        ["Compétence", "Aptitude"],
-        ["Connaissance", "Savoir"],
-        ["Éducation", "Instruction"],
-        ["Culture", "Civilisation"],
-        ["Tradition", "Coutume"],
-        ["Art", "Artisanat"],
-        ["Science", "Recherche"],
-        ["Invention", "Trouvaille"],
-        ["Progrès", "Évolution"],
-        ["Changement", "Transformation"],
-        ["Début", "Origine"],
-        ["Fin", "Terme"],
-        ["Limite", "Frontière"],
-        ["Hasard", "Chance"],
-        ["Sarcasme", "Ironie"],
-        ["Mélancolie", "Tristesse"],
-        ["Charisme", "Charme"],
-        ["Dilemme", "Problème"],
-        ["Mélodie", "Harmonie"],
-        ["Parfum", "Odeur"],
-        ["Colère", "Rage"],
-        ["Pitié", "Compassion"],
-        ["Gloire", "Renommée"],
-        ["Gourmandise", "Avidité"],
-        ["Erreur", "Oubli"],
-        ["Joie", "Bonheur"],
-        ["Dispute", "Conflit"],
-        ["Pardon", "Excuse"],
-        ["Sourire", "Rire"],
-        ["Bruit", "Son"],
-        ["Regard", "Vision"],
-        ["Geste", "Mouvement"],
-        ["Vitesse", "Accélération"],
-        ["Ombre", "Reflet"],
-        ["Doute", "Incertitude"],
-        ["Foi", "Espérance"],
-        ["Magie", "Illusion"],
-        ["Froid", "Gel"],
-        ["Chaud", "Brûlant"],
-        ["Sec", "Aride"],
-        ["Humide", "Mouillé"],
-        ["Lisse", "Doux"],
-        ["Rond", "Cercle"],
-        ["Carré", "Rectangle"],
-        ["Rouge", "Bordeaux"],
-        ["Bleu", "Cyan"],
-        ["Vert", "Kaki"],
-        ["Jaune", "Or"],
-        ["Blanc", "Gris"],
-        ["Noir", "Sombre"],
-        ["Jour", "Matin"],
-        ["Nuit", "Soir"],
-        ["Survirage", "Sous-virage"],
-        ["Diffuseur", "Aileron"],
-        ["Monoplace", "Karting"],
-        ["Circuit", "Piste"],
-        ["Asphalte", "Bitume"],
-        ["Paddock", "Stand"],
-        ["Qualifications", "Course"],
-        ["Visière", "Casque"],
-        ["Dérapage", "Glissade"],
-        ["Freinage", "Ralentissement"],
-        ["Lewis Hamilton", "Michael Schumacher"],
-        ["Maquette", "Prototype"],
-        ["Wireframe", "Zoning"],
-        ["Interface", "Expérience"],
-        ["Police", "Typographie"],
-        ["Marge", "Espacement"],
-        ["Bouton", "Lien"],
-        ["Code", "Script"],
-        ["Branche", "Commit"],
-        ["Hébergement", "Serveur"],
-        ["Balise", "Attribut"],
-        ["Header", "Footer"],
-        ["Variable", "Fonction"],
-        ["Résolution", "Définition"],
-        ["Contraste", "Luminosité"],
-        ["Acoustique", "Instrumental"],
-        ["Refrain", "Couplet"],
-        ["Rythme", "Tempo"],
-        ["Album", "EP"],
-        ["Concert", "Festival"],
-        ["Écoute", "Audition"],
-        ["Odorat", "Flair"],
-        ["Goût", "Saveur"],
-        ["Toucher", "Contact"],
-        ["Sens", "Direction"],
-        ["Chemin", "Route"],
-        ["Sentier", "Piste"],
-        ["Forêt", "Bois"],
-        ["Arbre", "Plante"],
-        ["Fleur", "Bourgeon"],
-        ["Graine", "Pépin"],
-        ["Fruit", "Légume"],
-        ["Viande", "Poisson"],
-        ["Eau", "Liquide"],
-        ["Verre", "Cristal"],
-        ["Métal", "Fer"],
-        ["Or", "Argent"],
-        ["Pierre", "Roche"],
-        ["Caillou", "Gravier"],
-        ["Montagne", "Colline"],
-        ["Sommet", "Pic"],
-        ["Vallée", "Plaine"],
-        ["Nuage", "Ciel"],
-        ["Pluie", "Averse"],
-        ["Vent", "Souffle"],
-        ["Feu", "Flamme"],
-        ["Cendre", "Braise"],
-        ["Terre", "Sol"],
-        ["Monde", "Planète"],
-        ["Univers", "Espace"],
-      ]
-    },
-    {
-      key: "metier",
-      label: "Métier UX / Web",
-      desc: "Vocabulaire design, dev et vie de bureau.",
-      pairs: [
-        ["Delmas", "Louveton"],
-        ["UX", "UI"],
-        ["Zoning", "Wireframe"],
-        ["Maquette", "Prototype"],
-        ["Illustrator", "Photoshop"],
-        ["Accessibilité", "Ergonomie"],
-        ["Serif", "Sans-serif"],
-        ["Montserrat", "Times New Roman"],
-        ["WebP", "AVIF"],
-        ["Header", "Footer"],
-        ["Bouton", "Lien"],
-        ["CDI", "CDD"],
-        ["Freelance", "Chômeur"],
-        ["Figma", "Adobe Xd"],
-        ["Auto-entreprise", "Société"],
-        ["Logo", "Charte graphique"],
-        ["Front-end", "Back-end"],
-        ["Margin", "Padding"],
-      ]
-    },
-    {
-      key: "sportauto",
-      label: "Sport auto",
-      desc: "Formule 1, courses et pilotes.",
-      pairs: [
-        ["Ferrari", "Lamborghini"],
-        ["Peugeot", "Renault"],
-        ["F1", "Karting"],
-        ["Formule 1", "Formule E"],
-        ["Lewis Hamilton", "Michael Schumacher"],
-        ["Ayrton Senna", "Alain Prost"],
-        ["Chauffeur", "Pilote"],
-        ["Pneu", "Roue"],
-        ["Accélérer", "Freiner"],
-        ["Chronomètre", "Montre"],
-        ["Survirage", "Sous-virage"],
-        ["Moteur", "Batterie"],
-        ["Aileron Avant", "Aileron Arrière"],
-        ["DRS", "ERS"],
-        ["Drapeau rouge", "Drapeau jaune"],
-        ["Voiture de sécurité", "Voiture médicale"],
-        ["Qualification", "Grand Prix"],
-        ["Pneu soft", "Pneu dur"],
-        ["Pneu inter", "Pneu pluie"],
-        ["Halo", "Casque"],
-        ["WRC", "WEC"],
-        ["Le Mans", "Indianapolis"],
-        ["Monaco", "Monza"],
-        ["Spa-Francorchamps", "Silverstone"],
-        ["Ingénieur", "Mécanicien"],
-        ["Sponsor", "Écurie"],
-        ["Simulateur", "Piste"],
-        ["Podium", "Trophée"],
-        ["Championnat", "Classement"],
-        ["Max Verstappen", "Charles Leclerc"],
-        ["Fernando Alonso", "Sebastian Vettel"],
-        ["Niki Lauda", "James Hunt"],
-        ["Sébastien Loeb", "Sébastien Ogier"],
-        ["Esteban Ocon", "Pierre Gasly"],
-        ["Lando Norris", "George Russell"],
-        ["Mercedes", "Red Bull"],
-        ["McLaren", "Aston Martin"],
-        ["Alpine", "Haas"],
-        ["Porsche", "Audi"],
-        ["Michelin", "Pirelli"],
-        ["Undercut", "Overcut"],
-        ["Graining", "Blistering"],
-        ["DNF", "DNS"],
-        ["Combinaison", "Gants"],
-      ]
-    },
-    {
-      key: "popculture",
-      label: "Cinéma & Pop culture",
-      desc: "Super-héros, films et personnages cultes.",
-      pairs: [
-        ["Flash", "Flash McQueen"],
-        ["Batman", "Ironman"],
-        ["Hulk", "RedHulk"],
-        ["Woody", "Buzz l'Eclair"],
-        ["John Wick", "Tyler Rake"],
-        ["Terminator", "Robocop"],
-        ["Godzilla", "King Kong"],
-        ["Agent 47", "Jason Bourne"],
-        ["Cendrillon", "Blanche-Neige"],
-        ["Lilo", "Stitch"],
-        ["Belle", "Bête"],
-        ["Mickey", "Minnie"],
-        ["Jedi", "Sith"],
-        ["Marvel", "DC Comics"],
-        ["Gryffondor", "Serpentard"],
-        ["Harry Potter", "Ron Weasley"],
-        ["Gandalf", "Dumbledore"],
-        ["Superman", "Captain America"],
-        ["Spiderman", "Venom"],
-        ["Thor", "Loki"],
-        ["Deadpool", "Wolverine"],
-        ["Mario", "Luigi"],
-        ["Bowser", "Donkey Kong"],
-        ["Link", "Zelda"],
-        ["Pikachu", "Dracaufeu"],
-        ["Sacha", "Ondine"],
-        ["Goku", "Vegeta"],
-        ["Naruto", "Sasuke"],
-        ["Luffy", "Zoro"],
-        ["Tintin", "Milou"],
-        ["Astérix", "Obélix"],
-        ["Luke Skywalker", "Dark Vador"],
-        ["Yoda", "Obi-Wan Kenobi"],
-        ["Han Solo", "Chewbacca"],
-        ["R2-D2", "C-3PO"],
-        ["Indiana Jones", "Lara Croft"],
-        ["James Bond", "Ethan Hunt"],
-        ["Shrek", "L'Âne"],
-        ["Fiona", "Raiponce"],
-        ["Simba", "Mufasa"],
-        ["Scar", "Jafar"],
-        ["Aladdin", "Peter Pan"],
-        ["Mulan", "Pocahontas"],
-        ["Ariel", "Elsa"],
-        ["Donald", "Dingo"],
-        ["Picsou", "Riri"],
-        ["Tom", "Jerry"],
-        ["Titi", "Grosminet"],
-        ["Bugs Bunny", "Daffy Duck"],
-        ["Homer", "Bart"],
-        ["Marge", "Lisa"],
-        ["Rick", "Morty"],
-        ["Cartman", "Kenny"],
-        ["Bob l'éponge", "Patrick"],
-        ["Scooby-Doo", "Sammy"],
-        ["Fred", "Daphné"],
-        ["Dracula", "Frankenstein"],
-        ["Loup-garou", "Vampire"],
-        ["Zombie", "Fantôme"],
-        ["Momie", "Sorcière"],
-        ["Alien", "Predator"],
-        ["Groot", "Rocket"],
-        ["Star-Lord", "Gamora"],
-        ["Thanos", "Dr Doom"],
-        ["Joker", "Harley Quinn"],
-        ["Aquaman", "Namor"],
-        ["Wonder Woman", "Supergirl"],
-        ["Flash", "Quicksilver"],
-        ["Cyborg", "Vision"],
-        ["Ant-Man", "La Guêpe"],
-        ["Black Panther", "Faucon"],
-        ["Daredevil", "Punisher"],
-        ["Professeur X", "Magneto"],
-        ["Cyclope", "Jean Grey"],
-        ["Tornade", "Malicia"],
-        ["Katniss Everdeen", "Peeta Mellark"],
-        ["Jacob Black", "Charlie Swan"],
-        ["Hermione Granger", "Drago Malefoy"],
-        ["Voldemort", "Gollum"],
-        ["Inspecteur Gadget", "Hercule Poirot"],
-        ["Tortues Ninja", "Splinter"],
-        ["Optimus Prime", "Megatron"],
-        ["Bumblebee", "Starscream"],
-        ["Sonic", "Knuckles"],
-        ["Pac-Man", "Tetris"],
-      ]
-    },
-    {
-      key: "celebrites",
-      label: "Célébrités & Sosies",
-      desc: "Stars, DJ, sportifs et leurs faux jumeaux.",
-      pairs: [
-        ["Ryan Gosling", "Ryan Reynolds"],
-        ["Tom Holland", "Tom Hanks"],
-        ["Tom Cruise", "Tom Felton"],
-        ["Chris Hemsworth", "Chris Evans"],
-        ["Emma Stone", "Emma Watson"],
-        ["Will Smith", "Will Ferrell"],
-        ["Jennifer Lawrence", "Jennifer Lopez"],
-        ["James Cameron", "James Wan"],
-        ["Emma Stone", "Emma Thompson"],
-        ["Kevin Bacon", "Kevin Hart"],
-        ["Dwayne Johnson", "The Rock"],
-        ["Tom Holland", "François Hollande"],
-        ["Squeezie", "Cyprien"],
-        ["David Guetta", "DJ Snake"],
-        ["Zinedine Zidane", "Didier Deschamps"],
-        ["Ousmane Dembélé", "Kylian Mbappé"],
-        ["Laurent Manaudou", "Léon Marchand"],
-        ["Pierre Niney", "Pierre Gasly"],
-        ["François Civil", "François Cluzet"],
-        ["Jean Dujardin", "Jean Reno"],
-        ["Jonathan Cohen", "Jonathan Lambert"],
-        ["Philippe Lacheau", "Philippe Katerine"],
-        ["Gérard Depardieu", "Gérard Jugnot"],
-        ["Alain Chabat", "Alain Delon"],
-        ["Paul Walker", "Paul Rudd"],
-        ["Julien Doré", "Julien Clerc"],
-        ["George Clooney", "George Lucas"],
-        ["Steve Jobs", "Steve Carell"],
-        ["Daniel Radcliffe", "Daniel Craig"],
-        ["Harrison Ford", "Henry Ford"],
-        ["Matthew Perry", "Katy Perry"],
-        ["Cillian Murphy", "Eddie Murphy"],
-        ["Michael Schumacher", "Michael Jordan"],
-        ["Antoine Griezmann", "Antoine Dupont"],
-        ["Teddy Riner", "Teddy Thomas"],
-        ["Lewis Hamilton", "Carl Lewis"],
-        ["Mark Zuckerberg", "Mark Wahlberg"],
-        ["Tim Cook", "Tim Burton"],
-        ["Jeff Bezos", "Jeff Goldblum"],
-        ["David Guetta", "David Bowie"],
-        ["Justin Bieber", "Justin Timberlake"],
-        ["DJ Snake", "DJ Khaled"],
-        ["John Lennon", "John Legend"],
-        ["Adele", "Adèle Castillon"],
-        ["Lady Gaga", "Lady Diana"],
-        ["Bruno Mars", "Bruno Le Maire"],
-        ["George Michael", "George Clooney"],
-        ["Logan Paul", "Paul Walker"],
-        ["Charlie D'Amelio", "Charlie Chaplin"],
-        ["Seb la Frite", "Sébastien Loeb"],
-        ["Mcfly", "Marty McFly"],
-        ["David Lafarge", "David Guetta"],
-        ["Antoine Daniel", "Antoine Dupont"],
-        ["Zack Nani", "Zack Snyder"],
-        ["Pierre Croce", "Pierre Richard"],
-        ["Thomas Angelvy", "Thomas Pesquet"],
-        ["Mister MV", "Mister V"],
-        ["Domingo", "Doflamingo"],
-        ["Adrien Nougaret", "Adrien Brody"],
-        ["Corentin Houssein", "Barack Hussein Obama"],
-        ["Ayrton Senna", "John Cena"],
-        ["Victor Wembanyama", "Victor Hugo"],
-        ["Serena Williams", "Robbie Williams"],
-        ["Bruce Willis", "Bruce Lee"],
-        ["Camille Cottin", "Camille Combal"],
-        ["Marion Cotillard", "Marion Maréchal"],
-        ["Morgan Freeman", "Morgane Make Up"],
-        ["Martin Scorsese", "Martin Luther King"],
-        ["Gordon Ramsay", "James Gordon"],
-        ["Ethan Hunt", "Ethan Hawke"],
-        ["John Wick", "John Travolta"],
-        ["Indiana Jones", "Bridget Jones"],
-        ["James Bond", "LeBron James"],
-        ["Jason Bourne", "Jason Statham"],
-        ["Luke Skywalker", "Luke Evans"],
-        ["Sarah Connor", "Sarah Cameron"],
-        ["Lara Croft", "Lara Fabian"],
-        ["Kevin Costner", "Kevin De Bruyne"],
-        ["Frank Martin", "Frank Sinatra"]
-      ]
-    },
-    {
-      key: "jeuxdemots",
-      label: "Jeux de mots",
-      desc: "Calembours autour de noms de célébrités.",
-      pairs: [
-        ["Jérémy Ferrari", "Ferrari"],
-        ["Arnaud Tsamère", "Ta mère"],
-        ["Jean Dujardin", "Jardin"],
-        ["Christian Clavier", "Clavier"],
-        ["Thierry Lhermitte", "Ermite"],
-        ["Jean Reno", "Renault"],
-        ["Marc Lavoine", "Avoine"],
-        ["Omar Sy", "Scie"],
-        ["Jean Rochefort", "Roquefort"],
-        ["Céline Dion", "Pion"],
-        ["David Douillet", "Douillet"],
-        ["Michel Blanc", "Blanc"],
-        ["Julien Clerc", "Clair"],
-        ["Vin Diesel", "Diesel"],
-        ["Harrison Ford", "Ford"],
-        ["Kevin Bacon", "Bacon"],
-        ["Nicolas Cage", "Cage"],
-        ["Taylor Swift", "Suzuki Swift"],
-        ["Bruno Mars", "Mars"],
-        ["Brad Pitt", "Pit stop"],
-        ["50 Cent", "50 centimes"],
-        ["Eminem", "M&M's"],
-        ["James Bond", "Bon"],
-        ["Stephen King", "Burger King"],
-        ["Emmanuel Macron", "Macaron"],
-        ["Katy Perry", "Perrier"],
-        ["Elton John", "Jaune"],
-        ["Tom Cruise", "Croisière"],
-        ["Tiger Woods", "Bois"],
-        ["Megan Fox", "Renard"],
-        ["Steve Jobs", "Pôle Emploi"],
-        ["Justin Timberlake", "Lac"],
-        ["Gérard Depardieu", "Dieu"],
-        ["Brad Pitt", "Pitre"],
-        ["Kylian Mbappé", "Canapé"],
-        ["Léa Salamé", "Salami"],
-        ["Gilles Lellouche", "Louche"],
-        ["Alain Delon", "Melon"],
-        ["Florent Pagny", "Panier"],
-        ["Paul Mirabel", "Mirabelle"],
-        ["Vincent Cassel", "Vaisselle"],
-        ["Cyril Lignac", "Cognac"],
-        ["Jean Castex", "Casse-tête"],
-        ["Teddy Riner", "Dîner"],
-        ["Matt Damon", "Démon"],
-        ["Snoop Dogg", "Hot-dog"],
-        ["Travis Scott", "Scoot"],
-        ["Post Malone", "Boîte aux lettres"],
-        ["Ice Spice", "Piment"],
-        ["Machine Gun Kelly", "Fusil"],
-        ["Rick Ross", "Gros"]
-      ]
-    },
-    {
-      key: "homophones",
-      label: "Homophones",
-      desc: "Mots qui se prononcent pareil, sens différent.",
-      pairs: [
-        ["Verre", "Ver"],
-        ["Sceau", "Sot"],
-        ["Chêne", "Chaîne"],
-        ["Auteur", "Hauteur"],
-        ["Plaine", "Pleine"],
-        ["Sel", "Selle"],
-        ["Tique", "Tic"],
-        ["Fil", "Fils"],
-        ["Pouce", "Pousse"],
-        ["Cerf", "Serre"],
-        ["Poing", "Point"],
-        ["Taux", "Tôt"],
-        ["Poil", "Poêle"],
-        ["Vers", "Vert"],
-        ["Coup", "Cou"],
-        ["Faim", "Fin"],
-        ["Pâte", "Patte"],
-        ["Cygne", "Signe"],
-        ["Sale", "Salle"],
-        ["Vin", "Vingt"],
-        ["Sain", "Saint"],
-        ["Père", "Pai"],
-        ["Repaire", "Repère"],
-        ["Conte", "Compte"],
-        ["Lait", "Laid"],
-        ["Malle", "Mâle"],
-        ["Toux", "Tout"],
-        ["Roue", "Roux"],
-        ["Cœur", "Chœur"],
-        ["Saut", "Seau"],
-        ["Dans", "Dent"],
-        ["Pari", "Paris"],
-        ["Sang", "Sans"],
-        ["Cuire", "Cuir"],
-        ["Boue", "Bout"],
-        ["Amande", "Amende"],
-        ["Pause", "Pose"],
-        ["Tente", "Tante"],
-        ["Mer", "Maire"],
-        ["Sang", "Cent"],
-        ["Voix", "Voie"],
-        ["Poids", "Pois"],
-        ["Mètre", "Maître"],
-        ["Porc", "Port"],
-        ["Reine", "Renne"],
-        ["Chant", "Champ"],
-      ]
-    },
-  ];
+  // Les paires de mots vivent dans words.json (chargé au démarrage, précaché par le service worker).
+  // Format d'une paire : [mot1, mot2, difficulté] — 1 = facile, 2 = moyenne, 3 = difficile.
+  var WORD_THEMES = [];
+  var wordsLoaded = false;
+  var WORDS_URL = 'words.json';
+
+  var CUSTOM_THEME_KEY = 'perso';
+  var CUSTOM_STORAGE_KEY = 'undercover_custom_pairs_v1';
+  var OPTIONS_STORAGE_KEY = 'undercover_options_v1';
+  var MAX_CUSTOM_PAIRS = 300;
+  var MAX_WORD_LENGTH = 40;
+
+  var DIFFICULTY_LABELS = {
+    1: 'Facile',
+    2: 'Moyenne',
+    3: 'Difficile'
+  };
+
+  function normalizeWord(str) {
+    return String(str || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/œ/g, 'oe')
+      .replace(/æ/g, 'ae')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
+  function pairDifficulty(pair) {
+    var d = pair[2];
+    return (d === 1 || d === 3) ? d : 2;
+  }
+
+  function sanitizePair(raw) {
+    if (!Array.isArray(raw) || raw.length < 2) return null;
+    var a = String(raw[0] == null ? '' : raw[0]).replace(/\s+/g, ' ').trim();
+    var b = String(raw[1] == null ? '' : raw[1]).replace(/\s+/g, ' ').trim();
+    if (!a || !b || a.length > MAX_WORD_LENGTH || b.length > MAX_WORD_LENGTH) return null;
+    if (normalizeWord(a) === normalizeWord(b)) return null;
+    var d = parseInt(raw[2], 10);
+    return [a, b, (d === 1 || d === 3) ? d : 2];
+  }
+
+  function pairKey(pair) {
+    return [normalizeWord(pair[0]), normalizeWord(pair[1])].sort().join('|');
+  }
+
+  function loadCustomPairs() {
+    try {
+      var raw = window.localStorage.getItem(CUSTOM_STORAGE_KEY);
+      if (!raw) return [];
+      var parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      var seen = {};
+      var out = [];
+      parsed.forEach(function (item) {
+        var p = sanitizePair(item);
+        if (!p) return;
+        var k = pairKey(p);
+        if (seen[k]) return;
+        seen[k] = true;
+        out.push(p);
+      });
+      return out.slice(0, MAX_CUSTOM_PAIRS);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  var customPairs = loadCustomPairs();
+
+  function saveCustomPairs() {
+    try {
+      window.localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(customPairs));
+    } catch (e) {}
+  }
+
+  function customTheme() {
+    return {
+      key: CUSTOM_THEME_KEY,
+      label: 'Mes paires',
+      desc: 'Vos propres paires de mots, enregistrées sur cet appareil.',
+      pairs: customPairs,
+      custom: true
+    };
+  }
+
+  function allThemes() {
+    return WORD_THEMES.concat([customTheme()]);
+  }
 
   function getTheme(key) {
-    return WORD_THEMES.filter(function (t) {
+    return allThemes().filter(function (t) {
       return t.key === key;
     })[0];
+  }
+
+  function countPairs(theme) {
+    if (!state.difficulty) return theme.pairs.length;
+    return theme.pairs.filter(function (pair) {
+      return pairDifficulty(pair) === state.difficulty;
+    }).length;
   }
 
   function pairId(themeKey, pair) {
@@ -780,8 +232,21 @@
     timerRemaining: 0,
     timerRunning: false,
     timerHasEnded: false,
-    timerStartedRound: false
+    timerStartedRound: false,
+    difficulty: 0,
+    privacy: 'standard',
+    autoHideSec: 8,
+    timerSound: true,
+    mrWhiteGuess: true,
+    civilWord: '',
+    undercoverWord: '',
+    pairTheme: '',
+    pairDifficulty: 0,
+    guessQueue: [],
+    winnerPlayerId: null
   };
+
+  loadOptions();
 
   var el = {
     setupScreen: document.getElementById('setup'),
@@ -889,7 +354,61 @@
     summaryNewRoundBtn: document.getElementById('summaryNewRoundBtn'),
 
     toast: document.getElementById('toast'),
-    srAnnounce: document.getElementById('srAnnounce')
+    srAnnounce: document.getElementById('srAnnounce'),
+
+    installBtn: document.getElementById('installBtn'),
+    mrWhiteGuessInput: document.getElementById('mrWhiteGuess'),
+    difficultyRadios: document.querySelectorAll('input[name="difficulty"]'),
+    difficultyHint: document.getElementById('difficultyHint'),
+    customManageBtn: document.getElementById('customManageBtn'),
+    customCountHint: document.getElementById('customCountHint'),
+    timerExtras: document.getElementById('timerExtras'),
+    timerSoundInput: document.getElementById('timerSound'),
+    privacyRadios: document.querySelectorAll('input[name="privacy"]'),
+    autoHideField: document.getElementById('autoHideField'),
+    autoHideSelect: document.getElementById('autoHideSelect'),
+    privacySummary: document.getElementById('privacySummary'),
+
+    autoHideBar: document.getElementById('autoHideBar'),
+    revealRow: document.getElementById('revealRow'),
+    revealBtn: document.getElementById('revealBtn'),
+
+    guessModal: document.getElementById('guessModal'),
+    guessTitle: document.getElementById('guessTitle'),
+    guessIntro: document.getElementById('guessIntro'),
+    guessInputRow: document.getElementById('guessInputRow'),
+    guessInput: document.getElementById('guessInput'),
+    guessMicBtn: document.getElementById('guessMicBtn'),
+    guessResult: document.getElementById('guessResult'),
+    guessSkipBtn: document.getElementById('guessSkipBtn'),
+    guessSubmitBtn: document.getElementById('guessSubmitBtn'),
+    guessContinueBtn: document.getElementById('guessContinueBtn'),
+
+    customModal: document.getElementById('customModal'),
+    customScrim: document.getElementById('customScrim'),
+    customImportBanner: document.getElementById('customImportBanner'),
+    customImportText: document.getElementById('customImportText'),
+    customImportDismiss: document.getElementById('customImportDismiss'),
+    customImportConfirm: document.getElementById('customImportConfirm'),
+    customWordA: document.getElementById('customWordA'),
+    customWordB: document.getElementById('customWordB'),
+    customDifficulty: document.getElementById('customDifficulty'),
+    customAddBtn: document.getElementById('customAddBtn'),
+    customCount: document.getElementById('customCount'),
+    customEmpty: document.getElementById('customEmpty'),
+    customList: document.getElementById('customList'),
+    customExportBtn: document.getElementById('customExportBtn'),
+    customImportBtn: document.getElementById('customImportBtn'),
+    customShareBtn: document.getElementById('customShareBtn'),
+    customImportFile: document.getElementById('customImportFile'),
+    customCloseBtn: document.getElementById('customCloseBtn'),
+
+    scoreRolesTitle: document.getElementById('scoreRolesTitle'),
+    scoreRoles: document.getElementById('scoreRoles'),
+    scoreNote: document.getElementById('scoreNote'),
+    scoreExportRow: document.querySelector('.score-export'),
+    scoreExportJson: document.getElementById('scoreExportJson'),
+    scoreExportCsv: document.getElementById('scoreExportCsv')
   };
 
   var toastTimer = null;
@@ -902,13 +421,13 @@
     return Math.floor(Math.random() * maxExclusive);
   }
 
-  function showToast(message) {
+  function showToast(message, duration) {
     el.toast.textContent = message;
     el.toast.classList.add('toast--show');
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(function () {
       el.toast.classList.remove('toast--show');
-    }, 2600);
+    }, duration || 2600);
   }
 
   function announce(message) {
@@ -1121,6 +640,8 @@
   function renderTimerSetupUI() {
     if (el.timerEnabledInput) el.timerEnabledInput.checked = state.timerEnabled;
     if (el.timerDurationField) el.timerDurationField.style.display = state.timerEnabled ? '' : 'none';
+    if (el.timerExtras) el.timerExtras.style.display = state.timerEnabled ? '' : 'none';
+    if (el.timerSoundInput) el.timerSoundInput.checked = state.timerSound;
     if (el.timerDisplaySetup) el.timerDisplaySetup.textContent = state.timerDurationMin;
     if (el.timerMinus) el.timerMinus.disabled = state.timerDurationMin <= TIMER_MIN_DURATION;
     if (el.timerPlus) el.timerPlus.disabled = state.timerDurationMin >= TIMER_MAX_DURATION;
@@ -1168,7 +689,7 @@
 
   function renderThemeToggles() {
     el.themesGrid.innerHTML = '';
-    WORD_THEMES.forEach(function (theme) {
+    allThemes().forEach(function (theme) {
       var label = document.createElement('label');
       label.className = 'toggle-item';
 
@@ -1189,7 +710,8 @@
       strong.textContent = theme.label;
       var count = document.createElement('span');
       count.className = 'toggle-item__count';
-      count.textContent = theme.pairs.length + ' paires';
+      var shown = countPairs(theme);
+      count.textContent = shown + (shown > 1 ? ' paires' : ' paire');
       titleRow.appendChild(strong);
       titleRow.appendChild(count);
 
@@ -1213,6 +735,7 @@
         'Aucun thème sélectionné' :
         (n + (n > 1 ? ' thèmes sélectionnés' : ' thème sélectionné'));
     }
+    renderCustomCountHint();
     renderSetupRecap();
   }
 
@@ -1251,6 +774,14 @@
       chips.push(specialCount + (specialCount > 1 ? ' rôles spéciaux' : ' rôle spécial'));
     }
 
+    if (state.difficulty) {
+      chips.push('difficulté ' + DIFFICULTY_LABELS[state.difficulty].toLowerCase());
+    }
+
+    if (state.privacy !== 'standard') {
+      chips.push(state.privacy === 'auto' ? ('masquage auto ' + state.autoHideSec + ' s') : 'maintenir pour révéler');
+    }
+
     if (state.timerEnabled) {
       chips.push('minuteur ' + state.timerDurationMin + ' min');
     }
@@ -1265,7 +796,7 @@
   }
 
   function selectedThemeKeys() {
-    return WORD_THEMES.filter(function (t) {
+    return allThemes().filter(function (t) {
         return state.selectedThemes[t.key];
       })
       .map(function (t) {
@@ -1273,28 +804,38 @@
       });
   }
 
-  function pickWordPair() {
-    var themeKeys = selectedThemeKeys();
-    if (!themeKeys.length) themeKeys = ['classique'];
-
+  function themePool(themeKeys, difficulty) {
     var pool = [];
     themeKeys.forEach(function (key) {
       var theme = getTheme(key);
       if (!theme) return;
       theme.pairs.forEach(function (pair) {
+        if (difficulty && pairDifficulty(pair) !== difficulty) return;
         pool.push({
           id: pairId(key, pair),
+          key: key,
           pair: pair
         });
       });
     });
+    return pool;
+  }
+
+  function pickWordPair() {
+    var themeKeys = selectedThemeKeys();
+    if (!themeKeys.length) themeKeys = ['classique'];
+
+    var pool = themePool(themeKeys, state.difficulty);
+    if (!pool.length && state.difficulty) {
+      pool = themePool(themeKeys, 0);
+      if (pool.length) {
+        showToast('Aucune paire « ' + DIFFICULTY_LABELS[state.difficulty].toLowerCase() +
+          ' » dans les thèmes choisis — toutes les difficultés sont utilisées.', 3600);
+      }
+    }
     if (!pool.length) {
-      pool = getTheme('classique').pairs.map(function (pair) {
-        return {
-          id: pairId('classique', pair),
-          pair: pair
-        };
-      });
+      pool = themePool(['classique'], 0);
+      showToast('Aucune paire disponible pour cette sélection — le thème Général est utilisé.', 3600);
     }
 
     var available = pool.filter(function (entry) {
@@ -1315,7 +856,9 @@
     var flip = Math.random() < 0.5;
     return {
       civilWord: flip ? choice.pair[0] : choice.pair[1],
-      undercoverWord: flip ? choice.pair[1] : choice.pair[0]
+      undercoverWord: flip ? choice.pair[1] : choice.pair[0],
+      themeKey: choice.key,
+      difficulty: pairDifficulty(choice.pair)
     };
   }
 
@@ -1359,6 +902,10 @@
     });
 
     state.civilWordHint = words.civilWord.charAt(0).toUpperCase();
+    state.civilWord = words.civilWord;
+    state.undercoverWord = words.undercoverWord;
+    state.pairTheme = words.themeKey;
+    state.pairDifficulty = words.difficulty;
 
     state.players.forEach(function (player) {
       player.isUndercover = !!undercoverIds[player.id];
@@ -1446,6 +993,8 @@
     state.winner = null;
     state.winnerDetail = '';
     state.winnerReason = '';
+    state.winnerPlayerId = null;
+    state.guessQueue = [];
 
     if (skippedRoles.length) {
       showToast('Pas assez de joueurs disponibles pour attribuer : ' + skippedRoles.join(', ') + '.');
@@ -1491,7 +1040,8 @@
     el.cardsGrid.style.display = '';
     el.statusBanner.classList.remove('status-banner--show');
     el.voteSection.classList.remove('vote-section--active');
-    el.gameOverBanner.classList.remove('game-over-banner--active', 'game-over-banner--civils', 'game-over-banner--undercover');
+    el.gameOverBanner.classList.remove('game-over-banner--active', 'game-over-banner--civils', 'game-over-banner--undercover',
+      'game-over-banner--idiot', 'game-over-banner--amoureux', 'game-over-banner--mrwhite');
     el.startVoteBtn.style.display = '';
     el.startVoteBtn.disabled = true;
     el.summaryBtn.classList.add('summary-btn--hidden');
@@ -1507,6 +1057,10 @@
   }
 
   el.startBtn.addEventListener('click', function () {
+    if (!wordsLoaded) {
+      showToast('Les mots sont encore en cours de chargement…');
+      return;
+    }
     if (state.playerCount < MIN_PLAYERS) {
       showToast('Il faut au moins ' + MIN_PLAYERS + ' joueurs pour lancer une manche.');
       return;
@@ -1614,6 +1168,7 @@
       state.timerStartedRound = true;
       startDiscussionTimer();
     }
+    syncWakeLock();
   }
 
   var discussionTimerInterval = null;
@@ -1643,6 +1198,7 @@
     if (el.discussionTimerToggle) {
       el.discussionTimerToggle.textContent = state.timerHasEnded ? 'Relancer' : (state.timerRunning ? 'Pause' : 'Reprendre');
     }
+    syncWakeLock();
   }
 
   function tickDiscussionTimer() {
@@ -1654,6 +1210,7 @@
       clearDiscussionInterval();
       updateDiscussionTimerDisplay();
       vibrate([200, 100, 200]);
+      playTimerEnd();
       showToast('Temps de discussion écoulé — place au vote !');
       announce('Temps de discussion écoulé.');
       return;
@@ -1692,6 +1249,7 @@
     if (el.discussionTimer) {
       el.discussionTimer.classList.remove('discussion-timer--show');
     }
+    syncWakeLock();
   }
 
   if (el.discussionTimerToggle) {
@@ -1810,17 +1368,26 @@
     }
 
     renderModalBadges(player);
+    beginCardPrivacy();
 
     el.wordModal.classList.add('modal--open');
     el.wordModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    el.hideWordBtn.focus();
-    announce('Mot révélé pour ' + player.name);
+    focusCardModal();
+    announce(state.privacy === 'hold' ?
+      ('Carte de ' + player.name + '. Maintenez le bouton pour révéler le mot.') :
+      ('Mot révélé pour ' + player.name));
   }
 
   function renderModalBadges(player) {
     el.modalBadges.innerHTML = '';
     var badges = [];
+    if (player.isMrWhite && state.mrWhiteGuess) {
+      badges.push({
+        label: 'Dernière chance',
+        desc: 'Si tu es éliminé, tu pourras tenter de deviner le mot des Civils : si tu le trouves, tu gagnes seul(e).'
+      });
+    }
     if (player.isEspion) {
       badges.push({
         label: 'Indice d\'Espion',
@@ -1855,6 +1422,7 @@
 
   function hideOpenCard() {
     if (state.openCardId === null) return;
+    endCardPrivacy();
     var player = state.players.filter(function (p) {
       return p.id === state.openCardId;
     })[0];
@@ -1932,7 +1500,7 @@
       var chip = document.createElement('span');
       chip.className = 'eliminated-chip' + (player.isFantome ? ' eliminated-chip--fantome' : '');
       chip.innerHTML = player.name + ' <span class="eliminated-chip__role">' +
-        (player.isUndercover ? 'Undercover' : 'Civil') + '</span>' +
+        ROLE_NAMES[baseRoleKey(player)] + '</span>' +
         (player.isFantome ? ' <span class="eliminated-chip__fantome">👻 Fantôme — vote encore</span>' : '');
       el.eliminatedList.appendChild(chip);
     });
@@ -2096,6 +1664,15 @@
     state.winnerDetail = winnerDetail;
     state.winnerReason = winnerReason;
 
+    // Dernière chance : un Mr. White éliminé peut tenter de deviner le mot des Civils,
+    // même si sa chute donnait la victoire aux Civils (sauf victoire de l'Idiot au 1er vote).
+    state.guessQueue = [];
+    if (state.mrWhiteGuess && winner !== 'idiot') {
+      state.guessQueue = eliminatedNow.filter(function (p) {
+        return p.isMrWhite;
+      });
+    }
+
     var namesText = eliminatedNow.map(function (p) {
       return p.name;
     }).join(' et ');
@@ -2129,6 +1706,12 @@
       el.elimContinueBtn.textContent = 'Continuer';
     }
 
+    if (state.guessQueue.length) {
+      el.elimContinueText.textContent = (state.guessQueue.length > 1 ? 'Les Mr. White ont' : 'Mr. White a') +
+        ' une dernière chance : deviner le mot des Civils.';
+      el.elimContinueBtn.textContent = 'Tenter sa chance';
+    }
+
     el.eliminationModal.classList.add('modal--open');
     el.eliminationModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -2142,13 +1725,21 @@
     document.body.style.overflow = '';
   }
 
-  el.elimContinueBtn.addEventListener('click', function () {
-    closeEliminationModal();
+  function proceedAfterElimination() {
     if (state.winner) {
       enterGameOver(state.winner);
     } else {
       renderEliminatedList();
       renderVoteGrid();
+    }
+  }
+
+  el.elimContinueBtn.addEventListener('click', function () {
+    closeEliminationModal();
+    if (state.guessQueue.length) {
+      openGuessModal();
+    } else {
+      proceedAfterElimination();
     }
   });
 
@@ -2179,6 +1770,11 @@
       el.gameOverTitle.textContent = 'L\'Idiot du village a gagné !';
       el.gameOverSub.textContent = state.winnerDetail + ' a été éliminé(e) dès le tout premier vote et remporte la partie à lui/elle seul(e) !';
       el.gameOverBanner.classList.add('game-over-banner--idiot');
+    } else if (winner === 'mrwhite') {
+      el.gameOverTitle.textContent = 'Mr. White a gagné !';
+      el.gameOverSub.textContent = state.winnerDetail + ' a deviné le mot des Civils' +
+        (state.civilWord ? ' (« ' + state.civilWord + ' »)' : '') + ' et remporte la partie à lui/elle seul(e) !';
+      el.gameOverBanner.classList.add('game-over-banner--mrwhite');
     } else if (winner === 'amoureux') {
       el.gameOverTitle.textContent = 'Les Amoureux ont gagné !';
       el.gameOverSub.textContent = state.winnerReason === 'deadlock4' ?
@@ -2261,44 +1857,82 @@
   el.closeSummaryBtn.addEventListener('click', closeSummary);
   el.summaryScrim.addEventListener('click', closeSummary);
 
+  var ROLE_NAMES = {
+    civil: 'Civil',
+    undercover: 'Undercover',
+    mrwhite: 'Mr. White',
+    espion: 'Espion'
+  };
+
+  function baseRoleKey(player) {
+    if (player.isMrWhite) return 'mrwhite';
+    if (player.isEspion) return 'espion';
+    if (player.isUndercover) return 'undercover';
+    return 'civil';
+  }
+
+  function playerSpecials(player) {
+    var specials = [];
+    if (player.isIdiot) specials.push('Idiot du village');
+    if (player.isFantome) specials.push('Fantôme');
+    if (player.isMime) specials.push('Mime');
+    if (player.isProcureur) specials.push('Procureur');
+    if (player.loverId !== null) specials.push('Amoureux');
+    return specials;
+  }
+
+  function isWinningPlayer(player, winner) {
+    var impostor = player.isUndercover || player.isMrWhite || player.isEspion;
+    if (winner === 'civils') return !impostor;
+    if (winner === 'undercover') return impostor;
+    if (winner === 'idiot') return player.isIdiot;
+    if (winner === 'amoureux') return player.loverId !== null;
+    if (winner === 'mrwhite') return player.id === state.winnerPlayerId;
+    return false;
+  }
+
   function recordScoreEntry(winner) {
     var winnerLabel = '';
     var winnerNames = [];
 
     if (winner === 'civils') {
       winnerLabel = 'Les Civils';
-      winnerNames = state.players.filter(function (p) {
-        return !p.isUndercover && !p.isMrWhite && !p.isEspion;
-      }).map(function (p) {
-        return p.name;
-      });
     } else if (winner === 'undercover') {
       winnerLabel = 'Les Imposteurs';
-      winnerNames = state.players.filter(function (p) {
-        return p.isUndercover || p.isMrWhite || p.isEspion;
-      }).map(function (p) {
-        return p.name;
-      });
     } else if (winner === 'idiot') {
       winnerLabel = 'Idiot du village';
-      winnerNames = state.winnerDetail ? [state.winnerDetail] : [];
     } else if (winner === 'amoureux') {
       winnerLabel = 'Les Amoureux';
-      winnerNames = state.players.filter(function (p) {
-        return p.loverId !== null;
-      }).map(function (p) {
-        return p.name;
-      });
+    } else if (winner === 'mrwhite') {
+      winnerLabel = 'Mr. White';
     } else {
       return;
     }
 
+    winnerNames = state.players.filter(function (p) {
+      return isWinningPlayer(p, winner);
+    }).map(function (p) {
+      return p.name;
+    });
+
     scoreLog.unshift({
+      date: new Date().toISOString(),
       round: state.round,
       playerCount: state.players.length,
       winner: winner,
       winnerLabel: winnerLabel,
-      winnerNames: winnerNames
+      winnerNames: winnerNames,
+      theme: state.pairTheme,
+      pairDifficulty: state.pairDifficulty,
+      players: state.players.map(function (p) {
+        return {
+          name: p.name,
+          role: baseRoleKey(p),
+          specials: playerSpecials(p),
+          won: isWinningPlayer(p, winner),
+          eliminated: !!p.eliminated
+        };
+      })
     });
     if (scoreLog.length > MAX_SCORE_ENTRIES) {
       scoreLog.length = MAX_SCORE_ENTRIES;
@@ -2306,11 +1940,57 @@
     saveScoreLog();
   }
 
+  // Statistiques calculées sur les manches qui détaillent leurs joueurs (les anciennes
+  // entrées du journal ne contiennent que les vainqueurs et restent comptées dans le classement).
+  function computeStats() {
+    var byPlayer = {};
+    var byRole = {};
+    var tracked = 0;
+    scoreLog.slice().reverse().forEach(function (entry) {
+      if (!Array.isArray(entry.players) || !entry.players.length) return;
+      tracked += 1;
+      entry.players.forEach(function (p) {
+        var s = byPlayer[p.name] || (byPlayer[p.name] = {
+          games: 0,
+          wins: 0,
+          streak: 0,
+          best: 0
+        });
+        s.games += 1;
+        if (p.won) {
+          s.wins += 1;
+          s.streak += 1;
+          if (s.streak > s.best) s.best = s.streak;
+        } else {
+          s.streak = 0;
+        }
+        var r = byRole[p.role] || (byRole[p.role] = {
+          games: 0,
+          wins: 0
+        });
+        r.games += 1;
+        if (p.won) r.wins += 1;
+      });
+    });
+    return {
+      byPlayer: byPlayer,
+      byRole: byRole,
+      tracked: tracked
+    };
+  }
+
+  function percent(wins, games) {
+    return games ? Math.round(wins / games * 100) : 0;
+  }
+
   function renderScoreModal() {
     var hasEntries = scoreLog.length > 0;
     if (el.scoreEmptyState) el.scoreEmptyState.style.display = hasEntries ? 'none' : '';
     if (el.scoreContent) el.scoreContent.style.display = hasEntries ? '' : 'none';
+    if (el.scoreExportRow) el.scoreExportRow.style.display = hasEntries ? '' : 'none';
     if (!hasEntries) return;
+
+    var stats = computeStats();
 
     var tally = {};
     scoreLog.forEach(function (entry) {
@@ -2321,10 +2001,12 @@
     var leaderboard = Object.keys(tally).map(function (name) {
       return {
         name: name,
-        wins: tally[name]
+        wins: tally[name],
+        stat: stats.byPlayer[name] || null
       };
     }).sort(function (a, b) {
-      return b.wins - a.wins;
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      return (b.stat ? percent(b.stat.wins, b.stat.games) : 0) - (a.stat ? percent(a.stat.wins, a.stat.games) : 0);
     });
 
     el.scoreLeaderboard.innerHTML = '';
@@ -2337,7 +2019,36 @@
       countSpan.textContent = entry.wins + (entry.wins > 1 ? ' victoires' : ' victoire');
       li.appendChild(nameSpan);
       li.appendChild(countSpan);
+
+      if (entry.stat) {
+        var meta = document.createElement('span');
+        meta.className = 'score-leaderboard__meta';
+        var parts = [entry.stat.wins + '/' + entry.stat.games + ' manches · ' + percent(entry.stat.wins, entry.stat.games) + ' %'];
+        if (entry.stat.streak > 1) parts.push('série en cours : ' + entry.stat.streak);
+        if (entry.stat.best > 1) parts.push('record : ' + entry.stat.best);
+        meta.textContent = parts.join(' · ');
+        li.appendChild(meta);
+      }
       el.scoreLeaderboard.appendChild(li);
+    });
+
+    var hasStats = stats.tracked > 0;
+    el.scoreRolesTitle.style.display = hasStats ? '' : 'none';
+    el.scoreRoles.style.display = hasStats ? '' : 'none';
+    el.scoreNote.style.display = (hasStats && stats.tracked < scoreLog.length) ? '' : 'none';
+    el.scoreRoles.innerHTML = '';
+    ['civil', 'undercover', 'mrwhite', 'espion'].forEach(function (role) {
+      var r = stats.byRole[role];
+      if (!r) return;
+      var li = document.createElement('li');
+      var label = document.createElement('strong');
+      label.textContent = ROLE_NAMES[role];
+      var value = document.createElement('span');
+      value.className = 'score-leaderboard__count';
+      value.textContent = r.wins + '/' + r.games + ' · ' + percent(r.wins, r.games) + ' %';
+      li.appendChild(label);
+      li.appendChild(value);
+      el.scoreRoles.appendChild(li);
     });
 
     el.scoreHistory.innerHTML = '';
@@ -2353,6 +2064,93 @@
       li.appendChild(roundSpan);
       el.scoreHistory.appendChild(li);
     });
+  }
+
+  function downloadFile(filename, mime, text) {
+    var blob = new Blob([text], {
+      type: mime + ';charset=utf-8'
+    });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 500);
+  }
+
+  function todayStamp() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function exportScoreJson() {
+    var stats = computeStats();
+    var payload = {
+      app: 'undercover',
+      kind: 'score-log',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      entries: scoreLog,
+      stats: {
+        players: Object.keys(stats.byPlayer).map(function (name) {
+          var s = stats.byPlayer[name];
+          return {
+            name: name,
+            games: s.games,
+            wins: s.wins,
+            winRate: percent(s.wins, s.games),
+            currentStreak: s.streak,
+            bestStreak: s.best
+          };
+        }),
+        roles: Object.keys(stats.byRole).map(function (role) {
+          var r = stats.byRole[role];
+          return {
+            role: role,
+            games: r.games,
+            wins: r.wins,
+            winRate: percent(r.wins, r.games)
+          };
+        })
+      }
+    };
+    downloadFile('undercover-journal-' + todayStamp() + '.json', 'application/json', JSON.stringify(payload, null, 2));
+    showToast('Journal exporté en JSON.');
+  }
+
+  function csvCell(value) {
+    var s = String(value == null ? '' : value);
+    if (/[;"\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  function exportScoreCsv() {
+    var rows = [
+      ['date', 'manche', 'nb_joueurs', 'vainqueur', 'joueur', 'role', 'roles_speciaux', 'victoire', 'elimine', 'difficulte_paire', 'theme']
+    ];
+    scoreLog.slice().reverse().forEach(function (e) {
+      var base = [e.date || '', e.round, e.playerCount, e.winnerLabel];
+      var diff = e.pairDifficulty ? DIFFICULTY_LABELS[e.pairDifficulty] : '';
+      var theme = e.theme || '';
+      if (Array.isArray(e.players) && e.players.length) {
+        e.players.forEach(function (p) {
+          rows.push(base.concat([p.name, ROLE_NAMES[p.role] || p.role, (p.specials || []).join(' + '),
+            p.won ? 'oui' : 'non', p.eliminated ? 'oui' : 'non', diff, theme
+          ]));
+        });
+      } else {
+        // Ancienne entrée : seuls les vainqueurs ont été conservés.
+        rows.push(base.concat([(e.winnerNames || []).join(', '), '', '', 'oui', '', diff, theme]));
+      }
+    });
+    var text = '\ufeff' + rows.map(function (r) {
+      return r.map(csvCell).join(';');
+    }).join('\r\n');
+    downloadFile('undercover-journal-' + todayStamp() + '.csv', 'text/csv', text);
+    showToast('Journal exporté en CSV.');
   }
 
   function openScoreModal() {
@@ -2404,8 +2202,10 @@
     state.winner = null;
     state.winnerReason = '';
     state.pendingEliminationId = null;
+    state.guessQueue = [];
     el.gameScreen.classList.remove('screen--active');
     el.setupScreen.classList.add('screen--active');
+    syncWakeLock();
   });
 
   if (el.rulesToggle && el.rulesText) {
@@ -2416,11 +2216,870 @@
     });
   }
 
+  // ======================================================================
+  // Options : difficulté, confidentialité des cartes, son, dernière chance
+  // ======================================================================
+  var AUTO_HIDE_CHOICES = [5, 8, 12, 20];
+
+  function loadOptions() {
+    try {
+      var raw = window.localStorage.getItem(OPTIONS_STORAGE_KEY);
+      if (!raw) return;
+      var o = JSON.parse(raw);
+      if (!o || typeof o !== 'object') return;
+      if (o.difficulty === 0 || o.difficulty === 1 || o.difficulty === 2 || o.difficulty === 3) state.difficulty = o.difficulty;
+      if (o.privacy === 'standard' || o.privacy === 'auto' || o.privacy === 'hold') state.privacy = o.privacy;
+      if (AUTO_HIDE_CHOICES.indexOf(o.autoHideSec) !== -1) state.autoHideSec = o.autoHideSec;
+      if (typeof o.timerSound === 'boolean') state.timerSound = o.timerSound;
+      if (typeof o.mrWhiteGuess === 'boolean') state.mrWhiteGuess = o.mrWhiteGuess;
+    } catch (e) {}
+  }
+
+  function saveOptions() {
+    try {
+      window.localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify({
+        difficulty: state.difficulty,
+        privacy: state.privacy,
+        autoHideSec: state.autoHideSec,
+        timerSound: state.timerSound,
+        mrWhiteGuess: state.mrWhiteGuess
+      }));
+    } catch (e) {}
+  }
+
+  var DIFFICULTY_HINTS = {
+    0: 'Toutes les paires sont mélangées.',
+    1: 'Mots plutôt éloignés : l\'Undercover se repère assez facilement.',
+    2: 'Mots du même univers : un bon équilibre pour la plupart des groupes.',
+    3: 'Mots quasi identiques : l\'Undercover est très difficile à démasquer.'
+  };
+
+  var PRIVACY_LABELS = {
+    standard: 'Standard',
+    auto: 'Masquage automatique',
+    hold: 'Maintenir pour révéler'
+  };
+
+  function renderDifficultyUI() {
+    el.difficultyRadios.forEach(function (r) {
+      r.checked = parseInt(r.value, 10) === state.difficulty;
+    });
+    if (el.difficultyHint) el.difficultyHint.textContent = DIFFICULTY_HINTS[state.difficulty];
+  }
+
+  function renderPrivacyUI() {
+    el.privacyRadios.forEach(function (r) {
+      r.checked = r.value === state.privacy;
+    });
+    el.autoHideField.style.display = state.privacy === 'auto' ? '' : 'none';
+    el.autoHideSelect.value = String(state.autoHideSec);
+    el.privacySummary.textContent = state.privacy === 'auto' ?
+      (PRIVACY_LABELS.auto + ' · ' + state.autoHideSec + ' s') : PRIVACY_LABELS[state.privacy];
+    renderSetupRecap();
+  }
+
+  function renderCustomCountHint() {
+    if (!el.customCountHint) return;
+    var n = customPairs.length;
+    el.customCountHint.textContent = n ? (n + (n > 1 ? ' paires enregistrées' : ' paire enregistrée')) : 'Aucune paire enregistrée';
+  }
+
+  function initOptionsUI() {
+    el.difficultyRadios.forEach(function (r) {
+      r.addEventListener('change', function () {
+        if (!r.checked) return;
+        state.difficulty = parseInt(r.value, 10);
+        saveOptions();
+        renderDifficultyUI();
+        renderThemeToggles();
+      });
+    });
+
+    el.privacyRadios.forEach(function (r) {
+      r.addEventListener('change', function () {
+        if (!r.checked) return;
+        state.privacy = r.value;
+        saveOptions();
+        renderPrivacyUI();
+      });
+    });
+
+    el.autoHideSelect.addEventListener('change', function () {
+      var v = parseInt(el.autoHideSelect.value, 10);
+      state.autoHideSec = AUTO_HIDE_CHOICES.indexOf(v) !== -1 ? v : 8;
+      saveOptions();
+      renderPrivacyUI();
+    });
+
+    el.timerSoundInput.addEventListener('change', function () {
+      state.timerSound = el.timerSoundInput.checked;
+      saveOptions();
+      if (state.timerSound) previewSound();
+    });
+
+    el.mrWhiteGuessInput.checked = state.mrWhiteGuess;
+    el.mrWhiteGuessInput.addEventListener('change', function () {
+      state.mrWhiteGuess = el.mrWhiteGuessInput.checked;
+      saveOptions();
+    });
+
+    renderDifficultyUI();
+    renderPrivacyUI();
+    renderCustomCountHint();
+  }
+
+  // ======================================================================
+  // Chargement de words.json
+  // ======================================================================
+  var wordsLoading = false;
+
+  function renderThemesStatus(kind) {
+    el.themesGrid.innerHTML = '';
+    var box = document.createElement('div');
+    box.className = 'themes-status';
+    var text = document.createElement('p');
+    text.className = 'hint-text';
+    if (kind === 'loading') {
+      text.textContent = 'Chargement des mots…';
+      box.appendChild(text);
+    } else {
+      text.textContent = 'Impossible de charger les mots. Vérifiez la connexion puis réessayez.';
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'btn btn--ghost btn--small';
+      retry.textContent = 'Réessayer';
+      retry.addEventListener('click', loadWords);
+      box.appendChild(text);
+      box.appendChild(retry);
+    }
+    el.themesGrid.appendChild(box);
+  }
+
+  function loadWords() {
+    if (wordsLoading) return;
+    wordsLoading = true;
+    renderThemesStatus('loading');
+    fetch(WORDS_URL).then(function (res) {
+      if (!res.ok) throw new Error('http ' + res.status);
+      return res.json();
+    }).then(function (data) {
+      if (!data || !Array.isArray(data.themes)) throw new Error('format');
+      var themes = [];
+      data.themes.forEach(function (t) {
+        if (!t || typeof t.key !== 'string' || !Array.isArray(t.pairs)) return;
+        var pairs = [];
+        t.pairs.forEach(function (p) {
+          if (!Array.isArray(p) || p.length < 2) return;
+          pairs.push([String(p[0]), String(p[1]), pairDifficulty(p)]);
+        });
+        if (!pairs.length) return;
+        themes.push({
+          key: t.key,
+          label: String(t.label || t.key),
+          desc: String(t.desc || ''),
+          pairs: pairs
+        });
+      });
+      if (!themes.length) throw new Error('empty');
+      WORD_THEMES = themes;
+      wordsLoaded = true;
+      wordsLoading = false;
+      renderThemeToggles();
+    }).catch(function () {
+      wordsLoading = false;
+      renderThemesStatus('error');
+    });
+  }
+
+  // ======================================================================
+  // Sons du minuteur (Web Audio, aucun fichier à charger)
+  // ======================================================================
+  var audioCtx = null;
+
+  function unlockAudio() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) {}
+  }
+  document.addEventListener('pointerdown', unlockAudio, {
+    passive: true
+  });
+  document.addEventListener('keydown', unlockAudio);
+
+  function tone(freq, offset, duration, volume) {
+    var t0 = audioCtx.currentTime + offset;
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(volume, t0 + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(t0);
+    osc.stop(t0 + duration + 0.05);
+  }
+
+  function playTimerEnd() {
+    if (!state.timerSound || !audioCtx || audioCtx.state !== 'running') return;
+    try {
+      tone(880, 0, 0.16, 0.22);
+      tone(880, 0.24, 0.16, 0.22);
+      tone(1175, 0.48, 0.45, 0.25);
+    } catch (e) {}
+  }
+
+  function previewSound() {
+    unlockAudio();
+    if (!audioCtx || audioCtx.state !== 'running') return;
+    try {
+      tone(880, 0, 0.14, 0.18);
+    } catch (e) {}
+  }
+
+  // ======================================================================
+  // Écran maintenu allumé (Wake Lock) pendant les cartes et la discussion
+  // ======================================================================
+  var wakeLockSentinel = null;
+  var wakeLockPending = false;
+
+  function wakeLockWanted() {
+    return 'wakeLock' in window.navigator &&
+      el.gameScreen.classList.contains('screen--active') &&
+      document.visibilityState === 'visible' &&
+      (state.phase === 'reveal' || state.timerRunning);
+  }
+
+  function releaseWakeLock() {
+    if (!wakeLockSentinel) return;
+    var s = wakeLockSentinel;
+    wakeLockSentinel = null;
+    try {
+      s.release().catch(function () {});
+    } catch (e) {}
+  }
+
+  function syncWakeLock() {
+    if (!('wakeLock' in window.navigator)) return;
+    if (!wakeLockWanted()) {
+      releaseWakeLock();
+      return;
+    }
+    if (wakeLockSentinel || wakeLockPending) return;
+    wakeLockPending = true;
+    window.navigator.wakeLock.request('screen').then(function (sentinel) {
+      wakeLockPending = false;
+      wakeLockSentinel = sentinel;
+      sentinel.addEventListener('release', function () {
+        if (wakeLockSentinel === sentinel) wakeLockSentinel = null;
+      });
+      if (!wakeLockWanted()) releaseWakeLock();
+    }).catch(function () {
+      wakeLockPending = false;
+    });
+  }
+  document.addEventListener('visibilitychange', syncWakeLock);
+
+  // ======================================================================
+  // Confidentialité des cartes : masquage auto / maintenir pour révéler
+  // ======================================================================
+  var autoHideTimer = null;
+
+  function setCardMasked(masked) {
+    el.wordModal.classList.toggle('modal--masked', masked);
+  }
+
+  function clearAutoHide() {
+    if (autoHideTimer) {
+      clearTimeout(autoHideTimer);
+      autoHideTimer = null;
+    }
+    if (el.autoHideBar) el.autoHideBar.hidden = true;
+  }
+
+  function armAutoHide() {
+    clearAutoHide();
+    var fill = el.autoHideBar.firstElementChild;
+    el.autoHideBar.hidden = false;
+    fill.style.transition = 'none';
+    fill.style.width = '100%';
+    void fill.offsetWidth;
+    fill.style.transition = 'width ' + state.autoHideSec + 's linear';
+    fill.style.width = '0%';
+    autoHideTimer = setTimeout(function () {
+      autoHideTimer = null;
+      el.autoHideBar.hidden = true;
+      setCardMasked(true);
+      el.revealBtn.textContent = 'Réafficher le mot';
+      el.revealRow.hidden = false;
+      announce('Mot masqué.');
+    }, state.autoHideSec * 1000);
+  }
+
+  function beginCardPrivacy() {
+    clearAutoHide();
+    setCardMasked(false);
+    el.revealRow.hidden = true;
+    el.hideWordBtn.disabled = false;
+    if (state.privacy === 'auto') {
+      armAutoHide();
+    } else if (state.privacy === 'hold') {
+      setCardMasked(true);
+      el.revealBtn.textContent = 'Maintenir pour révéler';
+      el.revealRow.hidden = false;
+      // Impossible de passer au suivant sans avoir vu son mot au moins une fois.
+      el.hideWordBtn.disabled = true;
+    }
+  }
+
+  function endCardPrivacy() {
+    clearAutoHide();
+    setCardMasked(false);
+    el.revealRow.hidden = true;
+    el.hideWordBtn.disabled = false;
+  }
+
+  function holdReveal(on) {
+    if (state.privacy !== 'hold' || state.openCardId === null) return;
+    setCardMasked(!on);
+    if (on) el.hideWordBtn.disabled = false;
+  }
+
+  el.revealBtn.addEventListener('pointerdown', function (e) {
+    if (state.privacy !== 'hold') return;
+    e.preventDefault();
+    try {
+      el.revealBtn.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    holdReveal(true);
+  });
+  ['pointerup', 'pointercancel', 'lostpointercapture', 'blur'].forEach(function (evt) {
+    el.revealBtn.addEventListener(evt, function () {
+      holdReveal(false);
+    });
+  });
+  el.revealBtn.addEventListener('keydown', function (e) {
+    if (state.privacy === 'hold' && (e.key === ' ' || e.key === 'Enter')) {
+      e.preventDefault();
+      holdReveal(true);
+    }
+  });
+  el.revealBtn.addEventListener('keyup', function (e) {
+    if (state.privacy === 'hold' && (e.key === ' ' || e.key === 'Enter')) {
+      e.preventDefault();
+      holdReveal(false);
+    }
+  });
+  el.revealBtn.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+  });
+  el.revealBtn.addEventListener('click', function () {
+    if (state.privacy !== 'auto') return;
+    setCardMasked(false);
+    el.revealRow.hidden = true;
+    armAutoHide();
+  });
+
+  function focusCardModal() {
+    if (state.privacy === 'hold') el.revealBtn.focus();
+    else el.hideWordBtn.focus();
+  }
+
+  // ======================================================================
+  // Dernière chance de Mr. White
+  // ======================================================================
+  var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognition = null;
+  var listening = false;
+
+  function normalizeGuess(str, loose) {
+    var s = normalizeWord(str).replace(/^(de la|le|la|les|l|un|une|des|du|d) /, '');
+    if (loose && s.length > 3) s = s.replace(/[sx]$/, '');
+    return s;
+  }
+
+  // Exact (articles et accents ignorés), ou pluriel/singulier — sauf si cela
+  // revient à donner le mot de l'Undercover (ex. Pari / Paris).
+  function isCorrectGuess(guess) {
+    var g = normalizeGuess(guess, false);
+    if (!g) return false;
+    if (g === normalizeGuess(state.civilWord, false)) return true;
+    var other = normalizeGuess(state.undercoverWord, false);
+    if (g === other) return false;
+    return normalizeGuess(guess, true) === normalizeGuess(state.civilWord, true) &&
+      normalizeGuess(guess, true) !== normalizeGuess(state.undercoverWord, true);
+  }
+
+  function stopDictation() {
+    if (recognition) {
+      try {
+        recognition.stop();
+      } catch (e) {}
+    }
+    listening = false;
+    el.guessMicBtn.textContent = 'Dicter';
+    el.guessMicBtn.setAttribute('aria-pressed', 'false');
+  }
+
+  function toggleDictation() {
+    if (!SpeechRec) return;
+    if (listening) {
+      stopDictation();
+      return;
+    }
+    try {
+      recognition = new SpeechRec();
+      recognition.lang = 'fr-FR';
+      recognition.interimResults = false;
+      recognition.continuous = false;
+      recognition.maxAlternatives = 1;
+      recognition.onstart = function () {
+        listening = true;
+        el.guessMicBtn.textContent = 'Écoute…';
+        el.guessMicBtn.setAttribute('aria-pressed', 'true');
+      };
+      recognition.onresult = function (event) {
+        var text = event.results && event.results[0] && event.results[0][0] ? event.results[0][0].transcript : '';
+        el.guessInput.value = String(text).replace(/[.!?,]+$/, '').trim().slice(0, MAX_WORD_LENGTH);
+      };
+      recognition.onerror = function () {
+        showToast('Dictée indisponible : saisissez le mot au clavier.');
+      };
+      recognition.onend = function () {
+        listening = false;
+        el.guessMicBtn.textContent = 'Dicter';
+        el.guessMicBtn.setAttribute('aria-pressed', 'false');
+        el.guessInput.focus();
+      };
+      recognition.start();
+    } catch (e) {
+      stopDictation();
+      showToast('Dictée indisponible : saisissez le mot au clavier.');
+    }
+  }
+
+  function openGuessModal() {
+    var p = state.guessQueue[0];
+    if (!p) {
+      proceedAfterElimination();
+      return;
+    }
+    el.guessTitle.textContent = p.name + ' — dernière chance';
+    el.guessIntro.textContent = 'Devine le mot des Civils. Si tu le trouves, tu gagnes seul(e) la partie !';
+    el.guessInput.value = '';
+    el.guessInputRow.hidden = false;
+    el.guessMicBtn.hidden = !SpeechRec;
+    el.guessResult.textContent = '';
+    el.guessResult.className = 'guess__result';
+    el.guessSubmitBtn.hidden = false;
+    el.guessSkipBtn.hidden = false;
+    el.guessContinueBtn.hidden = true;
+    el.guessModal.classList.add('modal--open');
+    el.guessModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    el.guessInput.focus();
+    announce(p.name + ' tente sa dernière chance.');
+  }
+
+  function closeGuessModal() {
+    stopDictation();
+    el.guessModal.classList.remove('modal--open');
+    el.guessModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function submitGuess(skipped) {
+    var p = state.guessQueue.shift();
+    if (!p) return;
+    stopDictation();
+    var guess = skipped ? '' : el.guessInput.value.trim();
+    var ok = !skipped && guess !== '' && isCorrectGuess(guess);
+
+    el.guessInputRow.hidden = true;
+    el.guessSubmitBtn.hidden = true;
+    el.guessSkipBtn.hidden = true;
+    el.guessContinueBtn.hidden = false;
+
+    if (ok) {
+      state.winner = 'mrwhite';
+      state.winnerDetail = p.name;
+      state.winnerPlayerId = p.id;
+      state.winnerReason = '';
+      state.guessQueue = [];
+      el.guessIntro.textContent = '';
+      el.guessResult.textContent = 'Bravo ! « ' + guess + ' » était bien le mot des Civils.';
+      el.guessResult.className = 'guess__result guess__result--ok';
+      el.guessContinueBtn.firstChild.nodeValue = 'Voir le résultat ';
+      vibrate([30, 40, 30, 40, 60]);
+    } else {
+      el.guessIntro.textContent = '';
+      el.guessResult.textContent = skipped ?
+        (p.name + ' renonce à deviner.') :
+        ('Raté : « ' + guess + ' » n\'est pas le mot des Civils. Le mot reste secret.');
+      el.guessResult.className = 'guess__result guess__result--ko';
+      var next = state.guessQueue.length > 0;
+      el.guessContinueBtn.firstChild.nodeValue = next ? 'Mr. White suivant ' : (state.winner ? 'Voir le résultat ' : 'Continuer ');
+      vibrate(40);
+    }
+    announce(el.guessResult.textContent);
+    el.guessContinueBtn.focus();
+  }
+
+  el.guessSubmitBtn.addEventListener('click', function () {
+    if (!el.guessInput.value.trim()) {
+      showToast('Saisissez un mot, ou choisissez de renoncer.');
+      el.guessInput.focus();
+      return;
+    }
+    submitGuess(false);
+  });
+  el.guessSkipBtn.addEventListener('click', function () {
+    submitGuess(true);
+  });
+  el.guessInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      el.guessSubmitBtn.click();
+    }
+  });
+  el.guessMicBtn.addEventListener('click', toggleDictation);
+  el.guessContinueBtn.addEventListener('click', function () {
+    closeGuessModal();
+    if (state.guessQueue.length) openGuessModal();
+    else proceedAfterElimination();
+  });
+
+  // ======================================================================
+  // « Mes paires » : saisie, import / export, partage par lien
+  // ======================================================================
+  var pendingImport = null;
+
+  function toBase64Url(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return window.btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function fromBase64Url(str) {
+    var s = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    var bin = window.atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  function buildShareUrl() {
+    var json = JSON.stringify(customPairs);
+    return window.location.origin + window.location.pathname + '#paires=' + toBase64Url(json);
+  }
+
+  function decodeShared(encoded) {
+    try {
+      var arr = JSON.parse(fromBase64Url(encoded));
+      if (!Array.isArray(arr)) return null;
+      return arr.map(sanitizePair).filter(Boolean).slice(0, MAX_CUSTOM_PAIRS);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function mergeCustomPairs(list) {
+    var seen = {};
+    customPairs.forEach(function (p) {
+      seen[pairKey(p)] = true;
+    });
+    var added = 0;
+    var skipped = 0;
+    list.forEach(function (raw) {
+      var p = sanitizePair(raw);
+      if (!p) {
+        skipped += 1;
+        return;
+      }
+      var k = pairKey(p);
+      if (seen[k] || customPairs.length >= MAX_CUSTOM_PAIRS) {
+        skipped += 1;
+        return;
+      }
+      seen[k] = true;
+      customPairs.push(p);
+      added += 1;
+    });
+    if (added) saveCustomPairs();
+    return {
+      added: added,
+      skipped: skipped
+    };
+  }
+
+  function afterCustomChange() {
+    renderCustomModal();
+    renderThemeToggles();
+  }
+
+  function renderCustomModal() {
+    var n = customPairs.length;
+    el.customCount.textContent = n + (n > 1 ? ' paires' : ' paire') + ' (max. ' + MAX_CUSTOM_PAIRS + ')';
+    el.customEmpty.style.display = n ? 'none' : '';
+    el.customList.style.display = n ? '' : 'none';
+    el.customExportBtn.disabled = !n;
+    el.customShareBtn.disabled = !n;
+    el.customList.innerHTML = '';
+    customPairs.forEach(function (pair, index) {
+      var li = document.createElement('li');
+      var words = document.createElement('span');
+      words.className = 'custom-list__words';
+      words.textContent = pair[0] + ' / ' + pair[1];
+      var badge = document.createElement('span');
+      badge.className = 'custom-list__diff custom-list__diff--' + pairDifficulty(pair);
+      badge.textContent = DIFFICULTY_LABELS[pairDifficulty(pair)];
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'custom-list__del';
+      del.setAttribute('aria-label', 'Supprimer la paire ' + pair[0] + ' / ' + pair[1]);
+      del.textContent = '×';
+      del.addEventListener('click', function () {
+        var removed = customPairs.splice(index, 1)[0];
+        delete usedPairsMap[pairId(CUSTOM_THEME_KEY, removed)];
+        saveUsedPairs();
+        saveCustomPairs();
+        afterCustomChange();
+      });
+      li.appendChild(words);
+      li.appendChild(badge);
+      li.appendChild(del);
+      el.customList.appendChild(li);
+    });
+  }
+
+  function showImportBanner() {
+    if (pendingImport && pendingImport.length) {
+      var n = pendingImport.length;
+      el.customImportText.textContent = 'Un lien de partage contient ' + n + (n > 1 ? ' paires' : ' paire') + '. Les ajouter à « Mes paires » ?';
+      el.customImportBanner.hidden = false;
+    } else {
+      el.customImportBanner.hidden = true;
+    }
+  }
+
+  function openCustomModal() {
+    renderCustomModal();
+    showImportBanner();
+    el.customModal.classList.add('modal--open');
+    el.customModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    el.customWordA.focus();
+  }
+
+  function closeCustomModal() {
+    el.customModal.classList.remove('modal--open');
+    el.customModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    pendingImport = null;
+  }
+
+  function addCustomPair() {
+    var pair = sanitizePair([el.customWordA.value, el.customWordB.value, el.customDifficulty.value]);
+    if (!pair) {
+      showToast('Saisissez deux mots différents (' + MAX_WORD_LENGTH + ' caractères maximum chacun).');
+      return;
+    }
+    var res = mergeCustomPairs([pair]);
+    if (!res.added) {
+      showToast(customPairs.length >= MAX_CUSTOM_PAIRS ? 'Limite de ' + MAX_CUSTOM_PAIRS + ' paires atteinte.' : 'Cette paire existe déjà.');
+      return;
+    }
+    el.customWordA.value = '';
+    el.customWordB.value = '';
+    el.customWordA.focus();
+    afterCustomChange();
+    showToast(state.selectedThemes[CUSTOM_THEME_KEY] ?
+      'Paire ajoutée.' : 'Paire ajoutée — cochez « Mes paires » dans les thèmes pour l\'utiliser.', 3600);
+  }
+
+  function reportImport(res) {
+    var msg = res.added + (res.added > 1 ? ' paires ajoutées' : ' paire ajoutée');
+    if (res.skipped) msg += ' · ' + res.skipped + ' ignorée' + (res.skipped > 1 ? 's' : '') + ' (doublon ou invalide)';
+    showToast(msg + '.', 3600);
+  }
+
+  el.customManageBtn.addEventListener('click', openCustomModal);
+  el.customCloseBtn.addEventListener('click', closeCustomModal);
+  el.customScrim.addEventListener('click', closeCustomModal);
+  el.customAddBtn.addEventListener('click', addCustomPair);
+  [el.customWordA, el.customWordB].forEach(function (input) {
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addCustomPair();
+      }
+    });
+  });
+
+  el.customExportBtn.addEventListener('click', function () {
+    downloadFile('undercover-mes-paires-' + todayStamp() + '.json', 'application/json', JSON.stringify({
+      app: 'undercover',
+      kind: 'custom-pairs',
+      version: 1,
+      pairs: customPairs
+    }, null, 2));
+    showToast('Paires exportées.');
+  });
+
+  el.customImportBtn.addEventListener('click', function () {
+    el.customImportFile.click();
+  });
+
+  el.customImportFile.addEventListener('change', function () {
+    var file = el.customImportFile.files && el.customImportFile.files[0];
+    el.customImportFile.value = '';
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(String(reader.result));
+        var list = Array.isArray(data) ? data : (data && Array.isArray(data.pairs) ? data.pairs : null);
+        if (!list) throw new Error('format');
+        reportImport(mergeCustomPairs(list));
+        afterCustomChange();
+      } catch (e) {
+        showToast('Fichier non reconnu : choisissez un export JSON de « Mes paires ».');
+      }
+    };
+    reader.onerror = function () {
+      showToast('Lecture du fichier impossible.');
+    };
+    reader.readAsText(file);
+  });
+
+  el.customShareBtn.addEventListener('click', function () {
+    if (!customPairs.length) return;
+    var url = buildShareUrl();
+    if (window.navigator.share) {
+      window.navigator.share({
+        title: 'Undercover — mes paires',
+        text: 'Mes paires de mots pour Undercover',
+        url: url
+      }).catch(function () {});
+      return;
+    }
+    if (window.navigator.clipboard && window.navigator.clipboard.writeText) {
+      window.navigator.clipboard.writeText(url).then(function () {
+        showToast('Lien de partage copié dans le presse-papiers.');
+      }).catch(function () {
+        window.prompt('Copiez ce lien de partage :', url);
+      });
+    } else {
+      window.prompt('Copiez ce lien de partage :', url);
+    }
+  });
+
+  el.customImportConfirm.addEventListener('click', function () {
+    if (pendingImport) {
+      reportImport(mergeCustomPairs(pendingImport));
+      pendingImport = null;
+      showImportBanner();
+      afterCustomChange();
+    }
+  });
+  el.customImportDismiss.addEventListener('click', function () {
+    pendingImport = null;
+    showImportBanner();
+  });
+
+  // ======================================================================
+  // Export du journal
+  // ======================================================================
+  if (el.scoreExportJson) el.scoreExportJson.addEventListener('click', exportScoreJson);
+  if (el.scoreExportCsv) el.scoreExportCsv.addEventListener('click', exportScoreCsv);
+
+  // ======================================================================
+  // Installation de l'application
+  // ======================================================================
+  var deferredInstallPrompt = null;
+
+  function isStandalone() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+      window.navigator.standalone === true;
+  }
+
+  function isIos() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+      (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+  }
+
+  function updateInstallBtn() {
+    if (!el.installBtn) return;
+    el.installBtn.hidden = isStandalone() || !(deferredInstallPrompt || isIos());
+  }
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    updateInstallBtn();
+  });
+  window.addEventListener('appinstalled', function () {
+    deferredInstallPrompt = null;
+    updateInstallBtn();
+    showToast('Application installée !');
+  });
+  el.installBtn.addEventListener('click', function () {
+    if (deferredInstallPrompt) {
+      var promptEvent = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      promptEvent.prompt();
+      promptEvent.userChoice.then(updateInstallBtn).catch(updateInstallBtn);
+    } else if (isIos()) {
+      showToast('Sur iPhone / iPad : touchez Partager, puis « Sur l\'écran d\'accueil ».', 6000);
+    }
+  });
+  updateInstallBtn();
+
+  // ======================================================================
+  // Raccourcis (?action=new | scores) et liens de partage (#paires=…)
+  // ======================================================================
+  function handleLaunchActions() {
+    var action = null;
+    try {
+      action = new URLSearchParams(window.location.search).get('action');
+    } catch (e) {}
+    var hash = window.location.hash || '';
+    var shared = hash.indexOf('#paires=') === 0 ? decodeShared(hash.slice(8)) : null;
+
+    if (action || hash) {
+      try {
+        window.history.replaceState(null, '', window.location.pathname);
+      } catch (e) {}
+    }
+
+    if (shared && shared.length) {
+      pendingImport = shared;
+      openCustomModal();
+    } else if (action === 'scores') {
+      openScoreModal();
+    } else if (action === 'new') {
+      el.startBtn.scrollIntoView({
+        block: 'center'
+      });
+      el.startBtn.focus();
+    }
+  }
+
   updateCounter();
   updateUnderCounter();
-  renderThemeToggles();
   renderNameFields();
   renderSetupRecap();
+  initOptionsUI();
+  loadWords();
+  handleLaunchActions();
+
+  var swUpdateRequested = false;
 
   function showUpdateToast(worker) {
     if (document.getElementById('updateToast')) return;
@@ -2439,6 +3098,7 @@
     btn.textContent = 'Recharger';
     btn.addEventListener('click', function () {
       btn.disabled = true;
+      swUpdateRequested = true;
       worker.postMessage({ type: 'SKIP_WAITING' });
     });
 
@@ -2451,7 +3111,8 @@
   if ('serviceWorker' in navigator) {
     var swRefreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', function () {
-      if (swRefreshing) return;
+      // Pas de rechargement à la 1re installation : uniquement après un clic sur « Recharger ».
+      if (!swUpdateRequested || swRefreshing) return;
       swRefreshing = true;
       window.location.reload();
     });
