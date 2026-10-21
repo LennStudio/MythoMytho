@@ -2146,3 +2146,170 @@ summary.setup-block__head::marker {
 .btn--gold:hover {
     filter: brightness(1.08);
 }
+
+/* ===== Ajouts : groupes de joueurs, équilibrage ===== */
+.field-input {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-s);
+    padding: 8px 10px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.field-input:focus {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+}
+
+.groups {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--panel-line);
+}
+
+.groups__title {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.group-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.group-chips:empty {
+    display: none;
+}
+
+.group-chip {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.group-chip--active {
+    border-color: var(--gold);
+    box-shadow: inset 0 0 0 1px var(--gold);
+}
+
+.group-chip__load,
+.group-chip__del {
+    appearance: none;
+    border: none;
+    background: none;
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: .95rem;
+    cursor: pointer;
+}
+
+.group-chip__load {
+    padding: 7px 8px 7px 14px;
+}
+
+.group-chip__load small {
+    color: var(--gold);
+    font-family: 'Courier Prime', monospace;
+    font-size: .7rem;
+}
+
+.group-chip__del {
+    padding: 0 12px 0 6px;
+    font-size: 1.15rem;
+    opacity: .6;
+}
+
+.group-chip__del:hover,
+.group-chip__load:hover {
+    color: var(--gold);
+    opacity: 1;
+}
+
+.group-chip__load:focus-visible,
+.group-chip__del:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: -2px;
+}
+
+.groups__save {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.auto-balance {
+    margin: 14px 0 0;
+}
+
+.balance {
+    margin: 18px 0 6px;
+    padding: 12px 14px;
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-s);
+}
+
+.balance__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: .8rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+.balance__item {
+    position: relative;
+    margin: 0 0 6px;
+    padding-left: 18px;
+    font-size: .78rem;
+    line-height: 1.5;
+    color: var(--text);
+}
+
+.balance__item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+}
+
+.balance__item--warn::before {
+    background: #d9822b;
+}
+
+.balance__item--ok::before {
+    background: #5f9e5a;
+}
+
+.balance__apply {
+    margin-top: 6px;
+}
+
+.score-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: .8rem;
+}
+
+.score-filter label {
+    font-weight: 700;
+}

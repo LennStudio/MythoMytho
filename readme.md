@@ -25,7 +25,8 @@
 ## Aperçu
 
 - **Mobile-first**, installable sur l'écran d'accueil, en plein écran (`standalone`, orientation portrait).
-- **De 3 à 20 joueurs**, avec un nombre d'imposteurs qui s'adapte à la taille de la table.
+- **De 3 à 20 joueurs**, avec un nombre d'Undercovers **suggéré automatiquement** selon la taille de la table et des **avertissements d'équilibrage**.
+- **Groupes de joueurs mémorisés** (« Famille », « Soirée du samedi »…) rechargeables en un tap.
 - **596 paires de mots** réparties en 7 thèmes, avec 3 niveaux de difficulté, plus un thème **« Mes paires »** que les joueurs alimentent eux-mêmes.
 - **Cinq rôles spéciaux** optionnels (Idiot du village, Fantôme, Mime, Procureur, Amoureux) et un **Espion** qui reçoit un indice.
 - **Dernière chance de Mr. White** : éliminé, il peut deviner le mot des Civils pour voler la victoire.
@@ -81,18 +82,52 @@ Si un rôle spécial ne peut pas être attribué (trop peu de joueurs disponible
 
 ### 🎛️ Configuration de la partie
 
-L'écran d'accueil est organisé en six blocs repliables, chacun avec un résumé de son état. Un **récapitulatif** de la configuration reste affiché sous les blocs.
+L'écran d'accueil est organisé en six blocs (dont cinq repliables), chacun avec un résumé de son état. Un **récapitulatif** de la configuration reste affiché sous les blocs.
 
 | Bloc                           | Contenu                                                                                           |
 |--------------------------------|---------------------------------------------------------------------------------------------------|
-| **1. Joueurs & Undercover**    | Nombre de joueurs (3 à 20) et d'Undercovers                                                       |
+| **1. Joueurs & Undercover**    | Nombre de joueurs (3 à 20), d'Undercovers, et réglage automatique du nombre d'imposteurs           |
 | **2. Thèmes des mots**         | Choix des thèmes, difficulté des paires, gestion de « Mes paires »                                |
 | **3. Rôles spéciaux**          | Mr. White, Espion, dernière chance, Idiot, Fantôme, Mime, Procureur, Amoureux                     |
-| **4. Noms des joueurs**        | Un champ par joueur (noms par défaut : *Joueur 1*, *Joueur 2*…)                                  |
+| **4. Noms des joueurs**        | Un champ par joueur (noms par défaut : *Joueur 1*, *Joueur 2*…) et **groupes de joueurs**        |
 | **5. Minuteur de discussion**  | Activation, durée (1 à 15 min, 3 par défaut), son de fin                                          |
 | **6. Confidentialité des cartes** | Mode d'affichage du mot (voir ci-dessous)                                                      |
 
 Les réglages durables (difficulté, confidentialité, son, dernière chance, minuteur, thème d'affichage) sont **mémorisés** d'une partie à l'autre.
+
+### ⚖️ Suggestion et contrôle d'équilibrage
+
+**Nombre d'imposteurs recommandé.** Le total conseillé (Undercover + Mr. White + Espion) est d'environ **1 imposteur pour 4 joueurs** :
+
+| Joueurs | 3 – 6 | 7 – 10 | 11 – 14 | 15 – 18 | 19 – 20 |
+|---------|:-----:|:------:|:-------:|:-------:|:-------:|
+| **Imposteurs recommandés** | 1 | 2 | 3 | 4 | 5 |
+
+- L'option **« Nombre d'Undercovers automatique »** (activée par défaut) ajuste le nombre d'Undercovers à chaque changement du nombre de joueurs, en tenant compte des Mr. White et Espions déjà configurés.
+- Dès qu'on règle l'Undercover **à la main**, l'automatisme se désactive ; on peut le réactiver d'un tap. Le choix est mémorisé.
+
+**Encart « Équilibrage ».** Affiché au-dessus du récapitulatif, il prévient quand la configuration risque de poser problème :
+
+| Situation détectée                                                                       | Niveau       |
+|------------------------------------------------------------------------------------------|--------------|
+| Rôles spéciaux demandant plus de joueurs que la table (ex. les 5 rôles à 3 joueurs)      | Avertissement |
+| Rôles spéciaux concernant **plus de 40 %** des joueurs                                   | Avertissement |
+| Trop d'imposteurs : plus d'**un de plus** que la recommandation                          | Avertissement |
+| Amoureux avec **moins de 8 joueurs**                                                     | Avertissement |
+| Deux joueurs portant **le même nom** (leurs statistiques seraient confondues)            | Avertissement |
+| Trop peu d'imposteurs par rapport à la recommandation (manche potentiellement longue)    | Information  |
+| Mr. White, Espion ou Idiot du village à **4 joueurs ou moins** (très exposés au 1er vote) | Information  |
+
+Sans problème détecté, l'encart indique « Configuration équilibrée ». Quand l'automatisme est désactivé et que l'Undercover s'écarte de la recommandation, un bouton **« Appliquer la recommandation »** la remet en place.
+
+### 👥 Groupes de joueurs
+
+Dans le bloc *Noms des joueurs*, on peut **enregistrer la liste des noms** sous un nom de groupe (24 caractères max, **20 groupes** au plus) :
+
+- **Enregistrer** : saisir les noms, donner un nom au groupe, puis « Enregistrer les noms ». Tous les noms doivent être renseignés et uniques ; enregistrer sous un nom existant **met le groupe à jour**.
+- **Recharger en un tap** : toucher le groupe règle le nombre de joueurs **et** remplit tous les noms. Le groupe actif est surligné et son nom apparaît dans le résumé du bloc.
+- **Supprimer** : le × de la pastille, avec confirmation.
+- **Statistiques propres à chaque groupe** : chaque manche enregistre le groupe dont la liste de noms correspond (peu importe l'ordre). Le journal propose alors un **filtre « Groupe »** (*Tous les groupes*, chaque groupe, *Sans groupe*) qui recalcule classement, taux, séries et historique. Fini les « Joueur 1 » de parties différentes confondus.
 
 ### 🃏 Distribution et consultation des cartes
 
@@ -148,9 +183,10 @@ Accessible depuis l'écran de partie (et par le [raccourci](#-raccourcis-et-lien
 | **Taux par rôle**            | Victoires / manches jouées et pourcentage pour Civil, Undercover, Mr. White et Espion                    |
 | **Historique des manches**   | Vainqueur, numéro de manche, nombre de joueurs                                                           |
 | **Export JSON**              | Entrées complètes du journal + statistiques calculées                                                    |
-| **Export CSV**               | Une ligne par joueur et par manche (séparateur `;`, BOM UTF-8, ouvre directement dans Excel en français) |
+| **Filtre par groupe**        | Restreint classement, taux, séries et historique à un groupe de joueurs (visible dès qu'une manche a été jouée avec un groupe) |
+| **Export CSV**               | Une ligne par joueur et par manche, avec la colonne `groupe` (séparateur `;`, BOM UTF-8, ouvre directement dans Excel en français) |
 
-Chaque manche enregistre la date, les joueurs, leur rôle, leurs rôles spéciaux, leur résultat, ainsi que le **thème** et la **difficulté** de la paire jouée.
+Chaque manche enregistre la date, le groupe, les joueurs, leur rôle, leurs rôles spéciaux, leur résultat, ainsi que le **thème** et la **difficulté** de la paire jouée.
 
 > Les taux et les séries ne comptent que les manches enregistrées **depuis l'ajout des statistiques** ; les anciennes entrées restent dans le classement des victoires, une note l'indique.
 
@@ -160,7 +196,7 @@ Le thème **Mes paires** regroupe les paires saisies par les joueurs, stockées 
 
 - **Ajouter** une paire (deux mots différents, **40 caractères max** chacun, jusqu'à **300 paires**) avec sa difficulté. Les doublons sont refusés, quel que soit l'ordre des deux mots ou les accents.
 - **Supprimer** une paire (×).
-- **Exporter** la liste en JSON et la **réimporter** depuis un fichier (fusion sans doublons).
+- **Exporter** la liste dans un fichier JSON (`undercover-mes-paires-AAAA-MM-JJ.json`) et la **réimporter** depuis un fichier : l'import **fusionne** sans écraser l'existant, ignore les doublons et les paires invalides, et indique combien de paires ont été ajoutées ou ignorées. Un export de l'application, ou un simple tableau JSON `[["mot1", "mot2", 2], …]`, est accepté ; tout autre fichier est refusé avec un message.
 - **Partager par lien** : un lien `…/index.html#paires=…` encode toutes les paires. À son ouverture, l'application propose d'**ajouter les paires reçues** (feuille de partage native quand elle existe, sinon copie dans le presse-papiers).
 
 ### 🔗 Raccourcis et liens spéciaux
@@ -262,7 +298,8 @@ Toutes les données restent **sur votre appareil**, dans le `localStorage` du na
 | Clé                                  | Contenu                                                              |
 |--------------------------------------|----------------------------------------------------------------------|
 | `undercover_theme_v1`                | Thème d'affichage (clair / sombre)                                   |
-| `undercover_options_v1`              | Difficulté, confidentialité des cartes, son, dernière chance         |
+| `undercover_options_v1`              | Difficulté, confidentialité des cartes, son, dernière chance, Undercovers automatiques |
+| `undercover_groups_v1`               | Groupes de joueurs (20 max)                                          |
 | `undercover_timer_settings_v1`       | Minuteur : activation et durée                                       |
 | `undercover_used_pairs_v1`           | Paires déjà jouées (pour éviter les répétitions)                     |
 | `undercover_custom_pairs_v1`         | Paires de « Mes paires » (300 max)                                   |
@@ -270,7 +307,7 @@ Toutes les données restent **sur votre appareil**, dans le `localStorage` du na
 
 L'état d'une manche en cours **n'est pas sauvegardé** : recharger la page pendant une manche la perd (les scores déjà enregistrés sont conservés).
 
-Conséquences à connaître : les données sont propres à chaque navigateur et chaque appareil, et vider les données du site ou désinstaller l'application les supprime. Il n'y a pas de synchronisation automatique ; utilisez l'**export JSON / CSV** du journal et l'**export** de « Mes paires » pour conserver ou transférer vos données.
+Conséquences à connaître : les données sont propres à chaque navigateur et chaque appareil, et vider les données du site ou désinstaller l'application les supprime. Il n'y a pas de synchronisation automatique ; utilisez l'**export JSON / CSV** du journal et l'**export JSON** de « Mes paires » (les groupes de joueurs ne s'exportent pas encore) pour conserver ou transférer vos données.
 
 Les liens de partage de « Mes paires » contiennent **les mots eux-mêmes** (encodés dans l'URL) : ne partagez que ce que vous êtes prêt à rendre lisible par le destinataire.
 
@@ -326,11 +363,13 @@ Une connexion est nécessaire au **premier chargement** (mots et polices) ; ensu
 - **Installation iOS** : pas d'événement `beforeinstallprompt` ; le bouton affiche simplement la marche à suivre. Les raccourcis d'icône ne sont pas pris en charge par iOS.
 - **Pas de reprise de manche** après un rechargement de la page.
 - **Homophones et dictée** : la reconnaissance vocale ne distingue pas deux mots qui se prononcent pareil ; le joueur peut corriger le texte avant de valider.
-- Les **noms par défaut** (*Joueur 1*, *Joueur 2*…) sont fusionnés dans les statistiques d'une partie à l'autre : saisissez de vrais prénoms pour des taux de victoire parlants.
+- Les **noms par défaut** (*Joueur 1*, *Joueur 2*…) restent fusionnés dans les statistiques d'une partie à l'autre : utilisez des **groupes** et de vrais prénoms pour des taux de victoire parlants. Les manches enregistrées avant l'ajout des groupes sont classées « Sans groupe ».
+- **Groupes de joueurs** : ils sont propres à l'appareil et ne s'exportent pas encore. Un groupe n'est reconnu dans le journal que si **tous les noms** de la manche correspondent exactement à sa liste.
 
 ## À venir
 
 - Reprise de la manche en cours après un rechargement
+- Export / import des groupes de joueurs
 - Tirage au sort du **premier joueur** et du sens de parole
 - **Vote secret individuel** à tour de rôle, avec décompte et gestion des égalités
 - Polices **auto-hébergées** (confidentialité et hors-ligne dès la première visite)

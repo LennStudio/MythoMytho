@@ -243,7 +243,8 @@
     pairTheme: '',
     pairDifficulty: 0,
     guessQueue: [],
-    winnerPlayerId: null
+    winnerPlayerId: null,
+    autoUndercover: true
   };
 
   loadOptions();
@@ -408,7 +409,18 @@
     scoreNote: document.getElementById('scoreNote'),
     scoreExportRow: document.querySelector('.score-export'),
     scoreExportJson: document.getElementById('scoreExportJson'),
-    scoreExportCsv: document.getElementById('scoreExportCsv')
+    scoreExportCsv: document.getElementById('scoreExportCsv'),
+
+    autoUndercover: document.getElementById('autoUndercover'),
+    autoUnderHint: document.getElementById('autoUnderHint'),
+    balanceBox: document.getElementById('balanceBox'),
+    groupList: document.getElementById('groupList'),
+    groupEmpty: document.getElementById('groupEmpty'),
+    groupNameInput: document.getElementById('groupNameInput'),
+    groupSaveBtn: document.getElementById('groupSaveBtn'),
+    namesSummary: document.getElementById('namesSummary'),
+    scoreFilterRow: document.getElementById('scoreFilterRow'),
+    scoreGroupFilter: document.getElementById('scoreGroupFilter')
   };
 
   var toastTimer = null;
@@ -518,6 +530,7 @@
       wrap.appendChild(input);
       el.namesGrid.appendChild(wrap);
     }
+    onNamesChanged();
   }
 
   function updateCounter() {
@@ -535,6 +548,7 @@
   }
 
   function updateUnderCounter() {
+    applyAutoUndercover();
     clampRoleCounts();
     var cap = maxImpostors(state.playerCount);
     var underMax = Math.max(MIN_UNDERCOVER, cap - state.mrWhiteCount - state.espionCount);
@@ -556,18 +570,15 @@
     el.espionMinus.disabled = state.espionCount <= 0;
     el.espionPlus.disabled = state.espionCount >= espionMax;
 
+    renderAutoUnderUI();
     renderRolesSummary();
   }
 
   el.countMinus.addEventListener('click', function () {
-    var wasAtLeast8 = state.playerCount >= 8;
     state.playerCount = clamp(state.playerCount - 1, MIN_PLAYERS, MAX_PLAYERS);
     updateCounter();
     updateUnderCounter();
     renderNameFields();
-    if (state.roles.amoureux && wasAtLeast8 && state.playerCount < 8) {
-      showToast('Les Amoureux avec moins de 8 joueurs peut ne pas offrir une expérience de jeu optimale.');
-    }
   });
 
   el.countPlus.addEventListener('click', function () {
@@ -578,11 +589,13 @@
   });
 
   el.underMinus.addEventListener('click', function () {
+    manualUndercoverChange();
     state.undercoverCount = clamp(state.undercoverCount - 1, MIN_UNDERCOVER, maxImpostors(state.playerCount));
     updateUnderCounter();
   });
 
   el.underPlus.addEventListener('click', function () {
+    manualUndercoverChange();
     var cap = maxImpostors(state.playerCount);
     state.undercoverCount = clamp(state.undercoverCount + 1, MIN_UNDERCOVER, Math.max(MIN_UNDERCOVER, cap - state.mrWhiteCount - state.espionCount));
     updateUnderCounter();
@@ -629,9 +642,6 @@
   el.roleAmoureux.addEventListener('change', function () {
     state.roles.amoureux = el.roleAmoureux.checked;
     renderRolesSummary();
-    if (state.roles.amoureux && state.playerCount < 8) {
-      showToast('Les Amoureux avec moins de 8 joueurs peut ne pas offrir une expérience de jeu optimale.');
-    }
   });
 
   var TIMER_MIN_DURATION = 1;
@@ -758,6 +768,7 @@
 
   function renderSetupRecap() {
     if (!el.setupRecap) return;
+    renderBalance();
     var chips = [];
     chips.push(state.playerCount + ' joueurs');
     chips.push(state.undercoverCount + (state.undercoverCount > 1 ? ' Undercovers' : ' Undercover'));
@@ -1917,6 +1928,9 @@
 
     scoreLog.unshift({
       date: new Date().toISOString(),
+      group: matchGroupName(state.players.map(function (p) {
+        return p.name;
+      })),
       round: state.round,
       playerCount: state.players.length,
       winner: winner,
@@ -1942,11 +1956,11 @@
 
   // Statistiques calculées sur les manches qui détaillent leurs joueurs (les anciennes
   // entrées du journal ne contiennent que les vainqueurs et restent comptées dans le classement).
-  function computeStats() {
+  function computeStats(list) {
     var byPlayer = {};
     var byRole = {};
     var tracked = 0;
-    scoreLog.slice().reverse().forEach(function (entry) {
+    (list || scoreLog).slice().reverse().forEach(function (entry) {
       if (!Array.isArray(entry.players) || !entry.players.length) return;
       tracked += 1;
       entry.players.forEach(function (p) {
@@ -1984,16 +1998,18 @@
   }
 
   function renderScoreModal() {
+    refreshScoreFilter();
     var hasEntries = scoreLog.length > 0;
     if (el.scoreEmptyState) el.scoreEmptyState.style.display = hasEntries ? 'none' : '';
     if (el.scoreContent) el.scoreContent.style.display = hasEntries ? '' : 'none';
     if (el.scoreExportRow) el.scoreExportRow.style.display = hasEntries ? '' : 'none';
     if (!hasEntries) return;
 
-    var stats = computeStats();
+    var entries = filteredScoreEntries();
+    var stats = computeStats(entries);
 
     var tally = {};
-    scoreLog.forEach(function (entry) {
+    entries.forEach(function (entry) {
       (entry.winnerNames || []).forEach(function (name) {
         tally[name] = (tally[name] || 0) + 1;
       });
@@ -2035,7 +2051,7 @@
     var hasStats = stats.tracked > 0;
     el.scoreRolesTitle.style.display = hasStats ? '' : 'none';
     el.scoreRoles.style.display = hasStats ? '' : 'none';
-    el.scoreNote.style.display = (hasStats && stats.tracked < scoreLog.length) ? '' : 'none';
+    el.scoreNote.style.display = (hasStats && stats.tracked < entries.length) ? '' : 'none';
     el.scoreRoles.innerHTML = '';
     ['civil', 'undercover', 'mrwhite', 'espion'].forEach(function (role) {
       var r = stats.byRole[role];
@@ -2052,7 +2068,7 @@
     });
 
     el.scoreHistory.innerHTML = '';
-    scoreLog.forEach(function (entry) {
+    entries.forEach(function (entry) {
       var li = document.createElement('li');
       var labelSpan = document.createElement('strong');
       labelSpan.className = 'score-history__label';
@@ -2129,10 +2145,10 @@
 
   function exportScoreCsv() {
     var rows = [
-      ['date', 'manche', 'nb_joueurs', 'vainqueur', 'joueur', 'role', 'roles_speciaux', 'victoire', 'elimine', 'difficulte_paire', 'theme']
+      ['date', 'manche', 'nb_joueurs', 'vainqueur', 'groupe', 'joueur', 'role', 'roles_speciaux', 'victoire', 'elimine', 'difficulte_paire', 'theme']
     ];
     scoreLog.slice().reverse().forEach(function (e) {
-      var base = [e.date || '', e.round, e.playerCount, e.winnerLabel];
+      var base = [e.date || '', e.round, e.playerCount, e.winnerLabel, e.group || ''];
       var diff = e.pairDifficulty ? DIFFICULTY_LABELS[e.pairDifficulty] : '';
       var theme = e.theme || '';
       if (Array.isArray(e.players) && e.players.length) {
@@ -2232,6 +2248,7 @@
       if (AUTO_HIDE_CHOICES.indexOf(o.autoHideSec) !== -1) state.autoHideSec = o.autoHideSec;
       if (typeof o.timerSound === 'boolean') state.timerSound = o.timerSound;
       if (typeof o.mrWhiteGuess === 'boolean') state.mrWhiteGuess = o.mrWhiteGuess;
+      if (typeof o.autoUndercover === 'boolean') state.autoUndercover = o.autoUndercover;
     } catch (e) {}
   }
 
@@ -2242,7 +2259,8 @@
         privacy: state.privacy,
         autoHideSec: state.autoHideSec,
         timerSound: state.timerSound,
-        mrWhiteGuess: state.mrWhiteGuess
+        mrWhiteGuess: state.mrWhiteGuess,
+        autoUndercover: state.autoUndercover
       }));
     } catch (e) {}
   }
@@ -3070,6 +3088,396 @@
       el.startBtn.focus();
     }
   }
+
+  // ======================================================================
+  // Groupes de joueurs mémorisés
+  // ======================================================================
+  var GROUPS_STORAGE_KEY = 'undercover_groups_v1';
+  var MAX_GROUPS = 20;
+  var MAX_GROUP_NAME = 24;
+
+  function nameKey(str) {
+    return normalizeWord(str);
+  }
+
+  function loadGroups() {
+    try {
+      var raw = window.localStorage.getItem(GROUPS_STORAGE_KEY);
+      if (!raw) return [];
+      var parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      var out = [];
+      parsed.forEach(function (g) {
+        if (!g || typeof g.name !== 'string' || !Array.isArray(g.players)) return;
+        var name = g.name.replace(/\s+/g, ' ').trim().slice(0, MAX_GROUP_NAME);
+        var players = g.players.map(function (p) {
+          return String(p == null ? '' : p).replace(/\s+/g, ' ').trim().slice(0, 20);
+        }).filter(Boolean);
+        if (!name || players.length < MIN_PLAYERS || players.length > MAX_PLAYERS) return;
+        out.push({
+          id: String(g.id || ('g' + out.length + Date.now())),
+          name: name,
+          players: players
+        });
+      });
+      return out.slice(0, MAX_GROUPS);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  var groups = loadGroups();
+
+  function saveGroups() {
+    try {
+      window.localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+    } catch (e) {}
+  }
+
+  function readNameInputs() {
+    var out = [];
+    el.namesGrid.querySelectorAll('input[data-name-input]').forEach(function (input) {
+      out.push(input.value.trim());
+    });
+    return out;
+  }
+
+  function sameNameSet(a, b) {
+    if (a.length !== b.length) return false;
+    var x = a.map(nameKey).sort();
+    var y = b.map(nameKey).sort();
+    return x.every(function (v, i) {
+      return v === y[i];
+    });
+  }
+
+  function matchGroup(names) {
+    for (var i = 0; i < groups.length; i++) {
+      if (sameNameSet(groups[i].players, names)) return groups[i];
+    }
+    return null;
+  }
+
+  function matchGroupName(names) {
+    var g = matchGroup(names);
+    return g ? g.name : '';
+  }
+
+  function duplicateNames(names) {
+    var seen = {};
+    var dups = [];
+    names.forEach(function (n) {
+      if (!n) return;
+      var k = nameKey(n);
+      if (!k) return;
+      if (seen[k] === 1) dups.push(n);
+      seen[k] = (seen[k] || 0) + 1;
+    });
+    return dups;
+  }
+
+  function renderGroups() {
+    if (!el.groupList) return;
+    var active = matchGroup(readNameInputs());
+    el.groupList.innerHTML = '';
+    el.groupEmpty.hidden = groups.length > 0;
+    groups.forEach(function (g) {
+      var chip = document.createElement('span');
+      chip.className = 'group-chip' + (active && active.id === g.id ? ' group-chip--active' : '');
+
+      var load = document.createElement('button');
+      load.type = 'button';
+      load.className = 'group-chip__load';
+      load.title = g.players.join(', ');
+      load.textContent = g.name;
+      var count = document.createElement('small');
+      count.textContent = ' · ' + g.players.length;
+      load.appendChild(count);
+      load.addEventListener('click', function () {
+        loadGroup(g.id);
+      });
+
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'group-chip__del';
+      del.setAttribute('aria-label', 'Supprimer le groupe ' + g.name);
+      del.textContent = '×';
+      del.addEventListener('click', function () {
+        if (window.confirm('Supprimer le groupe « ' + g.name + ' » ?')) {
+          groups = groups.filter(function (x) {
+            return x.id !== g.id;
+          });
+          saveGroups();
+          onNamesChanged();
+        }
+      });
+
+      chip.appendChild(load);
+      chip.appendChild(del);
+      el.groupList.appendChild(chip);
+    });
+    if (el.namesSummary) el.namesSummary.textContent = active ? active.name : 'Optionnel';
+  }
+
+  function onNamesChanged() {
+    renderGroups();
+    renderBalance();
+  }
+
+  function loadGroup(id) {
+    var g = groups.filter(function (x) {
+      return x.id === id;
+    })[0];
+    if (!g) return;
+    state.playerCount = clamp(g.players.length, MIN_PLAYERS, MAX_PLAYERS);
+    updateCounter();
+    updateUnderCounter();
+    renderNameFields();
+    el.namesGrid.querySelectorAll('input[data-name-input]').forEach(function (input, i) {
+      input.value = g.players[i] || '';
+    });
+    onNamesChanged();
+    showToast('Groupe « ' + g.name + ' » chargé (' + g.players.length + ' joueurs).');
+  }
+
+  function saveGroup() {
+    var name = el.groupNameInput.value.replace(/\s+/g, ' ').trim().slice(0, MAX_GROUP_NAME);
+    var names = readNameInputs();
+    if (!name) {
+      showToast('Donnez un nom au groupe avant de l\'enregistrer.');
+      el.groupNameInput.focus();
+      return;
+    }
+    if (names.some(function (n) {
+        return !n;
+      })) {
+      showToast('Renseignez le nom des ' + names.length + ' joueurs avant d\'enregistrer le groupe.', 3600);
+      return;
+    }
+    var dups = duplicateNames(names);
+    if (dups.length) {
+      showToast('Deux joueurs portent le même nom (' + dups[0] + ') : rendez-les uniques.', 3600);
+      return;
+    }
+    var existing = groups.filter(function (g) {
+      return nameKey(g.name) === nameKey(name);
+    })[0];
+    if (existing) {
+      existing.name = name;
+      existing.players = names;
+    } else {
+      if (groups.length >= MAX_GROUPS) {
+        showToast('Limite de ' + MAX_GROUPS + ' groupes atteinte : supprimez-en un.', 3600);
+        return;
+      }
+      groups.push({
+        id: 'g' + Date.now().toString(36) + Math.floor(Math.random() * 1000),
+        name: name,
+        players: names
+      });
+    }
+    saveGroups();
+    el.groupNameInput.value = '';
+    onNamesChanged();
+    showToast(existing ? ('Groupe « ' + name + ' » mis à jour.') : ('Groupe « ' + name + ' » enregistré.'));
+  }
+
+  el.groupSaveBtn.addEventListener('click', saveGroup);
+  el.groupNameInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveGroup();
+    }
+  });
+  el.namesGrid.addEventListener('input', onNamesChanged);
+
+  // Filtre du journal par groupe
+  var scoreGroupFilter = 'all';
+
+  function refreshScoreFilter() {
+    var names = {};
+    scoreLog.forEach(function (e) {
+      if (e.group) names[e.group] = true;
+    });
+    var list = Object.keys(names).sort();
+    el.scoreFilterRow.hidden = list.length === 0;
+    if (scoreGroupFilter !== 'all' && scoreGroupFilter !== '__none' && !names[scoreGroupFilter]) scoreGroupFilter = 'all';
+    el.scoreGroupFilter.innerHTML = '';
+    var opts = [
+      ['all', 'Tous les groupes']
+    ];
+    list.forEach(function (n) {
+      opts.push([n, n]);
+    });
+    opts.push(['__none', 'Sans groupe']);
+    opts.forEach(function (o) {
+      var opt = document.createElement('option');
+      opt.value = o[0];
+      opt.textContent = o[1];
+      el.scoreGroupFilter.appendChild(opt);
+    });
+    el.scoreGroupFilter.value = scoreGroupFilter;
+  }
+
+  function filteredScoreEntries() {
+    if (scoreGroupFilter === 'all') return scoreLog;
+    return scoreLog.filter(function (e) {
+      return scoreGroupFilter === '__none' ? !e.group : e.group === scoreGroupFilter;
+    });
+  }
+
+  el.scoreGroupFilter.addEventListener('change', function () {
+    scoreGroupFilter = el.scoreGroupFilter.value;
+    renderScoreModal();
+  });
+
+  // ======================================================================
+  // Suggestion et contrôle d'équilibrage
+  // ======================================================================
+  // Total d'imposteurs recommandé (Undercover + Mr. White + Espion), environ 1 pour 4 joueurs.
+  function recommendedImpostors(n) {
+    return Math.max(1, Math.floor((n + 1) / 4));
+  }
+
+  function recommendedUndercover(n) {
+    var cap = maxImpostors(n);
+    var others = state.mrWhiteCount + state.espionCount;
+    return clamp(recommendedImpostors(n) - others, MIN_UNDERCOVER, Math.max(MIN_UNDERCOVER, cap - others));
+  }
+
+  function applyAutoUndercover() {
+    if (state.autoUndercover) {
+      state.undercoverCount = recommendedUndercover(state.playerCount);
+    }
+  }
+
+  function plural(n, one, many) {
+    return n + ' ' + (n > 1 ? many : one);
+  }
+
+  function renderAutoUnderUI() {
+    if (!el.autoUndercover) return;
+    el.autoUndercover.checked = state.autoUndercover;
+    var rec = recommendedImpostors(state.playerCount);
+    el.autoUnderHint.textContent = 'Recommandé pour ' + state.playerCount + ' joueurs : ' +
+      plural(rec, 'imposteur', 'imposteurs') + ' au total (Undercover, Mr. White et Espion compris).';
+  }
+
+  function manualUndercoverChange() {
+    if (state.autoUndercover) {
+      state.autoUndercover = false;
+      saveOptions();
+    }
+  }
+
+  function specialSlots() {
+    return (state.roles.idiot ? 1 : 0) + (state.roles.fantome ? 1 : 0) + (state.roles.mime ? 1 : 0) +
+      (state.roles.procureur ? 1 : 0) + (state.roles.amoureux ? 2 : 0);
+  }
+
+  function computeBalanceNotes() {
+    var n = state.playerCount;
+    var imp = state.undercoverCount + state.mrWhiteCount + state.espionCount;
+    var rec = recommendedImpostors(n);
+    var slots = specialSlots();
+    var notes = [];
+
+    if (slots > n) {
+      notes.push({
+        level: 'warn',
+        text: 'Les rôles spéciaux activés demandent ' + slots + ' joueurs différents : avec ' + n +
+          ' joueurs, certains ne pourront pas être attribués.'
+      });
+    } else if (slots > 0 && slots / n > 0.4) {
+      notes.push({
+        level: 'warn',
+        text: 'Beaucoup de rôles spéciaux (' + slots + ' joueurs concernés sur ' + n +
+          ') : la partie risque de devenir confuse. Désactivez-en quelques-uns.'
+      });
+    }
+
+    if (imp > rec + 1) {
+      notes.push({
+        level: 'warn',
+        text: 'Beaucoup d\'imposteurs (' + imp + ' sur ' + n + ') : les Civils auront du mal à gagner. Recommandé : ' + rec + '.'
+      });
+    } else if (imp < rec) {
+      notes.push({
+        level: 'info',
+        text: 'Peu d\'imposteurs pour ' + n + ' joueurs : la manche risque d\'être longue. Recommandé : ' + rec + '.'
+      });
+    }
+
+    if (state.roles.amoureux && n < 8) {
+      notes.push({
+        level: 'warn',
+        text: 'Les Amoureux sont conçus pour 8 joueurs ou plus : en dessous, la partie peut être déséquilibrée.'
+      });
+    }
+
+    if (n <= 4 && (state.mrWhiteCount > 0 || state.espionCount > 0 || state.roles.idiot)) {
+      notes.push({
+        level: 'info',
+        text: 'À 4 joueurs ou moins, Mr. White, l\'Espion et l\'Idiot du village sont très exposés dès le premier vote.'
+      });
+    }
+
+    var dups = duplicateNames(readNameInputs());
+    if (dups.length) {
+      notes.push({
+        level: 'warn',
+        text: 'Deux joueurs portent le même nom (' + dups[0] + ') : leurs statistiques seront confondues.'
+      });
+    }
+
+    return notes;
+  }
+
+  function renderBalance() {
+    if (!el.balanceBox) return;
+    var notes = computeBalanceNotes();
+    var n = state.playerCount;
+    el.balanceBox.innerHTML = '';
+    el.balanceBox.className = 'balance';
+
+    var title = document.createElement('h3');
+    title.className = 'balance__title';
+    title.textContent = 'Équilibrage';
+    el.balanceBox.appendChild(title);
+
+    if (!notes.length) {
+      var ok = document.createElement('p');
+      ok.className = 'balance__item balance__item--ok';
+      ok.textContent = 'Configuration équilibrée pour ' + n + ' joueurs.';
+      el.balanceBox.appendChild(ok);
+    } else {
+      notes.forEach(function (note) {
+        var p = document.createElement('p');
+        p.className = 'balance__item balance__item--' + note.level;
+        p.textContent = note.text;
+        el.balanceBox.appendChild(p);
+      });
+    }
+
+    var recUnder = recommendedUndercover(n);
+    if (!state.autoUndercover && state.undercoverCount !== recUnder) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn--ghost btn--small balance__apply';
+      btn.textContent = 'Appliquer la recommandation (' + plural(recUnder, 'Undercover', 'Undercovers') + ')';
+      btn.addEventListener('click', function () {
+        state.undercoverCount = recUnder;
+        updateUnderCounter();
+      });
+      el.balanceBox.appendChild(btn);
+    }
+  }
+
+  el.autoUndercover.addEventListener('change', function () {
+    state.autoUndercover = el.autoUndercover.checked;
+    saveOptions();
+    updateUnderCounter();
+  });
 
   updateCounter();
   updateUnderCounter();

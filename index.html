@@ -108,6 +108,15 @@
               </div>
             </div>
           </div>
+          <div class="toggle-list toggle-list--single auto-balance">
+            <label class="toggle-item">
+              <input type="checkbox" id="autoUndercover" checked>
+              <span>
+                <strong>Nombre d'Undercovers automatique</strong>
+                <small id="autoUnderHint"></small>
+              </span>
+            </label>
+          </div>
         </div>
 
         <details class="setup-block" id="themesBlock" open>
@@ -232,10 +241,21 @@
           <summary class="setup-block__head">
             <span class="setup-block__num">4</span>
             <h2>Noms des joueurs</h2>
-            <span class="setup-block__summary">Optionnel</span>
+            <span class="setup-block__summary" id="namesSummary">Optionnel</span>
             <span class="setup-block__chevron" aria-hidden="true"></span>
           </summary>
           <div class="setup-block__body">
+            <div class="groups">
+              <h3 class="groups__title">Groupes de joueurs</h3>
+              <div class="group-chips" id="groupList"></div>
+              <p class="hint-text" id="groupEmpty">Aucun groupe enregistré. Saisissez les noms ci-dessous, donnez un nom
+                au groupe (« Famille », « Soirée du samedi »…) puis enregistrez-le pour le recharger en un tap.</p>
+              <div class="groups__save">
+                <input type="text" id="groupNameInput" class="field-input" maxlength="24" autocomplete="off"
+                  placeholder="Nom du groupe" aria-label="Nom du groupe">
+                <button type="button" id="groupSaveBtn" class="btn btn--ghost btn--small">Enregistrer les noms</button>
+              </div>
+            </div>
             <p class="hint-text">Laissez un champ vide pour garder le nom par défaut "Joueur".</p>
             <div id="namesGrid" class="names-grid"></div>
           </div>
@@ -319,6 +339,8 @@
             </div>
           </div>
         </details>
+
+        <section class="balance" id="balanceBox" aria-label="Équilibrage de la partie"></section>
 
         <div class="setup-recap" id="setupRecap"></div>
 
@@ -451,6 +473,10 @@
         apparaîtront ici après la première partie.</p>
 
       <div id="scoreContent" class="score-content">
+        <div class="score-filter" id="scoreFilterRow" hidden>
+          <label for="scoreGroupFilter">Groupe</label>
+          <select id="scoreGroupFilter" class="field-select"></select>
+        </div>
         <h4 class="score-section-title">Classement des joueurs</h4>
         <ul class="score-leaderboard" id="scoreLeaderboard"></ul>
 
