@@ -24,6 +24,7 @@ export function loadOptions() {
     if (typeof o.timerSound === 'boolean') state.timerSound = o.timerSound;
     if (typeof o.mrWhiteGuess === 'boolean') state.mrWhiteGuess = o.mrWhiteGuess;
     if (typeof o.autoUndercover === 'boolean') state.autoUndercover = o.autoUndercover;
+    if (typeof o.showRole === 'boolean') state.showRole = o.showRole;
   } catch (e) {}
 }
 
@@ -35,7 +36,8 @@ export function saveOptions() {
       autoHideSec: state.autoHideSec,
       timerSound: state.timerSound,
       mrWhiteGuess: state.mrWhiteGuess,
-      autoUndercover: state.autoUndercover
+      autoUndercover: state.autoUndercover,
+      showRole: state.showRole
     }));
   } catch (e) {}
 }
@@ -66,8 +68,10 @@ function renderPrivacyUI() {
   });
   el.autoHideField.style.display = state.privacy === 'auto' ? '' : 'none';
   el.autoHideSelect.value = String(state.autoHideSec);
-  el.privacySummary.textContent = state.privacy === 'auto' ?
-    (PRIVACY_LABELS.auto + ' · ' + state.autoHideSec + ' s') : PRIVACY_LABELS[state.privacy];
+  el.privacySummary.textContent = (state.privacy === 'auto' ?
+    (PRIVACY_LABELS.auto + ' · ' + state.autoHideSec + ' s') : PRIVACY_LABELS[state.privacy]) +
+    (state.showRole ? '' : ' · rôle masqué');
+  el.showRoleInput.checked = state.showRole;
   renderSetupRecap();
 }
 
@@ -102,6 +106,12 @@ export function initOptionsUI() {
     state.timerSound = el.timerSoundInput.checked;
     saveOptions();
     if (state.timerSound) previewSound();
+  });
+
+  el.showRoleInput.addEventListener('change', function () {
+    state.showRole = el.showRoleInput.checked;
+    saveOptions();
+    renderPrivacyUI();
   });
 
   el.mrWhiteGuessInput.checked = state.mrWhiteGuess;

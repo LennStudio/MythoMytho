@@ -95,7 +95,8 @@ export var state = {
   pairDifficulty: 0,
   guessQueue: [],
   winnerPlayerId: null,
-  autoUndercover: true
+  autoUndercover: true,
+  showRole: true
 };
 
 export var el = {
@@ -208,6 +209,7 @@ export var el = {
 
   installBtn: document.getElementById('installBtn'),
   mrWhiteGuessInput: document.getElementById('mrWhiteGuess'),
+  showRoleInput: document.getElementById('showRole'),
   difficultyRadios: document.querySelectorAll('input[name="difficulty"]'),
   difficultyHint: document.getElementById('difficultyHint'),
   customManageBtn: document.getElementById('customManageBtn'),

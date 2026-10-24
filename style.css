@@ -2313,3 +2313,7 @@ summary.setup-block__head::marker {
 .score-filter label {
     font-weight: 700;
 }
+
+.role-toggle {
+    margin: 18px 0 0;
+}

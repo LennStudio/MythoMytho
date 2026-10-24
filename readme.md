@@ -13,12 +13,13 @@
 3. [Fonctionnalités](#fonctionnalités)
 4. [Mots, thèmes et difficulté](#mots-thèmes-et-difficulté)
 5. [PWA et mode hors ligne](#pwa-et-mode-hors-ligne)
-6. [Données et confidentialité](#données-et-confidentialité)
-7. [Installation](#installation)
-8. [Structure du projet](#structure-du-projet)
-9. [Technologies](#technologies)
-10. [Limites connues](#limites-connues)
-11. [À venir](#à-venir)
+6. [Architecture et chargement](#architecture-et-chargement)
+7. [Données et confidentialité](#données-et-confidentialité)
+8. [Installation](#installation)
+9. [Structure du projet](#structure-du-projet)
+10. [Technologies](#technologies)
+11. [Limites connues](#limites-connues)
+12. [À venir](#à-venir)
 
 * * *
 
@@ -91,7 +92,7 @@ L'écran d'accueil est organisé en six blocs (dont cinq repliables), chacun ave
 | **3. Rôles spéciaux**          | Mr. White, Espion, dernière chance, Idiot, Fantôme, Mime, Procureur, Amoureux                     |
 | **4. Noms des joueurs**        | Un champ par joueur (noms par défaut : *Joueur 1*, *Joueur 2*…) et **groupes de joueurs**        |
 | **5. Minuteur de discussion**  | Activation, durée (1 à 15 min, 3 par défaut), son de fin                                          |
-| **6. Confidentialité des cartes** | Mode d'affichage du mot (voir ci-dessous)                                                      |
+| **6. Confidentialité des cartes** | Mode d'affichage du mot et affichage (ou non) du rôle sur la carte (voir ci-dessous)           |
 
 Les réglages durables (difficulté, confidentialité, son, dernière chance, minuteur, thème d'affichage) sont **mémorisés** d'une partie à l'autre.
 
@@ -133,7 +134,7 @@ Dans le bloc *Noms des joueurs*, on peut **enregistrer la liste des noms** sous 
 
 - L'appareil circule : chaque joueur touche **sa propre carte**, mémorise son mot en privé, puis appuie sur **« Cacher & passer au suivant »**.
 - Une carte déjà consultée ne peut **pas être rouverte** ; une barre indique le nombre de cartes consultées.
-- Chaque carte rappelle le rôle (Civil, Undercover, Mr. White, Espion) et les **badges** associés (Mime, Procureur, Amoureux, indice de l'Espion…).
+- Chaque carte rappelle le rôle (Civil, Undercover, Mr. White, Espion) et les **badges** associés (Mime, Procureur, Amoureux, indice de l'Espion…). La mention « Tu es [rôle] » des Civils et de l'Undercover peut être **désactivée** (voir [Confidentialité des cartes](#-confidentialité-des-cartes)).
 - À chaque nouvelle manche, de **nouveaux mots** sont tirés ; l'ordre des mots entre Civils et Undercover est **aléatoire** (la même paire ne donne pas toujours le même mot à l'imposteur).
 
 ### 🔒 Confidentialité des cartes
@@ -147,6 +148,8 @@ Pour éviter les regards indiscrets, trois modes sont proposés (bloc 6) :
 | **Maintenir pour révéler**  | Le mot n'apparaît que **tant que le doigt reste appuyé** sur le bouton (souris, tactile ou clavier). Impossible de passer au suivant sans l'avoir vu au moins une fois |
 
 Dans les deux derniers modes, le contenu est masqué **sans changer la mise en page**, et les lecteurs d'écran n'y ont pas accès tant qu'il est caché.
+
+**Afficher « Tu es [rôle] » sur la carte** (case à cocher, activée par défaut) : désactivée, les **Civils et l'Undercover ne voient que leur mot** et ignorent leur camp, comme dans le jeu classique. **Mr. White et l'Espion**, qui n'ont pas de mot, voient toujours leur rôle, de même que les badges des rôles spéciaux (Mime, Procureur, Amoureux…). L'option est mémorisée ; un résumé « rôle masqué » apparaît dans le bloc 6 et dans le récapitulatif de la partie.
 
 ### ⏱️ Minuteur de discussion
 
@@ -278,8 +281,8 @@ Pour **ajouter un thème**, il suffit d'ajouter un objet dans `themes` : il appa
 - **Manifeste** (`manifest.json`) : nom « Undercover — jeu de mots & de déduction », affichage `standalone`, orientation portrait, langue `fr`, catégories jeux / divertissement, icônes 192 et 512 px (dont des versions *maskable*) et icône Apple Touch.
 - **Raccourcis d'application** : « Nouvelle manche » et « Journal des scores ».
 - **Captures d'écran** déclarées (`narrow` et `wide`) pour la fiche d'installation.
-- **Service Worker** (`sw.js`, cache `undercover-v1.4`) :
-  - **précache** obligatoire de l'application (HTML, CSS, JS, manifeste, `words.json`) ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
+- **Service Worker** (`sw.js`, cache `undercover-v1.4.2`) :
+  - **précache** obligatoire de l'application (HTML, CSS, **les 20 modules de `js/`**, manifeste, `words.json`) : les modules chargés à la demande sont donc eux aussi disponibles hors ligne ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
   - navigation : **réseau d'abord**, repli sur `index.html` en cache ;
   - fichiers de l'application : **cache d'abord**, rafraîchis en arrière-plan (*stale-while-revalidate*) ;
   - autres origines (polices Google) : cache d'exécution avec rafraîchissement en arrière-plan ;
@@ -287,7 +290,39 @@ Pour **ajouter un thème**, il suffit d'ajouter un objet dans `themes` : il appa
   - **pas de prise de contrôle brutale** : la nouvelle version attend le clic sur « Recharger » (message `SKIP_WAITING`), et l'application recherche une mise à jour à chaque retour au premier plan.
 - **Compatibilité iOS** : plein écran, gestion des zones sûres (`viewport-fit=cover`), consigne d'installation dédiée.
 
-> Pour publier une nouvelle version, incrémentez `CACHE_VERSION` dans `sw.js` afin que les appareils récupèrent les fichiers à jour.
+> **Pour publier une nouvelle version, incrémentez `CACHE_VERSION` dans `sw.js`.** Avec le découpage en modules, c'est indispensable : sans cela, un appareil pourrait mélanger d'anciens et de nouveaux fichiers de `js/` (les fichiers en cache sont rafraîchis un par un en arrière-plan) et l'application risquerait de planter. Toute modification de `js/`, `words.json`, `style.css` ou `index.html` doit s'accompagner d'une nouvelle version du cache, et tout **nouveau module** doit être ajouté à la liste `APP_SHELL_FILES`.
+
+* * *
+
+## Architecture et chargement
+
+Le JavaScript est découpé en **modules ES** (`js/`, sans bundler ni build). Trois niveaux de chargement évitent de télécharger et d'exécuter, dès l'ouverture, du code que l'écran d'accueil n'utilise pas :
+
+| Niveau | Modules | Quand ? |
+|--------|---------|---------|
+| **Accueil** (immédiat) | `main`, `core`, `theme`, `themes`, `setup`, `options`, `balance`, `groups`, `audio`, `pwa` | Au chargement de la page, récupérés **en parallèle** grâce aux balises `modulepreload` |
+| **Jeu** (arrière-plan) | `game-chunk` → `game`, `timer`, `cards`, `vote`, `guess`, `wakelock`, `journal` | Préchargé quand le navigateur est inactif (`requestIdleCallback`), ou **au clic sur « Lancer »** s'il n'est pas encore prêt |
+| **À la demande** | `journal-ui` (fenêtre du journal, statistiques, exports) et `custom-ui` (« Mes paires », import / export / partage) | À la **première ouverture** de la fenêtre, ou au lancement via `?action=scores` / `#paires=…` |
+
+Règles de l'architecture :
+
+- Un module de l'accueil **n'importe jamais** un module du jeu ou « à la demande » : il passe par le chargeur de `main.js` (`import()` dynamique). Une erreur de chargement (hors ligne sans cache) affiche un message et permet de réessayer.
+- Chaque module expose une fonction `boot…()` qui branche ses écouteurs ; elles sont appelées par `main.js` (accueil) ou à la première charge du chunk. Un module ne fait aucun effet de bord à l'import, ce qui évite les problèmes d'ordre dans les dépendances circulaires.
+- `core.js` ne dépend de rien : constantes, état de la partie (`state`), références DOM (`el`) et utilitaires.
+- `words.json` est préchargé (`<link rel="preload">`) en parallèle des modules.
+
+### Mesures
+
+Chargement à froid (cache vidé), serveur HTTP/2 avec gzip, comparé à l'ancienne version en un seul `script.js` ; médianes de 5 à 7 essais :
+
+| Conditions                          | JS exécuté avant l'accueil | JS gzip avant l'accueil | Accueil interactif    |
+|-------------------------------------|---------------------------:|------------------------:|-----------------------|
+| Mobile moyen (CPU ×4, 4G)           | 58 ms → **32 ms** (−45 %)  | 26,2 Ko → **16,7 Ko** (−36 %) | ≈ identique (796 → 786 ms) |
+| Mobile bas de gamme (CPU ×6, 3G)    | 68 ms → **38 ms** (−44 %)  | 26,2 Ko → **16,7 Ko** (−36 %) | 1 353 → 1 256 ms (−7 %) |
+
+Le gain porte surtout sur le **temps de calcul du thread principal** au démarrage. Il reste modeste en valeur absolue : l'application est légère. En contrepartie, le total des octets JS après chargement du jeu augmente d'environ 14 % (30 Ko gzip contre 26 Ko), car des fichiers séparés se compressent moins bien qu'un seul.
+
+> Pour aller plus loin : minifier les modules (environ −40 % d'octets) nécessiterait un outil de build, ce qui sortirait du principe « sans dépendance » du projet.
 
 * * *
 
@@ -298,7 +333,7 @@ Toutes les données restent **sur votre appareil**, dans le `localStorage` du na
 | Clé                                  | Contenu                                                              |
 |--------------------------------------|----------------------------------------------------------------------|
 | `undercover_theme_v1`                | Thème d'affichage (clair / sombre)                                   |
-| `undercover_options_v1`              | Difficulté, confidentialité des cartes, son, dernière chance, Undercovers automatiques |
+| `undercover_options_v1`              | Difficulté, confidentialité des cartes (dont affichage du rôle), son, dernière chance, Undercovers automatiques |
 | `undercover_groups_v1`               | Groupes de joueurs (20 max)                                          |
 | `undercover_timer_settings_v1`       | Minuteur : activation et durée                                       |
 | `undercover_used_pairs_v1`           | Paires déjà jouées (pour éviter les répétitions)                     |
@@ -317,8 +352,8 @@ Les liens de partage de « Mes paires » contiennent **les mots eux-mêmes** (en
 
 L'application ne nécessite ni build ni dépendance à installer.
 
-1. Placez les fichiers `index.html`, `style.css`, `script.js`, `words.json`, `manifest.json` et `sw.js` à la racine, avec le dossier `assets/` contenant les icônes (`logo-192.png`, `logo-512.png`, `logo-maskable-192.png`, `logo-maskable-512.png`, `logo-apple-touch.png`) et les captures d'écran (`screenshot-setup.png`, `screenshot-game.png`, `screenshot-wide.png`).
-2. Servez le dossier en **HTTPS** (GitHub Pages, Netlify, Vercel…) ou en local, par exemple avec `npx serve` ou `python -m http.server`. Le chargement de `words.json`, le service worker et l'installation PWA **ne fonctionnent pas** en ouvrant directement le fichier (`file://`).
+1. Placez les fichiers `index.html`, `style.css`, `words.json`, `manifest.json` et `sw.js` à la racine, avec le dossier `js/` (les 20 modules) et le dossier `assets/` contenant les icônes (`logo-192.png`, `logo-512.png`, `logo-maskable-192.png`, `logo-maskable-512.png`, `logo-apple-touch.png`) et les captures d'écran (`screenshot-setup.png`, `screenshot-game.png`, `screenshot-wide.png`).
+2. Servez le dossier en **HTTPS** (GitHub Pages, Netlify, Vercel…) ou en local, par exemple avec `npx serve` ou `python -m http.server`. Le chargement de `words.json`, des modules `js/`, le service worker et l'installation PWA **ne fonctionnent pas** en ouvrant directement le fichier (`file://`). Le serveur doit servir les fichiers `.js` avec un type MIME JavaScript (c'est le cas de tous les hébergeurs courants).
 3. Ouvrez l'adresse dans un navigateur moderne, puis :
    - **Android / Chrome** : bouton **Installer l'app** ou menu → *Installer l'application* ;
    - **iOS / Safari** : Partager → *Sur l'écran d'accueil*.
@@ -333,19 +368,38 @@ Une connexion est nécessaire au **premier chargement** (mots et polices) ; ensu
 ├── index.html        Écran de configuration, écran de partie, modales (carte, élimination,
 │                     dernière chance, mes paires, journal), bandeau de mise à jour
 ├── style.css         Thème clair / sombre, composants, animations
-├── script.js         Logique de jeu, rôles, vote, minuteur, confidentialité, journal,
-│                     « Mes paires », audio, Wake Lock, installation
 ├── words.json        596 paires de mots, thèmes et niveaux de difficulté
 ├── manifest.json     Métadonnées PWA, icônes, raccourcis, captures d'écran
 ├── sw.js             Service Worker (précache, hors-ligne, mises à jour)
 ├── readme.md         Ce fichier
+├── js/
+│   ├── main.js         Point d'entrée : démarrage de l'accueil, chargement à la demande
+│   ├── core.js         Constantes, état (state), références DOM (el), utilitaires
+│   ├── theme.js        Thème clair / sombre
+│   ├── themes.js       words.json, données de « Mes paires », difficulté, tirage, grille des thèmes
+│   ├── setup.js        Compteurs, rôles, noms, minuteur, récapitulatif
+│   ├── options.js      Options mémorisées (difficulté, confidentialité, son, dernière chance)
+│   ├── balance.js      Recommandation d'imposteurs et contrôle d'équilibrage
+│   ├── groups.js       Groupes de joueurs mémorisés
+│   ├── audio.js        Sons du minuteur (Web Audio)
+│   ├── pwa.js          Installation de l'app, service worker, bandeau de mise à jour
+│   ├── game-chunk.js   Point d'entrée du chunk de jeu
+│   ├── game.js         Attribution des rôles, lancement, nouvelle manche
+│   ├── timer.js        Minuteur de discussion
+│   ├── cards.js        Cartes secrètes et confidentialité des cartes
+│   ├── vote.js         Vote, élimination, fin de partie, récapitulatif
+│   ├── guess.js        Dernière chance de Mr. White (saisie et dictée)
+│   ├── wakelock.js     Écran maintenu allumé
+│   ├── journal.js      Enregistrement des manches dans le journal
+│   ├── journal-ui.js   Fenêtre du journal, statistiques, exports   [à la demande]
+│   └── custom-ui.js    Fenêtre « Mes paires », import / export / partage   [à la demande]
 └── assets/           Icônes de l'application et captures d'écran
 ```
 
 ## Technologies
 
 - **HTML5 / CSS3** : variables CSS, Flexbox, Grid, `prefers-color-scheme`, `env(safe-area-inset-*)`
-- **JavaScript** vanilla (ES5/ES6), sans framework
+- **JavaScript** vanilla en **modules ES** (`import` statique, `import()` dynamique, `modulepreload`, `requestIdleCallback`), sans framework ni bundler
 - **Google Fonts** : Barlow Condensed (titres), Courier Prime (texte), avec polices de secours
 - **Service Worker** et **Web App Manifest** (raccourcis, captures d'écran, `beforeinstallprompt`)
 - **Web Audio API** (sonnerie du minuteur), **Vibration API**, **Screen Wake Lock API**

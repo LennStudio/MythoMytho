@@ -82,6 +82,12 @@ function openCard(id) {
     el.modalWord.textContent = player.word;
   }
 
+  // « Tu es [rôle] » : masquable pour les joueurs qui ont un mot (Civils et Undercover).
+  // Mr. White et l'Espion n'ont pas de mot : leur rôle reste toujours affiché.
+  var roleHidden = !state.showRole && !player.isMrWhite && !player.isEspion;
+  if (roleHidden) el.modalRole.textContent = '';
+  el.modalRole.hidden = roleHidden;
+
   renderModalBadges(player);
   beginCardPrivacy();
 

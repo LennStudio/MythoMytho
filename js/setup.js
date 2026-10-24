@@ -163,6 +163,10 @@ export function renderSetupRecap() {
     chips.push(state.privacy === 'auto' ? ('masquage auto ' + state.autoHideSec + ' s') : 'maintenir pour révéler');
   }
 
+  if (!state.showRole) {
+    chips.push('rôle masqué sur la carte');
+  }
+
   if (state.timerEnabled) {
     chips.push('minuteur ' + state.timerDurationMin + ' min');
   }

@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_VERSION = "undercover-v1.4";
+var CACHE_VERSION = "undercover-v1.4.2";
 var APP_SHELL_CACHE = CACHE_VERSION + "-shell";
 var RUNTIME_CACHE = CACHE_VERSION + "-runtime";
 
@@ -9,7 +9,26 @@ var APP_SHELL_FILES = [
     "./",
     "./index.html",
     "./style.css",
-    "./script.js",
+    "./js/main.js",
+    "./js/core.js",
+    "./js/theme.js",
+    "./js/themes.js",
+    "./js/setup.js",
+    "./js/options.js",
+    "./js/balance.js",
+    "./js/groups.js",
+    "./js/audio.js",
+    "./js/pwa.js",
+    "./js/game-chunk.js",
+    "./js/game.js",
+    "./js/timer.js",
+    "./js/cards.js",
+    "./js/vote.js",
+    "./js/wakelock.js",
+    "./js/guess.js",
+    "./js/journal.js",
+    "./js/journal-ui.js",
+    "./js/custom-ui.js",
     "./manifest.json",
     "./words.json"
 ];
@@ -129,6 +148,9 @@ self.addEventListener("fetch", function (event) {
     if (event.request.method !== "GET") return;
 
     var url = new URL(event.request.url);
+
+    // Ignore les schémas non web (ex. chrome-extension://) : l'API Cache ne les accepte pas.
+    if (url.protocol !== "http:" && url.protocol !== "https:") return;
 
     if (event.request.mode === "navigate") {
         handleNavigation(event);
