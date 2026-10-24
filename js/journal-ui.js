@@ -134,7 +134,7 @@ function renderScoreModal() {
 function exportScoreJson() {
   var stats = computeStats();
   var payload = {
-    app: 'undercover',
+    app: 'mythomytho',
     kind: 'score-log',
     version: 1,
     exportedAt: new Date().toISOString(),
@@ -162,7 +162,7 @@ function exportScoreJson() {
       })
     }
   };
-  downloadFile('undercover-journal-' + todayStamp() + '.json', 'application/json', JSON.stringify(payload, null, 2));
+  downloadFile('mythomytho-journal-' + todayStamp() + '.json', 'application/json', JSON.stringify(payload, null, 2));
   showToast('Journal exporté en JSON.');
 }
 
@@ -194,7 +194,7 @@ function exportScoreCsv() {
   var text = '\ufeff' + rows.map(function (r) {
     return r.map(csvCell).join(';');
   }).join('\r\n');
-  downloadFile('undercover-journal-' + todayStamp() + '.csv', 'text/csv', text);
+  downloadFile('mythomytho-journal-' + todayStamp() + '.csv', 'text/csv', text);
   showToast('Journal exporté en CSV.');
 }
 

@@ -15,7 +15,7 @@
   </script>
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Undercover — jeu de déduction</title>
+  <title>MythoMytho — jeu de déduction</title>
   <meta name="description" content="Jeu de déduction façon Mr. White, à jouer entre amis sur un seul appareil.">
   <meta name="theme-color" content="#f1ecdd">
   <script>
@@ -32,7 +32,7 @@
   <link rel="apple-touch-icon" href="assets/logo-apple-touch.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Undercover">
+  <meta name="apple-mobile-web-app-title" content="MythoMytho">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -70,7 +70,7 @@
   </button>
 
   <div class="wordmark">
-    <h1>Undercover</h1>
+    <h1>MythoMytho</h1>
     <span>jeu de mots &amp; de déduction</span>
   </div>
 
@@ -144,14 +144,22 @@
             <div id="themesGrid" class="toggle-list toggle-list--compact"></div>
 
             <div class="difficulty">
-              <h3 class="difficulty__title">Difficulté des paires</h3>
-              <div class="segmented" role="radiogroup" aria-label="Difficulté des paires">
-                <label class="segmented__item"><input type="radio" name="difficulty" value="0" checked><span>Toutes</span></label>
-                <label class="segmented__item"><input type="radio" name="difficulty" value="1"><span>Facile</span></label>
-                <label class="segmented__item"><input type="radio" name="difficulty" value="2"><span>Moyenne</span></label>
-                <label class="segmented__item"><input type="radio" name="difficulty" value="3"><span>Difficile</span></label>
+              <label class="toggle-item">
+                <input type="checkbox" id="difficultyEnabled">
+                <span>
+                  <strong>Difficulté des paires</strong>
+                  <small>Choisissez un niveau selon la proximité des deux mots. Désactivée, toutes les paires sont
+                    mélangées.</small>
+                </span>
+              </label>
+              <div class="difficulty__levels" id="difficultyLevels" hidden>
+                <div class="segmented" role="radiogroup" aria-label="Niveau de difficulté">
+                  <label class="segmented__item"><input type="radio" name="difficulty" value="1"><span>Facile</span></label>
+                  <label class="segmented__item"><input type="radio" name="difficulty" value="2"><span>Moyenne</span></label>
+                  <label class="segmented__item"><input type="radio" name="difficulty" value="3"><span>Difficile</span></label>
+                </div>
+                <p class="hint-text" id="difficultyHint"></p>
               </div>
-              <p class="hint-text" id="difficultyHint"></p>
             </div>
 
             <div class="custom-pairs-row">
@@ -180,17 +188,9 @@
               </div>
             </div>
             <p class="hint-text hint-text--role">Ne reçoit aucun mot : il doit improviser pour ne pas se faire
-              repérer.
+              repérer. S'il est éliminé, il a toujours une dernière chance : saisir ou dicter le mot des Civils pour
+              gagner seul.
             </p>
-            <div class="toggle-list toggle-list--single">
-              <label class="toggle-item">
-                <input type="checkbox" id="mrWhiteGuess" checked>
-                <span>
-                  <strong>Dernière chance de Mr. White</strong>
-                  <small>Éliminé, il peut saisir ou dicter le mot des Civils : s'il le trouve, il gagne seul.</small>
-                </span>
-              </label>
-            </div>
 
             <div class="field-row field-row--tight">
               <h3>Espion</h3>
@@ -276,8 +276,8 @@
         <details class="setup-block" id="timerBlock">
           <summary class="setup-block__head">
             <span class="setup-block__num">5</span>
-            <h2>Minuteur de discussion</h2>
-            <span class="setup-block__summary" id="timerSummary">Désactivé</span>
+            <h2>Minuteur &amp; confidentialité</h2>
+            <span class="setup-block__summary" id="timerSummary">Sans minuteur · standard</span>
             <span class="setup-block__chevron" aria-hidden="true"></span>
           </summary>
           <div class="setup-block__body">
@@ -306,58 +306,51 @@
                 </span>
               </label>
             </div>
-          </div>
-        </details>
 
-        <details class="setup-block" id="privacyBlock">
-          <summary class="setup-block__head">
-            <span class="setup-block__num">6</span>
-            <h2>Confidentialité des cartes</h2>
-            <span class="setup-block__summary" id="privacySummary">Standard</span>
-            <span class="setup-block__chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="setup-block__body">
-            <div class="toggle-list toggle-list--single">
-              <label class="toggle-item">
-                <input type="radio" name="privacy" value="standard" checked>
-                <span>
-                  <strong>Standard</strong>
-                  <small>Le mot reste affiché jusqu'à « Cacher &amp; passer au suivant ».</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="radio" name="privacy" value="auto">
-                <span>
-                  <strong>Masquage automatique</strong>
-                  <small>Le mot se masque tout seul après quelques secondes. Il reste possible de le réafficher.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="radio" name="privacy" value="hold">
-                <span>
-                  <strong>Maintenir pour révéler</strong>
-                  <small>Le mot n'apparaît que tant que le doigt reste appuyé sur le bouton.</small>
-                </span>
-              </label>
-            </div>
-            <div class="counter-field counter-field--timer" id="autoHideField">
-              <label class="counter-field__label" for="autoHideSelect">Masquer après</label>
-              <select id="autoHideSelect" class="field-select">
-                <option value="5">5 secondes</option>
-                <option value="8">8 secondes</option>
-                <option value="12">12 secondes</option>
-                <option value="20">20 secondes</option>
-              </select>
-            </div>
-            <div class="toggle-list toggle-list--single role-toggle">
-              <label class="toggle-item">
-                <input type="checkbox" id="showRole" checked>
-                <span>
-                  <strong>Afficher « Tu es [rôle] » sur la carte</strong>
-                  <small>Désactivé, les Civils et l'Undercover ne voient que leur mot et ignorent leur camp, comme dans
-                    le jeu classique. Mr. White et l'Espion, qui n'ont pas de mot, voient toujours leur rôle.</small>
-                </span>
-              </label>
+            <div class="subsection">
+              <h3 class="subsection__title">Confidentialité des cartes</h3>
+              <div class="toggle-list toggle-list--single">
+                <label class="toggle-item">
+                  <input type="radio" name="privacy" value="standard" checked>
+                  <span>
+                    <strong>Standard</strong>
+                    <small>Le mot reste affiché jusqu'à « Cacher &amp; passer au suivant ».</small>
+                  </span>
+                </label>
+                <label class="toggle-item">
+                  <input type="radio" name="privacy" value="auto">
+                  <span>
+                    <strong>Masquage automatique</strong>
+                    <small>Le mot se masque tout seul après quelques secondes. Il reste possible de le réafficher.</small>
+                  </span>
+                </label>
+                <label class="toggle-item">
+                  <input type="radio" name="privacy" value="hold">
+                  <span>
+                    <strong>Maintenir pour révéler</strong>
+                    <small>Le mot n'apparaît que tant que le doigt reste appuyé sur le bouton.</small>
+                  </span>
+                </label>
+              </div>
+              <div class="counter-field counter-field--timer" id="autoHideField">
+                <label class="counter-field__label" for="autoHideSelect">Masquer après</label>
+                <select id="autoHideSelect" class="field-select">
+                  <option value="5">5 secondes</option>
+                  <option value="8">8 secondes</option>
+                  <option value="12">12 secondes</option>
+                  <option value="20">20 secondes</option>
+                </select>
+              </div>
+              <div class="toggle-list toggle-list--single role-toggle">
+                <label class="toggle-item">
+                  <input type="checkbox" id="showRole" checked>
+                  <span>
+                    <strong>Afficher « Tu es [rôle] » sur la carte</strong>
+                    <small>Désactivé, les Civils et l'Undercover ne voient que leur mot et ignorent leur camp, comme dans
+                      le jeu classique. Mr. White et l'Espion, qui n'ont pas de mot, voient toujours leur rôle.</small>
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
         </details>

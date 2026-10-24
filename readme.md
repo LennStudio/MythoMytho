@@ -1,6 +1,6 @@
-# 🕵️ Undercover — Jeu de mots & de déduction (PWA)
+# 🕵️ MythoMytho — Jeu de mots & de déduction (PWA)
 
-**Undercover** est une application web progressive (PWA) qui adapte le jeu de société « Undercover » (façon *Mr. White*) à **un seul appareil que l'on se passe de main en main**. Chaque joueur découvre son mot en secret, tout le monde le décrit à tour de rôle, puis le groupe vote pour démasquer l'imposteur. Tout fonctionne **hors ligne**, sans compte et sans serveur.
+**MythoMytho** est une application web progressive (PWA) qui adapte le jeu de société « Undercover » (façon *Mr. White*) à **un seul appareil que l'on se passe de main en main**. Chaque joueur découvre son mot en secret, tout le monde le décrit à tour de rôle, puis le groupe vote pour démasquer l'imposteur. Tout fonctionne **hors ligne**, sans compte et sans serveur.
 
 > HTML5 · CSS3 · JavaScript pur · Web Audio · Wake Lock · Service Worker · données stockées localement
 
@@ -83,7 +83,7 @@ Si un rôle spécial ne peut pas être attribué (trop peu de joueurs disponible
 
 ### 🎛️ Configuration de la partie
 
-L'écran d'accueil est organisé en six blocs (dont cinq repliables), chacun avec un résumé de son état. Un **récapitulatif** de la configuration reste affiché sous les blocs.
+L'écran d'accueil est organisé en cinq blocs (dont quatre repliables), chacun avec un résumé de son état. Un **récapitulatif** de la configuration reste affiché sous les blocs.
 
 | Bloc                           | Contenu                                                                                           |
 |--------------------------------|---------------------------------------------------------------------------------------------------|
@@ -91,10 +91,9 @@ L'écran d'accueil est organisé en six blocs (dont cinq repliables), chacun ave
 | **2. Thèmes des mots**         | Choix des thèmes, difficulté des paires, gestion de « Mes paires »                                |
 | **3. Rôles spéciaux**          | Mr. White, Espion, dernière chance, Idiot, Fantôme, Mime, Procureur, Amoureux                     |
 | **4. Noms des joueurs**        | Un champ par joueur (noms par défaut : *Joueur 1*, *Joueur 2*…) et **groupes de joueurs**        |
-| **5. Minuteur de discussion**  | Activation, durée (1 à 15 min, 3 par défaut), son de fin                                          |
-| **6. Confidentialité des cartes** | Mode d'affichage du mot et affichage (ou non) du rôle sur la carte (voir ci-dessous)           |
+| **5. Minuteur & confidentialité** | Minuteur de discussion (activation, durée de 1 à 15 min, son de fin) et confidentialité des cartes (mode d'affichage du mot, affichage du rôle) |
 
-Les réglages durables (difficulté, confidentialité, son, dernière chance, minuteur, thème d'affichage) sont **mémorisés** d'une partie à l'autre.
+Les réglages durables (difficulté, confidentialité, son, minuteur, thème d'affichage) sont **mémorisés** d'une partie à l'autre.
 
 ### ⚖️ Suggestion et contrôle d'équilibrage
 
@@ -139,7 +138,7 @@ Dans le bloc *Noms des joueurs*, on peut **enregistrer la liste des noms** sous 
 
 ### 🔒 Confidentialité des cartes
 
-Pour éviter les regards indiscrets, trois modes sont proposés (bloc 6) :
+Pour éviter les regards indiscrets, trois modes sont proposés (sous-section « Confidentialité des cartes » du bloc 5) :
 
 | Mode                        | Fonctionnement                                                                                                                       |
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
@@ -149,7 +148,7 @@ Pour éviter les regards indiscrets, trois modes sont proposés (bloc 6) :
 
 Dans les deux derniers modes, le contenu est masqué **sans changer la mise en page**, et les lecteurs d'écran n'y ont pas accès tant qu'il est caché.
 
-**Afficher « Tu es [rôle] » sur la carte** (case à cocher, activée par défaut) : désactivée, les **Civils et l'Undercover ne voient que leur mot** et ignorent leur camp, comme dans le jeu classique. **Mr. White et l'Espion**, qui n'ont pas de mot, voient toujours leur rôle, de même que les badges des rôles spéciaux (Mime, Procureur, Amoureux…). L'option est mémorisée ; un résumé « rôle masqué » apparaît dans le bloc 6 et dans le récapitulatif de la partie.
+**Afficher « Tu es [rôle] » sur la carte** (case à cocher, activée par défaut) : désactivée, les **Civils et l'Undercover ne voient que leur mot** et ignorent leur camp, comme dans le jeu classique. **Mr. White et l'Espion**, qui n'ont pas de mot, voient toujours leur rôle, de même que les badges des rôles spéciaux (Mime, Procureur, Amoureux…). L'option est mémorisée ; un résumé « rôle masqué » apparaît dans l'en-tête du bloc 5 et dans le récapitulatif de la partie.
 
 ### ⏱️ Minuteur de discussion
 
@@ -174,7 +173,7 @@ Quand un Mr. White est éliminé, une fenêtre lui laisse une dernière chance d
 - **Bonne réponse** : Mr. White gagne la partie **à lui seul**, même si son élimination donnait la victoire aux Civils.
 - **Mauvaise réponse** (ou renoncement) : la partie suit son cours, et le mot des Civils **reste secret**. Si plusieurs Mr. White sont éliminés ensemble, ils tentent leur chance l'un après l'autre.
 - Ne s'applique pas lorsque l'Idiot du village gagne au premier vote.
-- Une case dans le bloc *Rôles spéciaux* permet de **désactiver** cette règle ; le Mr. White en est informé sur sa carte quand elle est active.
+- Cette règle est **toujours active** (elle n'est plus désactivable) ; le Mr. White en est informé sur sa carte.
 
 ### 📊 Journal des scores et statistiques
 
@@ -199,7 +198,7 @@ Le thème **Mes paires** regroupe les paires saisies par les joueurs, stockées 
 
 - **Ajouter** une paire (deux mots différents, **40 caractères max** chacun, jusqu'à **300 paires**) avec sa difficulté. Les doublons sont refusés, quel que soit l'ordre des deux mots ou les accents.
 - **Supprimer** une paire (×).
-- **Exporter** la liste dans un fichier JSON (`undercover-mes-paires-AAAA-MM-JJ.json`) et la **réimporter** depuis un fichier : l'import **fusionne** sans écraser l'existant, ignore les doublons et les paires invalides, et indique combien de paires ont été ajoutées ou ignorées. Un export de l'application, ou un simple tableau JSON `[["mot1", "mot2", 2], …]`, est accepté ; tout autre fichier est refusé avec un message.
+- **Exporter** la liste dans un fichier JSON (`mythomytho-mes-paires-AAAA-MM-JJ.json`) et la **réimporter** depuis un fichier : l'import **fusionne** sans écraser l'existant, ignore les doublons et les paires invalides, et indique combien de paires ont été ajoutées ou ignorées. Un export de l'application, ou un simple tableau JSON `[["mot1", "mot2", 2], …]`, est accepté ; tout autre fichier est refusé avec un message.
 - **Partager par lien** : un lien `…/index.html#paires=…` encode toutes les paires. À son ouverture, l'application propose d'**ajouter les paires reçues** (feuille de partage native quand elle existe, sinon copie dans le presse-papiers).
 
 ### 🔗 Raccourcis et liens spéciaux
@@ -247,9 +246,8 @@ La difficulté mesure la **proximité des deux mots** : plus ils sont proches, p
 | **Facile**    | Mots plutôt éloignés : l'Undercover se repère assez vite   | Chat / Chien     |
 | **Moyenne**   | Même univers, éléments distincts : un bon équilibre        | Pizza / Burger   |
 | **Difficile** | Quasi-synonymes ou mots presque identiques                 | Mer / Océan      |
-| **Toutes**    | Toutes les paires sont mélangées (par défaut)              | —                |
 
-Les compteurs de paires par thème se mettent à jour selon le niveau choisi. Si aucun thème sélectionné ne contient de paire du niveau demandé, l'application utilise **toutes les difficultés** et le signale.
+La difficulté se règle avec l'**interrupteur « Difficulté des paires »** du bloc 2 : **désactivé** (par défaut), toutes les paires sont mélangées ; **activé**, on choisit un niveau (*Facile*, *Moyenne* ou *Difficile*, *Moyenne* par défaut), et le dernier niveau choisi est mémorisé. Les compteurs de paires par thème se mettent à jour selon le niveau choisi. Si aucun thème sélectionné ne contient de paire du niveau demandé, l'application utilise **toutes les difficultés** et le signale.
 
 > Les niveaux fournis sont une **évaluation éditoriale** : ils sont modifiables paire par paire directement dans `words.json`.
 
@@ -281,7 +279,7 @@ Pour **ajouter un thème**, il suffit d'ajouter un objet dans `themes` : il appa
 - **Manifeste** (`manifest.json`) : nom « Undercover — jeu de mots & de déduction », affichage `standalone`, orientation portrait, langue `fr`, catégories jeux / divertissement, icônes 192 et 512 px (dont des versions *maskable*) et icône Apple Touch.
 - **Raccourcis d'application** : « Nouvelle manche » et « Journal des scores ».
 - **Captures d'écran** déclarées (`narrow` et `wide`) pour la fiche d'installation.
-- **Service Worker** (`sw.js`, cache `undercover-v1.4.2`) :
+- **Service Worker** (`sw.js`, cache `mythomytho-v1.4.3`) :
   - **précache** obligatoire de l'application (HTML, CSS, **les 20 modules de `js/`**, manifeste, `words.json`) : les modules chargés à la demande sont donc eux aussi disponibles hors ligne ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
   - navigation : **réseau d'abord**, repli sur `index.html` en cache ;
   - fichiers de l'application : **cache d'abord**, rafraîchis en arrière-plan (*stale-while-revalidate*) ;
@@ -333,12 +331,14 @@ Toutes les données restent **sur votre appareil**, dans le `localStorage` du na
 | Clé                                  | Contenu                                                              |
 |--------------------------------------|----------------------------------------------------------------------|
 | `undercover_theme_v1`                | Thème d'affichage (clair / sombre)                                   |
-| `undercover_options_v1`              | Difficulté, confidentialité des cartes (dont affichage du rôle), son, dernière chance, Undercovers automatiques |
+| `undercover_options_v1`              | Difficulté (et dernier niveau choisi), confidentialité des cartes (dont affichage du rôle), son, Undercovers automatiques |
 | `undercover_groups_v1`               | Groupes de joueurs (20 max)                                          |
 | `undercover_timer_settings_v1`       | Minuteur : activation et durée                                       |
 | `undercover_used_pairs_v1`           | Paires déjà jouées (pour éviter les répétitions)                     |
 | `undercover_custom_pairs_v1`         | Paires de « Mes paires » (300 max)                                   |
 | `undercover_score_log_v1`            | Journal des scores et statistiques (200 manches max)                 |
+
+> Le jeu s'appelle désormais **MythoMytho**, mais les clés gardent le préfixe `undercover_` : cela conserve les réglages, groupes, paires et journaux déjà enregistrés sur les appareils existants. Seuls les noms des fichiers exportés et du cache du service worker utilisent le nouveau nom.
 
 L'état d'une manche en cours **n'est pas sauvegardé** : recharger la page pendant une manche la perd (les scores déjà enregistrés sont conservés).
 
@@ -378,7 +378,7 @@ Une connexion est nécessaire au **premier chargement** (mots et polices) ; ensu
 │   ├── theme.js        Thème clair / sombre
 │   ├── themes.js       words.json, données de « Mes paires », difficulté, tirage, grille des thèmes
 │   ├── setup.js        Compteurs, rôles, noms, minuteur, récapitulatif
-│   ├── options.js      Options mémorisées (difficulté, confidentialité, son, dernière chance)
+│   ├── options.js      Options mémorisées (difficulté, confidentialité, son)
 │   ├── balance.js      Recommandation d'imposteurs et contrôle d'équilibrage
 │   ├── groups.js       Groupes de joueurs mémorisés
 │   ├── audio.js        Sons du minuteur (Web Audio)

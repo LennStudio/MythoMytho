@@ -112,11 +112,18 @@ function renderTimerSetupUI() {
   if (el.timerDisplaySetup) el.timerDisplaySetup.textContent = state.timerDurationMin;
   if (el.timerMinus) el.timerMinus.disabled = state.timerDurationMin <= TIMER_MIN_DURATION;
   if (el.timerPlus) el.timerPlus.disabled = state.timerDurationMin >= TIMER_MAX_DURATION;
-  if (el.timerSummary) {
-    el.timerSummary.textContent = state.timerEnabled ?
-      (state.timerDurationMin + ' min') : 'Désactivé';
-  }
+  renderComfortSummary();
   renderSetupRecap();
+}
+
+// Résumé du bloc 5 « Minuteur & confidentialité » (affiché dans l'en-tête replié).
+export function renderComfortSummary() {
+  if (!el.timerSummary) return;
+  var privacy = state.privacy === 'auto' ? ('masquage ' + state.autoHideSec + ' s') :
+    (state.privacy === 'hold' ? 'maintenir' : 'standard');
+  var parts = [state.timerEnabled ? (state.timerDurationMin + ' min') : 'sans minuteur', privacy];
+  if (!state.showRole) parts.push('rôle masqué');
+  el.timerSummary.textContent = parts.join(' · ');
 }
 
 function renderRolesSummary() {

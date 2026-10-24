@@ -1,14 +1,14 @@
-// Options mémorisées : difficulté, confidentialité des cartes, son, dernière chance, Undercovers automatiques.
+// Options mémorisées : difficulté, confidentialité des cartes, son, Undercovers automatiques.
 
 import { previewSound } from './audio.js';
 import { el, state } from './core.js';
-import { renderSetupRecap } from './setup.js';
+import { renderComfortSummary, renderSetupRecap } from './setup.js';
 import { renderCustomCountHint, renderThemeToggles } from './themes.js';
 
 var OPTIONS_STORAGE_KEY = 'undercover_options_v1';
 
 // ======================================================================
-// Options : difficulté, confidentialité des cartes, son, dernière chance
+// Options : difficulté, confidentialité des cartes, son
 // ======================================================================
 var AUTO_HIDE_CHOICES = [5, 8, 12, 20];
 
@@ -19,10 +19,11 @@ export function loadOptions() {
     var o = JSON.parse(raw);
     if (!o || typeof o !== 'object') return;
     if (o.difficulty === 0 || o.difficulty === 1 || o.difficulty === 2 || o.difficulty === 3) state.difficulty = o.difficulty;
+    if (o.difficultyLevel === 1 || o.difficultyLevel === 2 || o.difficultyLevel === 3) state.difficultyLevel = o.difficultyLevel;
+    else if (state.difficulty) state.difficultyLevel = state.difficulty;
     if (o.privacy === 'standard' || o.privacy === 'auto' || o.privacy === 'hold') state.privacy = o.privacy;
     if (AUTO_HIDE_CHOICES.indexOf(o.autoHideSec) !== -1) state.autoHideSec = o.autoHideSec;
     if (typeof o.timerSound === 'boolean') state.timerSound = o.timerSound;
-    if (typeof o.mrWhiteGuess === 'boolean') state.mrWhiteGuess = o.mrWhiteGuess;
     if (typeof o.autoUndercover === 'boolean') state.autoUndercover = o.autoUndercover;
     if (typeof o.showRole === 'boolean') state.showRole = o.showRole;
   } catch (e) {}
@@ -32,10 +33,10 @@ export function saveOptions() {
   try {
     window.localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify({
       difficulty: state.difficulty,
+      difficultyLevel: state.difficultyLevel,
       privacy: state.privacy,
       autoHideSec: state.autoHideSec,
       timerSound: state.timerSound,
-      mrWhiteGuess: state.mrWhiteGuess,
       autoUndercover: state.autoUndercover,
       showRole: state.showRole
     }));
@@ -49,15 +50,12 @@ var DIFFICULTY_HINTS = {
   3: 'Mots quasi identiques : l\'Undercover est très difficile à démasquer.'
 };
 
-var PRIVACY_LABELS = {
-  standard: 'Standard',
-  auto: 'Masquage automatique',
-  hold: 'Maintenir pour révéler'
-};
-
 function renderDifficultyUI() {
+  var on = state.difficulty !== 0;
+  el.difficultyEnabledInput.checked = on;
+  el.difficultyLevels.hidden = !on;
   el.difficultyRadios.forEach(function (r) {
-    r.checked = parseInt(r.value, 10) === state.difficulty;
+    r.checked = on && parseInt(r.value, 10) === state.difficulty;
   });
   if (el.difficultyHint) el.difficultyHint.textContent = DIFFICULTY_HINTS[state.difficulty];
 }
@@ -68,18 +66,24 @@ function renderPrivacyUI() {
   });
   el.autoHideField.style.display = state.privacy === 'auto' ? '' : 'none';
   el.autoHideSelect.value = String(state.autoHideSec);
-  el.privacySummary.textContent = (state.privacy === 'auto' ?
-    (PRIVACY_LABELS.auto + ' · ' + state.autoHideSec + ' s') : PRIVACY_LABELS[state.privacy]) +
-    (state.showRole ? '' : ' · rôle masqué');
   el.showRoleInput.checked = state.showRole;
+  renderComfortSummary();
   renderSetupRecap();
 }
 
 export function initOptionsUI() {
+  el.difficultyEnabledInput.addEventListener('change', function () {
+    state.difficulty = el.difficultyEnabledInput.checked ? state.difficultyLevel : 0;
+    saveOptions();
+    renderDifficultyUI();
+    renderThemeToggles();
+  });
+
   el.difficultyRadios.forEach(function (r) {
     r.addEventListener('change', function () {
       if (!r.checked) return;
       state.difficulty = parseInt(r.value, 10);
+      state.difficultyLevel = state.difficulty;
       saveOptions();
       renderDifficultyUI();
       renderThemeToggles();
@@ -112,12 +116,6 @@ export function initOptionsUI() {
     state.showRole = el.showRoleInput.checked;
     saveOptions();
     renderPrivacyUI();
-  });
-
-  el.mrWhiteGuessInput.checked = state.mrWhiteGuess;
-  el.mrWhiteGuessInput.addEventListener('change', function () {
-    state.mrWhiteGuess = el.mrWhiteGuessInput.checked;
-    saveOptions();
   });
 
   renderDifficultyUI();

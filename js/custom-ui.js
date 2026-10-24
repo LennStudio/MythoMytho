@@ -177,8 +177,8 @@ export function bootCustomUi() {
   });
 
   el.customExportBtn.addEventListener('click', function () {
-    downloadFile('undercover-mes-paires-' + todayStamp() + '.json', 'application/json', JSON.stringify({
-      app: 'undercover',
+    downloadFile('mythomytho-mes-paires-' + todayStamp() + '.json', 'application/json', JSON.stringify({
+      app: 'mythomytho',
       kind: 'custom-pairs',
       version: 1,
       pairs: customPairs
@@ -217,8 +217,8 @@ export function bootCustomUi() {
     var url = buildShareUrl();
     if (window.navigator.share) {
       window.navigator.share({
-        title: 'Undercover — mes paires',
-        text: 'Mes paires de mots pour Undercover',
+        title: 'MythoMytho — mes paires',
+        text: 'Mes paires de mots pour MythoMytho',
         url: url
       }).catch(function () {});
       return;

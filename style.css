@@ -2317,3 +2317,21 @@ summary.setup-block__head::marker {
 .role-toggle {
     margin: 18px 0 0;
 }
+
+/* ===== Bloc 5 fusionné, interrupteur de difficulté ===== */
+.subsection {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--panel-line);
+}
+
+.subsection__title {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+
+.difficulty__levels {
+    margin-top: 12px;
+}

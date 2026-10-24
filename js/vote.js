@@ -206,7 +206,7 @@ function performElimination(id) {
   // Dernière chance : un Mr. White éliminé peut tenter de deviner le mot des Civils,
   // même si sa chute donnait la victoire aux Civils (sauf victoire de l'Idiot au 1er vote).
   state.guessQueue = [];
-  if (state.mrWhiteGuess && winner !== 'idiot') {
+  if (winner !== 'idiot') {
     state.guessQueue = eliminatedNow.filter(function (p) {
       return p.isMrWhite;
     });

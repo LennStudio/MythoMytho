@@ -103,7 +103,7 @@ function openCard(id) {
 function renderModalBadges(player) {
   el.modalBadges.innerHTML = '';
   var badges = [];
-  if (player.isMrWhite && state.mrWhiteGuess) {
+  if (player.isMrWhite) {
     badges.push({
       label: 'Dernière chance',
       desc: 'Si tu es éliminé, tu pourras tenter de deviner le mot des Civils : si tu le trouves, tu gagnes seul(e).'

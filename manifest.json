@@ -1,6 +1,6 @@
 {
-  "name": "Undercover — jeu de mots & de déduction",
-  "short_name": "Undercover",
+  "name": "MythoMytho — jeu de mots & de déduction",
+  "short_name": "MythoMytho",
   "description": "Jeu de déduction façon Mr. White : démasquez l'Undercover avant qu'il ne devine votre mot.",
   "start_url": "./index.html",
   "scope": "./",
