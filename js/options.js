@@ -1,0 +1,116 @@
+// Options mémorisées : difficulté, confidentialité des cartes, son, dernière chance, Undercovers automatiques.
+
+import { previewSound } from './audio.js';
+import { el, state } from './core.js';
+import { renderSetupRecap } from './setup.js';
+import { renderCustomCountHint, renderThemeToggles } from './themes.js';
+
+var OPTIONS_STORAGE_KEY = 'undercover_options_v1';
+
+// ======================================================================
+// Options : difficulté, confidentialité des cartes, son, dernière chance
+// ======================================================================
+var AUTO_HIDE_CHOICES = [5, 8, 12, 20];
+
+export function loadOptions() {
+  try {
+    var raw = window.localStorage.getItem(OPTIONS_STORAGE_KEY);
+    if (!raw) return;
+    var o = JSON.parse(raw);
+    if (!o || typeof o !== 'object') return;
+    if (o.difficulty === 0 || o.difficulty === 1 || o.difficulty === 2 || o.difficulty === 3) state.difficulty = o.difficulty;
+    if (o.privacy === 'standard' || o.privacy === 'auto' || o.privacy === 'hold') state.privacy = o.privacy;
+    if (AUTO_HIDE_CHOICES.indexOf(o.autoHideSec) !== -1) state.autoHideSec = o.autoHideSec;
+    if (typeof o.timerSound === 'boolean') state.timerSound = o.timerSound;
+    if (typeof o.mrWhiteGuess === 'boolean') state.mrWhiteGuess = o.mrWhiteGuess;
+    if (typeof o.autoUndercover === 'boolean') state.autoUndercover = o.autoUndercover;
+  } catch (e) {}
+}
+
+export function saveOptions() {
+  try {
+    window.localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify({
+      difficulty: state.difficulty,
+      privacy: state.privacy,
+      autoHideSec: state.autoHideSec,
+      timerSound: state.timerSound,
+      mrWhiteGuess: state.mrWhiteGuess,
+      autoUndercover: state.autoUndercover
+    }));
+  } catch (e) {}
+}
+
+var DIFFICULTY_HINTS = {
+  0: 'Toutes les paires sont mélangées.',
+  1: 'Mots plutôt éloignés : l\'Undercover se repère assez facilement.',
+  2: 'Mots du même univers : un bon équilibre pour la plupart des groupes.',
+  3: 'Mots quasi identiques : l\'Undercover est très difficile à démasquer.'
+};
+
+var PRIVACY_LABELS = {
+  standard: 'Standard',
+  auto: 'Masquage automatique',
+  hold: 'Maintenir pour révéler'
+};
+
+function renderDifficultyUI() {
+  el.difficultyRadios.forEach(function (r) {
+    r.checked = parseInt(r.value, 10) === state.difficulty;
+  });
+  if (el.difficultyHint) el.difficultyHint.textContent = DIFFICULTY_HINTS[state.difficulty];
+}
+
+function renderPrivacyUI() {
+  el.privacyRadios.forEach(function (r) {
+    r.checked = r.value === state.privacy;
+  });
+  el.autoHideField.style.display = state.privacy === 'auto' ? '' : 'none';
+  el.autoHideSelect.value = String(state.autoHideSec);
+  el.privacySummary.textContent = state.privacy === 'auto' ?
+    (PRIVACY_LABELS.auto + ' · ' + state.autoHideSec + ' s') : PRIVACY_LABELS[state.privacy];
+  renderSetupRecap();
+}
+
+export function initOptionsUI() {
+  el.difficultyRadios.forEach(function (r) {
+    r.addEventListener('change', function () {
+      if (!r.checked) return;
+      state.difficulty = parseInt(r.value, 10);
+      saveOptions();
+      renderDifficultyUI();
+      renderThemeToggles();
+    });
+  });
+
+  el.privacyRadios.forEach(function (r) {
+    r.addEventListener('change', function () {
+      if (!r.checked) return;
+      state.privacy = r.value;
+      saveOptions();
+      renderPrivacyUI();
+    });
+  });
+
+  el.autoHideSelect.addEventListener('change', function () {
+    var v = parseInt(el.autoHideSelect.value, 10);
+    state.autoHideSec = AUTO_HIDE_CHOICES.indexOf(v) !== -1 ? v : 8;
+    saveOptions();
+    renderPrivacyUI();
+  });
+
+  el.timerSoundInput.addEventListener('change', function () {
+    state.timerSound = el.timerSoundInput.checked;
+    saveOptions();
+    if (state.timerSound) previewSound();
+  });
+
+  el.mrWhiteGuessInput.checked = state.mrWhiteGuess;
+  el.mrWhiteGuessInput.addEventListener('change', function () {
+    state.mrWhiteGuess = el.mrWhiteGuessInput.checked;
+    saveOptions();
+  });
+
+  renderDifficultyUI();
+  renderPrivacyUI();
+  renderCustomCountHint();
+}

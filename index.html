@@ -39,6 +39,18 @@
     href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet">
   <link href="style.css" rel="stylesheet">
+  <!-- Code de la page d'accueil, récupéré en parallèle ; le jeu, le journal et « Mes paires » se chargent à la demande -->
+  <link rel="modulepreload" href="js/core.js">
+  <link rel="modulepreload" href="js/theme.js">
+  <link rel="modulepreload" href="js/themes.js">
+  <link rel="modulepreload" href="js/setup.js">
+  <link rel="modulepreload" href="js/options.js">
+  <link rel="modulepreload" href="js/balance.js">
+  <link rel="modulepreload" href="js/groups.js">
+  <link rel="modulepreload" href="js/audio.js">
+  <link rel="modulepreload" href="js/pwa.js">
+  <link rel="modulepreload" href="js/main.js">
+  <link rel="preload" href="words.json" as="fetch" crossorigin>
 </head>
 
 <body>
@@ -611,7 +623,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div class="visually-hidden" aria-live="polite" id="srAnnounce"></div>
-  <script src="script.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>
