@@ -143,3 +143,7 @@ handleLaunchActions();
 whenIdle(function () {
   loadGame().catch(function () {});
 });
+
+// Signale au garde-fou de chargement (index.html) que le démarrage s'est bien passé.
+window.__mythoBooted = true;
+if (window.__mythoGuard) window.__mythoGuard.ok();

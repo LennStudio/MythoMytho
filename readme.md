@@ -279,7 +279,7 @@ Pour **ajouter un thème**, il suffit d'ajouter un objet dans `themes` : il appa
 - **Manifeste** (`manifest.json`) : nom « Undercover — jeu de mots & de déduction », affichage `standalone`, orientation portrait, langue `fr`, catégories jeux / divertissement, icônes 192 et 512 px (dont des versions *maskable*) et icône Apple Touch.
 - **Raccourcis d'application** : « Nouvelle manche » et « Journal des scores ».
 - **Captures d'écran** déclarées (`narrow` et `wide`) pour la fiche d'installation.
-- **Service Worker** (`sw.js`, cache `mythomytho-v1.4.3`) :
+- **Service Worker** (`sw.js`, cache `mythomytho-v1.4.4`) :
   - **précache** obligatoire de l'application (HTML, CSS, **les 20 modules de `js/`**, manifeste, `words.json`) : les modules chargés à la demande sont donc eux aussi disponibles hors ligne ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
   - navigation : **réseau d'abord**, repli sur `index.html` en cache ;
   - fichiers de l'application : **cache d'abord**, rafraîchis en arrière-plan (*stale-while-revalidate*) ;
@@ -308,6 +308,22 @@ Règles de l'architecture :
 - Chaque module expose une fonction `boot…()` qui branche ses écouteurs ; elles sont appelées par `main.js` (accueil) ou à la première charge du chunk. Un module ne fait aucun effet de bord à l'import, ce qui évite les problèmes d'ordre dans les dépendances circulaires.
 - `core.js` ne dépend de rien : constantes, état de la partie (`state`), références DOM (`el`) et utilitaires.
 - `words.json` est préchargé (`<link rel="preload">`) en parallèle des modules.
+
+### Garde-fou au chargement
+
+Si l'application ne démarre pas, `index.html` affiche une **fenêtre d'erreur claire** au lieu d'une page vide, avec un bouton **« Réessayer »**. Ce petit script (non modulaire) s'exécute même quand les modules échouent :
+
+| Situation                                                       | Message affiché                                                                                   |
+|-----------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| Page ouverte en `file://`                                       | « Ouvrez l'application depuis un serveur » (avec le moyen de lancer un serveur local)             |
+| Fichier introuvable ou injoignable (404, réseau coupé)          | « Un fichier de l'application n'a pas pu être chargé », avec la **liste des fichiers en cause** (ex. `js/setup.js — erreur 404`) |
+| Erreur d'exécution dans un module au démarrage                  | « L'application n'a pas pu démarrer », avec le message d'erreur et le fichier concerné            |
+| Aucun démarrage au bout de **10 s** (connexion lente)           | « Le chargement prend plus de temps que prévu » ; la fenêtre disparaît d'elle-même si l'app finit par démarrer |
+| JavaScript désactivé                                            | Bandeau `<noscript>`                                                                              |
+
+- **Réessayer** recharge la page. **Vider le cache et réessayer** (affiché seulement en ligne) supprime aussi le service worker et les caches avant de recharger, pour repartir d'une version propre.
+- Pour nommer les fichiers manquants, le garde-fou teste les fichiers listés dans les balises `modulepreload` et `preload` d'`index.html` : **tout nouveau module d'accueil doit donc y être ajouté**.
+- `main.js` signale la fin du démarrage (`window.__mythoBooted`) ; les erreurs survenant ensuite n'affichent pas cette fenêtre. Un chargement à la demande qui échoue (jeu, journal, « Mes paires ») affiche à la place un message bref, et l'action peut être retentée.
 
 ### Mesures
 

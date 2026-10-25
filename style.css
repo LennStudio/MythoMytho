@@ -2335,3 +2335,77 @@ summary.setup-block__head::marker {
 .difficulty__levels {
     margin-top: 12px;
 }
+
+/* ===== Garde-fou au chargement ===== */
+.boot-error {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(20, 16, 10, .72);
+}
+
+.boot-error__panel {
+    width: 100%;
+    max-width: 460px;
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    background: var(--paper, #e9e0c6);
+    color: var(--ink, #211d14);
+    border: 1px solid var(--paper-shadow, #cfc3a3);
+    border-radius: 12px;
+    padding: 24px 22px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .4);
+}
+
+.boot-error__panel h2 {
+    font-size: 1.25rem;
+    margin: 0 0 10px;
+}
+
+.boot-error__panel p {
+    font-size: .85rem;
+    line-height: 1.55;
+    margin: 0 0 12px;
+}
+
+.boot-error__files {
+    margin: 0 0 12px;
+    padding: 10px 12px 10px 28px;
+    background: rgba(164, 55, 42, .1);
+    border-left: 3px solid var(--red, #a4372a);
+    font-family: 'Courier Prime', monospace;
+    font-size: .78rem;
+    line-height: 1.6;
+}
+
+.boot-error__detail {
+    font-family: 'Courier Prime', monospace;
+    font-size: .72rem !important;
+    color: var(--ink-soft, #5a5240);
+    overflow-wrap: anywhere;
+}
+
+.boot-error__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.boot-error__actions .btn--ghost {
+    color: var(--ink, #211d14);
+    border-color: var(--ink-soft, #5a5240);
+}
+
+.boot-noscript {
+    margin: 0;
+    padding: 14px 18px;
+    background: #a4372a;
+    color: #fff;
+    text-align: center;
+    font-size: .9rem;
+}

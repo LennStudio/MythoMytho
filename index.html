@@ -55,6 +55,115 @@
 
 <body>
 
+  <!-- Garde-fou au chargement : message clair + « Réessayer » si les modules JavaScript ne démarrent pas -->
+  <div id="bootError" class="boot-error" role="alert" aria-live="assertive" hidden>
+    <div class="boot-error__panel">
+      <h2 id="bootErrorTitle">L'application n'a pas pu démarrer</h2>
+      <p id="bootErrorMsg"></p>
+      <ul id="bootErrorFiles" class="boot-error__files" hidden></ul>
+      <p id="bootErrorDetail" class="boot-error__detail" hidden></p>
+      <div class="boot-error__actions">
+        <button type="button" id="bootRetry" class="btn btn--primary">Réessayer</button>
+        <button type="button" id="bootReset" class="btn btn--ghost" hidden>Vider le cache et réessayer</button>
+      </div>
+    </div>
+  </div>
+  <noscript>
+    <p class="boot-noscript">MythoMytho a besoin de JavaScript pour fonctionner : activez-le, puis rechargez la page.</p>
+  </noscript>
+  <script>
+    (function () {
+      var RANK = { slow: 1, load: 3, error: 3, file: 4 };
+      var TEXTS = {
+        file: ['Ouvrez l\u2019application depuis un serveur',
+          'Cette page est ouverte directement depuis un fichier (file://) : les navigateurs bloquent alors les modules JavaScript de l\u2019application. Lancez un petit serveur local (extension Live Server de VS Code, ou \u00ab py -m http.server \u00bb dans le dossier du projet), puis ouvrez http://localhost:\u2026'],
+        load: ['Un fichier de l\u2019application n\u2019a pas pu \u00eatre charg\u00e9',
+          'V\u00e9rifiez votre connexion, puis r\u00e9essayez. Si le probl\u00e8me persiste, un fichier est peut-\u00eatre absent du serveur.'],
+        error: ['L\u2019application n\u2019a pas pu d\u00e9marrer',
+          'Une erreur est survenue au d\u00e9marrage. R\u00e9essayez ; si elle revient, notez le message ci-dessous.'],
+        slow: ['Le chargement prend plus de temps que pr\u00e9vu',
+          'La connexion est peut-\u00eatre lente. Patientez un instant, ou r\u00e9essayez.']
+      };
+      var current = null, booted = false, probed = false;
+      function $(id) { return document.getElementById(id); }
+
+      function render(kind, detail) {
+        $('bootErrorTitle').textContent = TEXTS[kind][0];
+        $('bootErrorMsg').textContent = TEXTS[kind][1];
+        $('bootErrorDetail').textContent = detail || '';
+        $('bootErrorDetail').hidden = !detail;
+        $('bootReset').hidden = location.protocol === 'file:' || navigator.onLine === false;
+        current = kind;
+      }
+
+      // Cherche les fichiers de d\u00e9marrage introuvables (modulepreload + words.json) pour les nommer.
+      function probe() {
+        if (probed || location.protocol === 'file:' || !window.fetch) return;
+        probed = true;
+        var links = document.querySelectorAll('link[rel="modulepreload"], link[rel="preload"][as="fetch"]');
+        var checks = [].map.call(links, function (l) {
+          var name = l.getAttribute('href');
+          return fetch(l.href, { cache: 'no-store' }).then(function (r) {
+            return r.ok ? null : name + ' \u2014 erreur ' + r.status;
+          }).catch(function () { return name + ' \u2014 injoignable'; });
+        });
+        Promise.all(checks).then(function (res) {
+          var bad = res.filter(Boolean), ul = $('bootErrorFiles');
+          if (booted || !bad.length) return;
+          ul.innerHTML = '';
+          bad.forEach(function (t) { var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+          ul.hidden = false;
+          if (RANK[current] < RANK.load) render('load');
+        });
+      }
+
+      function show(kind, detail) {
+        if (booted) return;
+        if (current && RANK[kind] < RANK[current]) return;
+        if (current === kind && !detail) return;
+        render(kind, detail);
+        $('bootError').hidden = false;
+        if (kind !== 'file') probe();
+        $('bootRetry').focus();
+      }
+
+      function ok() {
+        booted = true;
+        $('bootError').hidden = true;
+      }
+
+      $('bootRetry').addEventListener('click', function () { location.reload(); });
+      $('bootReset').addEventListener('click', function () {
+        var jobs = [];
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+          jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+            return Promise.all(rs.map(function (r) { return r.unregister(); }));
+          }));
+        }
+        if (window.caches) {
+          jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+        }
+        Promise.all(jobs).catch(function () {}).then(function () { location.reload(); });
+      });
+
+      // Erreur d\u2019ex\u00e9cution dans un module au d\u00e9marrage
+      window.addEventListener('error', function (e) {
+        var f = e && e.filename ? String(e.filename) : '';
+        if (!booted && f.indexOf('/js/') !== -1) {
+          show('error', (e.message || 'Erreur inconnue') + ' (' + f.split('/').slice(-2).join('/') + ')');
+        }
+      });
+
+      window.__mythoGuard = {
+        fail: function (kind) { show(kind || 'load'); },
+        ok: ok
+      };
+
+      if (location.protocol === 'file:') show('file');
+      setTimeout(function () { if (!booted) show('slow'); }, 10000);
+    })();
+  </script>
+
   <button type="button" id="themeToggle" class="theme-toggle" aria-label="Passer en mode sombre" aria-pressed="true">
     <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.6" aria-hidden="true">
@@ -626,7 +735,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div class="visually-hidden" aria-live="polite" id="srAnnounce"></div>
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js" onerror="window.__mythoGuard &amp;&amp; window.__mythoGuard.fail('load')"></script>
 </body>
 
 </html>
