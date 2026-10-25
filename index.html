@@ -146,13 +146,17 @@
         Promise.all(jobs).catch(function () {}).then(function () { location.reload(); });
       });
 
-      // Erreur d\u2019ex\u00e9cution dans un module au d\u00e9marrage
+      // \u00c9chec de chargement d\u2019un script (404, r\u00e9seau) ou erreur d\u2019ex\u00e9cution dans un module au d\u00e9marrage.
+      // \u00c9coute en phase de capture : les erreurs de chargement d\u2019un \u00e9l\u00e9ment ne remontent pas.
       window.addEventListener('error', function (e) {
+        if (booted) return;
+        var t = e.target;
+        if (t && t.tagName === 'SCRIPT') { show('load'); return; }
         var f = e && e.filename ? String(e.filename) : '';
-        if (!booted && f.indexOf('/js/') !== -1) {
+        if (f.indexOf('/js/') !== -1) {
           show('error', (e.message || 'Erreur inconnue') + ' (' + f.split('/').slice(-2).join('/') + ')');
         }
-      });
+      }, true);
 
       window.__mythoGuard = {
         fail: function (kind) { show(kind || 'load'); },
@@ -735,7 +739,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div class="visually-hidden" aria-live="polite" id="srAnnounce"></div>
-  <script type="module" src="js/main.js" onerror="window.__mythoGuard &amp;&amp; window.__mythoGuard.fail('load')"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>
