@@ -355,6 +355,38 @@
                   <small>Liés à un autre joueur : si l'un est éliminé, l'autre l'est aussi. Ils gagnent à 2</small>
                 </span>
               </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleMytho">
+                <span>
+                  <strong>Le Mytho</strong>
+                  <small>Civil qui doit placer UN mensonge dans ses indices sans se faire repérer. En fin de manche, le
+                    groupe dit s'il l'a repéré : statistique « mensonges réussis » au journal.</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleVoyeur">
+                <span>
+                  <strong>Le Voyeur</strong>
+                  <small>Civil qui reçoit 3 noms dont exactement un imposteur : il doit convaincre les autres. Conseillé à
+                    partir de 8 joueurs.</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleJanus">
+                <span>
+                  <strong>Janus</strong>
+                  <small>Civil qui reçoit les deux mots (Civils et Undercover) dans un ordre aléatoire, sans savoir lequel
+                    est le bon.</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleFauxFrere">
+                <span>
+                  <strong>Le Faux-Frère</strong>
+                  <small>A le mot des Civils mais gagne avec les imposteurs : les Civils ne gagnent que s'il est éliminé
+                    aussi. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs.</small>
+                </span>
+              </label>
             </div>
             <p class="hint-text hint-text--role hint-text--info">Un joueur ne peut recevoir qu'un seul rôle spécial
               ci-dessous. Être
@@ -538,6 +570,15 @@
         <p class="game-over-banner__sub" id="gameOverSub"></p>
       </div>
 
+      <div id="mythoPanel" class="mytho-panel" hidden>
+        <p class="mytho-panel__question" id="mythoQuestion">Le groupe a-t-il repéré le mensonge ?</p>
+        <div class="mytho-panel__buttons">
+          <button type="button" id="mythoSpotted" class="btn btn--ghost btn--small">Oui, repéré</button>
+          <button type="button" id="mythoPassed" class="btn btn--primary btn--small">Non, il est passé</button>
+        </div>
+        <p class="mytho-panel__done" id="mythoDone" hidden></p>
+      </div>
+
       <div class="actions-row">
         <div class="actions-row__group">
           <button type="button" id="startVoteBtn" class="btn btn--primary" disabled>Lancer le vote <span
@@ -610,6 +651,8 @@
 
         <h4 class="score-section-title" id="scoreRolesTitle">Taux de victoire par rôle</h4>
         <ul class="score-leaderboard score-roles" id="scoreRoles"></ul>
+        <h4 class="score-section-title" id="scoreLiesTitle">Mensonges du Mytho</h4>
+        <ul class="score-leaderboard score-roles" id="scoreLies"></ul>
         <p class="score-note" id="scoreNote">Les taux et séries ne comptent que les manches enregistrées depuis
           l'ajout des statistiques.</p>
 

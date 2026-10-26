@@ -137,6 +137,10 @@ function renderRolesSummary() {
     if (state.roles.mime) labels.push('Mime');
     if (state.roles.procureur) labels.push('Procureur');
     if (state.roles.amoureux) labels.push('Amoureux');
+    if (state.roles.mytho) labels.push('Mytho');
+    if (state.roles.voyeur) labels.push('Voyeur');
+    if (state.roles.janus) labels.push('Janus');
+    if (state.roles.fauxfrere) labels.push('Faux-Frère');
     if (labels.length) parts.push(labels.join(', '));
     el.rolesSummary.textContent = parts.length ? parts.join(' + ') : 'Aucun rôle activé';
   }
@@ -260,6 +264,20 @@ export function bootSetup() {
   el.roleAmoureux.addEventListener('change', function () {
     state.roles.amoureux = el.roleAmoureux.checked;
     renderRolesSummary();
+  });
+
+  // Rôles « mythomanes » : Mytho, Voyeur, Janus, Faux-Frère
+  [
+    [el.roleMytho, 'mytho'],
+    [el.roleVoyeur, 'voyeur'],
+    [el.roleJanus, 'janus'],
+    [el.roleFauxFrere, 'fauxfrere']
+  ].forEach(function (pair) {
+    pair[0].addEventListener('change', function () {
+      state.roles[pair[1]] = pair[0].checked;
+      if (pair[1] === 'fauxfrere') updateUnderCounter();
+      else renderRolesSummary();
+    });
   });
 
   if (el.timerEnabledInput) {

@@ -2409,3 +2409,35 @@ summary.setup-block__head::marker {
     text-align: center;
     font-size: .9rem;
 }
+
+/* ===== Nouveaux rôles : Mytho, Janus ===== */
+.modal__word--janus {
+    font-size: clamp(1.15rem, 5.4vw, 1.55rem);
+    line-height: 1.35;
+    text-align: left;
+}
+
+.mytho-panel {
+    margin: 0 0 18px;
+    padding: 14px 16px;
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-s);
+    background: rgba(182, 146, 78, .12);
+}
+
+.mytho-panel__question {
+    font-weight: 600;
+    margin: 0 0 10px;
+}
+
+.mytho-panel__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mytho-panel__done {
+    margin: 0;
+    font-size: .85rem;
+    color: var(--text);
+}

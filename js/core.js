@@ -50,8 +50,30 @@ export var ROLE_INFO = {
   procureur: {
     label: 'Procureur',
     desc: 'En cas d\'égalité au vote, c\'est toi qui trancheras qui est éliminé.'
+  },
+  mytho: {
+    label: 'Mensonge réussi ?',
+    desc: 'En fin de manche, le groupe dira s\'il a repéré ton mensonge : le résultat alimente tes statistiques. Tu gagnes avec les Civils.'
+  },
+  janus: {
+    label: 'Les deux visages',
+    desc: 'L\'un des deux mots est celui des Civils, l\'autre celui de l\'Undercover. Repère qui parle de l\'un ou de l\'autre, mais tes indices doivent coller aux deux mots. Tu gagnes avec les Civils.'
+  },
+  fauxfrere: {
+    label: 'Traître',
+    desc: 'Les Civils ne gagnent que lorsque tous les imposteurs ET toi êtes éliminés. Tu comptes avec les imposteurs pour les conditions « plus de Civils » et d\'impasse.'
   }
 };
+
+// Camps : les « vrais » imposteurs (Undercover, Mr. White, Espion), et l'équipe des imposteurs,
+// qui compte aussi le Faux-Frère (il a le mot des Civils mais gagne avec les imposteurs).
+export function isImpostor(player) {
+  return !!(player.isUndercover || player.isMrWhite || player.isEspion);
+}
+
+export function isImpostorTeam(player) {
+  return isImpostor(player) || !!player.isFauxFrere;
+}
 
 export var state = {
   playerCount: 6,
@@ -63,7 +85,11 @@ export var state = {
     fantome: false,
     mime: false,
     procureur: false,
-    amoureux: false
+    amoureux: false,
+    mytho: false,
+    voyeur: false,
+    janus: false,
+    fauxfrere: false
   },
   players: [],
   round: 1,
@@ -96,6 +122,7 @@ export var state = {
   guessQueue: [],
   winnerPlayerId: null,
   autoUndercover: true,
+  lastScoreEntry: null,
   showRole: true
 };
 
@@ -122,6 +149,17 @@ export var el = {
   roleMime: document.getElementById('roleMime'),
   roleProcureur: document.getElementById('roleProcureur'),
   roleAmoureux: document.getElementById('roleAmoureux'),
+  roleMytho: document.getElementById('roleMytho'),
+  roleVoyeur: document.getElementById('roleVoyeur'),
+  roleJanus: document.getElementById('roleJanus'),
+  roleFauxFrere: document.getElementById('roleFauxFrere'),
+  mythoPanel: document.getElementById('mythoPanel'),
+  mythoQuestion: document.getElementById('mythoQuestion'),
+  mythoSpotted: document.getElementById('mythoSpotted'),
+  mythoPassed: document.getElementById('mythoPassed'),
+  mythoDone: document.getElementById('mythoDone'),
+  scoreLiesTitle: document.getElementById('scoreLiesTitle'),
+  scoreLies: document.getElementById('scoreLies'),
   themesGrid: document.getElementById('themesGrid'),
   namesGrid: document.getElementById('namesGrid'),
   startBtn: document.getElementById('startBtn'),
@@ -326,7 +364,8 @@ export var ROLE_NAMES = {
   civil: 'Civil',
   undercover: 'Undercover',
   mrwhite: 'Mr. White',
-  espion: 'Espion'
+  espion: 'Espion',
+  fauxfrere: 'Faux-Frère'
 };
 
 export function downloadFile(filename, mime, text) {

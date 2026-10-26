@@ -15,7 +15,7 @@ function recommendedImpostors(n) {
 
 function recommendedUndercover(n) {
   var cap = maxImpostors(n);
-  var others = state.mrWhiteCount + state.espionCount;
+  var others = state.mrWhiteCount + state.espionCount + (state.roles.fauxfrere ? 1 : 0);
   return clamp(recommendedImpostors(n) - others, MIN_UNDERCOVER, Math.max(MIN_UNDERCOVER, cap - others));
 }
 
@@ -46,12 +46,15 @@ export function manualUndercoverChange() {
 
 function specialSlots() {
   return (state.roles.idiot ? 1 : 0) + (state.roles.fantome ? 1 : 0) + (state.roles.mime ? 1 : 0) +
-    (state.roles.procureur ? 1 : 0) + (state.roles.amoureux ? 2 : 0);
+    (state.roles.procureur ? 1 : 0) + (state.roles.amoureux ? 2 : 0) + (state.roles.mytho ? 1 : 0) +
+    (state.roles.voyeur ? 1 : 0) + (state.roles.janus ? 1 : 0) + (state.roles.fauxfrere ? 1 : 0);
 }
 
 function computeBalanceNotes() {
   var n = state.playerCount;
-  var imp = state.undercoverCount + state.mrWhiteCount + state.espionCount;
+  // Le Faux-Frère compte comme un imposteur de plus (il gagne avec eux).
+  var realImp = state.undercoverCount + state.mrWhiteCount + state.espionCount;
+  var imp = realImp + (state.roles.fauxfrere ? 1 : 0);
   var rec = recommendedImpostors(n);
   var slots = specialSlots();
   var notes = [];
@@ -73,7 +76,8 @@ function computeBalanceNotes() {
   if (imp > rec + 1) {
     notes.push({
       level: 'warn',
-      text: 'Beaucoup d\'imposteurs (' + imp + ' sur ' + n + ') : les Civils auront du mal à gagner. Recommandé : ' + rec + '.'
+      text: 'Beaucoup d\'imposteurs (' + imp + ' sur ' + n + (state.roles.fauxfrere ? ', Faux-Frère compris' : '') +
+        ') : les Civils auront du mal à gagner. Recommandé : ' + rec + '.'
     });
   } else if (imp < rec) {
     notes.push({
@@ -86,6 +90,24 @@ function computeBalanceNotes() {
     notes.push({
       level: 'warn',
       text: 'Les Amoureux sont conçus pour 8 joueurs ou plus : en dessous, la partie peut être déséquilibrée.'
+    });
+  }
+
+  var bigTable = [];
+  if (state.roles.voyeur) bigTable.push('le Voyeur');
+  if (state.roles.fauxfrere) bigTable.push('le Faux-Frère');
+  if (bigTable.length && n < 8) {
+    notes.push({
+      level: 'warn',
+      text: (bigTable.join(' et ').charAt(0).toUpperCase() + bigTable.join(' et ').slice(1)) + (bigTable.length > 1 ? ' sont conçus' : ' est conçu') +
+        ' pour 8 joueurs ou plus : en dessous, la partie peut être déséquilibrée.'
+    });
+  }
+
+  if (state.roles.voyeur && n - realImp - 1 < 2) {
+    notes.push({
+      level: 'warn',
+      text: 'Le Voyeur a besoin d\'au moins 2 joueurs non imposteurs en plus de lui : il ne pourra pas recevoir ses 3 noms.'
     });
   }
 

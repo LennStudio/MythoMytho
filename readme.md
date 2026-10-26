@@ -29,7 +29,7 @@
 - **De 3 à 20 joueurs**, avec un nombre d'Undercovers **suggéré automatiquement** selon la taille de la table et des **avertissements d'équilibrage**.
 - **Groupes de joueurs mémorisés** (« Famille », « Soirée du samedi »…) rechargeables en un tap.
 - **596 paires de mots** réparties en 7 thèmes, avec 3 niveaux de difficulté, plus un thème **« Mes paires »** que les joueurs alimentent eux-mêmes.
-- **Cinq rôles spéciaux** optionnels (Idiot du village, Fantôme, Mime, Procureur, Amoureux) et un **Espion** qui reçoit un indice.
+- **Neuf rôles spéciaux** optionnels (Idiot du village, Fantôme, Mime, Procureur, Amoureux, et les rôles « mythomanes » **Mytho, Voyeur, Janus, Faux-Frère**) et un **Espion** qui reçoit un indice.
 - **Dernière chance de Mr. White** : éliminé, il peut deviner le mot des Civils pour voler la victoire.
 - **Confidentialité des cartes** réglable, **minuteur de discussion** avec son et vibration, **écran maintenu allumé** pendant la partie.
 - **Journal des scores** avec taux de victoire, séries et export JSON / CSV.
@@ -62,18 +62,31 @@ Le nombre total d'imposteurs (Undercover + Mr. White + Espion) est plafonné à 
 | **Mime**            | Doit décrire son mot **uniquement par gestes**, sans parler                                   |
 | **Procureur**       | **Tranche lui-même** en cas d'égalité au vote                                                 |
 | **Les Amoureux**    | Deux joueurs liés : si l'un est éliminé, **l'autre l'est aussi**. Ils gagnent à deux          |
+| **Le Mytho**        | Civil qui doit **placer UN mensonge dans ses indices** sans se faire repérer. En fin de manche, le groupe dit s'il l'a repéré (statistique du journal). Il gagne avec les Civils |
+| **Le Voyeur**       | Civil qui reçoit **3 noms dont exactement un vrai imposteur** (Undercover, Mr. White ou Espion), à lui de convaincre les autres. Pour 8 joueurs ou plus |
+| **Janus**           | Civil qui reçoit **les deux mots** (« Mot A » et « Mot B », ordre aléatoire) : l'un est celui des Civils, l'autre celui de l'Undercover. Ses indices doivent coller aux deux mots |
+| **Le Faux-Frère**   | A **le mot des Civils** mais **gagne avec les imposteurs**. Compte comme un imposteur de plus (voir ci-dessous). Pour 8 joueurs ou plus |
 
 Si un rôle spécial ne peut pas être attribué (trop peu de joueurs disponibles), l'application l'indique au lancement de la manche.
+
+**Particularités des rôles « mythomanes »** :
+- Chacun est attribué à **un joueur distinct**, parmi les joueurs qui ne sont pas de vrais imposteurs (et qui n'ont pas déjà un autre rôle spécial).
+- Leur carte affiche **toujours le rôle** (même si « Tu es [rôle] » est désactivé), car il change la façon de jouer.
+- **Voyeur** : les trois noms sont tirés au hasard dans un ordre aléatoire ; il n'y figure jamais lui-même et exactement un des trois est un vrai imposteur (les deux autres n'en sont pas, un Faux-Frère peut s'y trouver). Il faut au moins deux joueurs non imposteurs en plus de lui, sinon le rôle n'est pas attribué.
+- **Mytho** : en fin de manche, un encadré demande « Le groupe a-t-il repéré le mensonge du Mytho ? » (*Oui, repéré* / *Non, il est passé*). La réponse alimente le journal.
+- **Janus** : il a le camp des Civils ; sa carte affiche les deux mots sur deux lignes.
 
 ### Conditions de victoire
 
 | Vainqueur             | Condition                                                                                                         |
 |-----------------------|-------------------------------------------------------------------------------------------------------------------|
-| **Les Civils**        | Tous les imposteurs (Undercover, Mr. White, Espion) sont éliminés                                                 |
-| **Les Imposteurs**    | Il ne reste plus aucun Civil en vie                                                                               |
+| **Les Civils**        | Tous les imposteurs (Undercover, Mr. White, Espion) **et le Faux-Frère** sont éliminés                            |
+| **Les Imposteurs** (Faux-Frère compris) | Il ne reste plus aucun Civil en vie                                                              |
 | **Idiot du village**  | Il est éliminé lors du tout premier vote                                                                          |
 | **Les Amoureux**      | Ils sont les derniers survivants                                                                                  |
 | **Mr. White**         | Il devine le mot des Civils pendant sa **dernière chance** (voir [ci-dessous](#-dernière-chance-de-mr-white))      |
+
+**Faux-Frère** : tant qu'il est en vie, éliminer tous les vrais imposteurs ne suffit pas, et un message prévient que « la partie n'est pas terminée : un traître se cache encore parmi vous ». Il **compte avec les imposteurs** pour la condition « plus de Civils » et pour la règle d'impasse, et il **gagne avec eux** (même éliminé).
 
 **Règle d'impasse** (active tant qu'aucun Procureur n'est en vie et qu'aucun Fantôme n'est en jeu) : s'il ne reste que **2 joueurs** dont un imposteur, les imposteurs gagnent ; s'il reste **4 joueurs** dont un couple d'Amoureux, les Amoureux gagnent.
 
@@ -89,7 +102,7 @@ L'écran d'accueil est organisé en cinq blocs (dont quatre repliables), chacun 
 |--------------------------------|---------------------------------------------------------------------------------------------------|
 | **1. Joueurs & Undercover**    | Nombre de joueurs (3 à 20), d'Undercovers, et réglage automatique du nombre d'imposteurs           |
 | **2. Thèmes des mots**         | Choix des thèmes, difficulté des paires, gestion de « Mes paires »                                |
-| **3. Rôles spéciaux**          | Mr. White, Espion, dernière chance, Idiot, Fantôme, Mime, Procureur, Amoureux                     |
+| **3. Rôles spéciaux**          | Mr. White, Espion, Idiot, Fantôme, Mime, Procureur, Amoureux, Mytho, Voyeur, Janus, Faux-Frère    |
 | **4. Noms des joueurs**        | Un champ par joueur (noms par défaut : *Joueur 1*, *Joueur 2*…) et **groupes de joueurs**        |
 | **5. Minuteur & confidentialité** | Minuteur de discussion (activation, durée de 1 à 15 min, son de fin) et confidentialité des cartes (mode d'affichage du mot, affichage du rôle) |
 
@@ -112,8 +125,10 @@ Les réglages durables (difficulté, confidentialité, son, minuteur, thème d'a
 |------------------------------------------------------------------------------------------|--------------|
 | Rôles spéciaux demandant plus de joueurs que la table (ex. les 5 rôles à 3 joueurs)      | Avertissement |
 | Rôles spéciaux concernant **plus de 40 %** des joueurs                                   | Avertissement |
-| Trop d'imposteurs : plus d'**un de plus** que la recommandation                          | Avertissement |
+| Trop d'imposteurs : plus d'**un de plus** que la recommandation (le **Faux-Frère compte pour un imposteur**) | Avertissement |
 | Amoureux avec **moins de 8 joueurs**                                                     | Avertissement |
+| Voyeur ou Faux-Frère avec **moins de 8 joueurs**                                         | Avertissement |
+| Voyeur sans assez de joueurs non imposteurs pour recevoir ses 3 noms                     | Avertissement |
 | Deux joueurs portant **le même nom** (leurs statistiques seraient confondues)            | Avertissement |
 | Trop peu d'imposteurs par rapport à la recommandation (manche potentiellement longue)    | Information  |
 | Mr. White, Espion ou Idiot du village à **4 joueurs ou moins** (très exposés au 1er vote) | Information  |
@@ -182,11 +197,12 @@ Accessible depuis l'écran de partie (et par le [raccourci](#-raccourcis-et-lien
 | Élément                      | Contenu                                                                                                  |
 |------------------------------|----------------------------------------------------------------------------------------------------------|
 | **Classement des joueurs**   | Nombre de victoires, **taux de victoire**, **série en cours** et **record de série** par joueur           |
-| **Taux par rôle**            | Victoires / manches jouées et pourcentage pour Civil, Undercover, Mr. White et Espion                    |
+| **Taux par rôle**            | Victoires / manches jouées et pourcentage pour Civil, Undercover, Mr. White, Espion et Faux-Frère         |
+| **Mensonges du Mytho**       | Par joueur : mensonges **réussis** (passés inaperçus) sur le nombre de manches renseignées, et pourcentage |
 | **Historique des manches**   | Vainqueur, numéro de manche, nombre de joueurs                                                           |
-| **Export JSON**              | Entrées complètes du journal + statistiques calculées                                                    |
+| **Export JSON**              | Entrées complètes du journal + statistiques calculées (joueurs, rôles, mensonges)                        |
 | **Filtre par groupe**        | Restreint classement, taux, séries et historique à un groupe de joueurs (visible dès qu'une manche a été jouée avec un groupe) |
-| **Export CSV**               | Une ligne par joueur et par manche, avec la colonne `groupe` (séparateur `;`, BOM UTF-8, ouvre directement dans Excel en français) |
+| **Export CSV**               | Une ligne par joueur et par manche, avec les colonnes `groupe` et `mensonge` (`réussi` / `repéré` pour le Mytho) (séparateur `;`, BOM UTF-8, ouvre directement dans Excel en français) |
 
 Chaque manche enregistre la date, le groupe, les joueurs, leur rôle, leurs rôles spéciaux, leur résultat, ainsi que le **thème** et la **difficulté** de la paire jouée.
 
@@ -279,8 +295,8 @@ Pour **ajouter un thème**, il suffit d'ajouter un objet dans `themes` : il appa
 - **Manifeste** (`manifest.json`) : nom « Undercover — jeu de mots & de déduction », affichage `standalone`, orientation portrait, langue `fr`, catégories jeux / divertissement, icônes 192 et 512 px (dont des versions *maskable*) et icône Apple Touch.
 - **Raccourcis d'application** : « Nouvelle manche » et « Journal des scores ».
 - **Captures d'écran** déclarées (`narrow` et `wide`) pour la fiche d'installation.
-- **Service Worker** (`sw.js`, cache `mythomytho-v1.4.4`) :
-  - **précache** obligatoire de l'application (HTML, CSS, **les 20 modules de `js/`**, manifeste, `words.json`) : les modules chargés à la demande sont donc eux aussi disponibles hors ligne ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
+- **Service Worker** (`sw.js`, cache `mythomytho-v1.5`) :
+  - **précache** obligatoire de l'application (HTML, CSS, **les 21 modules de `js/`**, manifeste, `words.json`) : les modules chargés à la demande sont donc eux aussi disponibles hors ligne ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
   - navigation : **réseau d'abord**, repli sur `index.html` en cache ;
   - fichiers de l'application : **cache d'abord**, rafraîchis en arrière-plan (*stale-while-revalidate*) ;
   - autres origines (polices Google) : cache d'exécution avec rafraîchissement en arrière-plan ;
@@ -299,7 +315,7 @@ Le JavaScript est découpé en **modules ES** (`js/`, sans bundler ni build). Tr
 | Niveau | Modules | Quand ? |
 |--------|---------|---------|
 | **Accueil** (immédiat) | `main`, `core`, `theme`, `themes`, `setup`, `options`, `balance`, `groups`, `audio`, `pwa` | Au chargement de la page, récupérés **en parallèle** grâce aux balises `modulepreload` |
-| **Jeu** (arrière-plan) | `game-chunk` → `game`, `timer`, `cards`, `vote`, `guess`, `wakelock`, `journal` | Préchargé quand le navigateur est inactif (`requestIdleCallback`), ou **au clic sur « Lancer »** s'il n'est pas encore prêt |
+| **Jeu** (arrière-plan) | `game-chunk` → `game`, `timer`, `cards`, `vote`, `guess`, `mytho`, `wakelock`, `journal` | Préchargé quand le navigateur est inactif (`requestIdleCallback`), ou **au clic sur « Lancer »** s'il n'est pas encore prêt |
 | **À la demande** | `journal-ui` (fenêtre du journal, statistiques, exports) et `custom-ui` (« Mes paires », import / export / partage) | À la **première ouverture** de la fenêtre, ou au lancement via `?action=scores` / `#paires=…` |
 
 Règles de l'architecture :
@@ -368,7 +384,7 @@ Les liens de partage de « Mes paires » contiennent **les mots eux-mêmes** (en
 
 L'application ne nécessite ni build ni dépendance à installer.
 
-1. Placez les fichiers `index.html`, `style.css`, `words.json`, `manifest.json` et `sw.js` à la racine, avec le dossier `js/` (les 20 modules) et le dossier `assets/` contenant les icônes (`logo-192.png`, `logo-512.png`, `logo-maskable-192.png`, `logo-maskable-512.png`, `logo-apple-touch.png`) et les captures d'écran (`screenshot-setup.png`, `screenshot-game.png`, `screenshot-wide.png`).
+1. Placez les fichiers `index.html`, `style.css`, `words.json`, `manifest.json` et `sw.js` à la racine, avec le dossier `js/` (les 21 modules) et le dossier `assets/` contenant les icônes (`logo-192.png`, `logo-512.png`, `logo-maskable-192.png`, `logo-maskable-512.png`, `logo-apple-touch.png`) et les captures d'écran (`screenshot-setup.png`, `screenshot-game.png`, `screenshot-wide.png`).
 2. Servez le dossier en **HTTPS** (GitHub Pages, Netlify, Vercel…) ou en local, par exemple avec `npx serve` ou `python -m http.server`. Le chargement de `words.json`, des modules `js/`, le service worker et l'installation PWA **ne fonctionnent pas** en ouvrant directement le fichier (`file://`). Le serveur doit servir les fichiers `.js` avec un type MIME JavaScript (c'est le cas de tous les hébergeurs courants).
 3. Ouvrez l'adresse dans un navigateur moderne, puis :
    - **Android / Chrome** : bouton **Installer l'app** ou menu → *Installer l'application* ;
@@ -406,6 +422,7 @@ Une connexion est nécessaire au **premier chargement** (mots et polices) ; ensu
 │   ├── vote.js         Vote, élimination, fin de partie, récapitulatif
 │   ├── guess.js        Dernière chance de Mr. White (saisie et dictée)
 │   ├── wakelock.js     Écran maintenu allumé
+│   ├── mytho.js        Question de fin de manche du Mytho (« mensonge repéré ? »)
 │   ├── journal.js      Enregistrement des manches dans le journal
 │   ├── journal-ui.js   Fenêtre du journal, statistiques, exports   [à la demande]
 │   └── custom-ui.js    Fenêtre « Mes paires », import / export / partage   [à la demande]

@@ -6,6 +6,7 @@ import { bootCards } from './cards.js';
 import { bootVote } from './vote.js';
 import { bootWakelock } from './wakelock.js';
 import { bootGuess } from './guess.js';
+import { bootMytho } from './mytho.js';
 
 // Ce module regroupe tout ce qui sert une fois la partie lancée (cartes, minuteur,
 // vote, dernière chance de Mr. White, journal, écran maintenu allumé). Il est chargé
@@ -19,4 +20,5 @@ export function boot() {
   bootVote();
   bootWakelock();
   bootGuess();
+  bootMytho();
 }

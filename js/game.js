@@ -1,7 +1,8 @@
 // Déroulement d'une partie : attribution des rôles, lancement, nouvelle manche. [chunk de jeu]
 
 import { renderCards } from './cards.js';
-import { MIN_PLAYERS, MIN_UNDERCOVER, clamp, el, getPlayer, maxImpostors, showToast, shuffle, state } from './core.js';
+import { MIN_PLAYERS, MIN_UNDERCOVER, clamp, el, getPlayer, isImpostor, maxImpostors, showToast, shuffle, state } from './core.js';
+import { hideMythoPanel } from './mytho.js';
 import { clampRoleCounts } from './setup.js';
 import { pickWordPair, selectedThemeKeys, wordsLoaded } from './themes.js';
 import { resetDiscussionTimer, startDiscussionTimer, stopDiscussionTimer } from './timer.js';
@@ -47,6 +48,12 @@ function assignRoles() {
     player.isFantome = false;
     player.isMime = false;
     player.isProcureur = false;
+    player.isMytho = false;
+    player.isVoyeur = false;
+    player.isJanus = false;
+    player.isFauxFrere = false;
+    player.voyeurNames = [];
+    player.janusWords = [];
     player.loverId = null;
   });
 
@@ -73,6 +80,52 @@ function assignRoles() {
       skippedRoles.push('Idiot du village');
     }
   }
+  // Rôles de camp Civils (un joueur distinct chacun) : attribués avant les rôles « tous joueurs »
+  // pour que le groupe des Civils ne soit pas épuisé par ceux-ci.
+  function pickCivilFor(flag, label) {
+    var ids = availableIds(state.players.filter(function (p) {
+      return !isImpostor(p);
+    }).map(function (p) {
+      return p.id;
+    }));
+    if (!ids.length) {
+      skippedRoles.push(label);
+      return null;
+    }
+    var id = shuffle(ids)[0];
+    getPlayer(id)[flag] = true;
+    usedForSpecial[id] = true;
+    return getPlayer(id);
+  }
+
+  if (state.roles.fauxfrere) pickCivilFor('isFauxFrere', 'Faux-Frère');
+  if (state.roles.mytho) pickCivilFor('isMytho', 'Mytho');
+  if (state.roles.janus) {
+    var janus = pickCivilFor('isJanus', 'Janus');
+    if (janus) janus.janusWords = shuffle([words.civilWord, words.undercoverWord]);
+  }
+  if (state.roles.voyeur) {
+    var voyeur = pickCivilFor('isVoyeur', 'Voyeur');
+    if (voyeur) {
+      // Trois noms dont exactement un vrai imposteur ; les deux autres n'en sont pas.
+      var impostorNames = state.players.filter(isImpostor).map(function (p) {
+        return p.name;
+      });
+      var innocentNames = state.players.filter(function (p) {
+        return p.id !== voyeur.id && !isImpostor(p);
+      }).map(function (p) {
+        return p.name;
+      });
+      if (impostorNames.length && innocentNames.length >= 2) {
+        voyeur.voyeurNames = shuffle([shuffle(impostorNames)[0]].concat(shuffle(innocentNames).slice(0, 2)));
+      } else {
+        voyeur.isVoyeur = false;
+        usedForSpecial[voyeur.id] = false;
+        skippedRoles.push('Voyeur');
+      }
+    }
+  }
+
   if (state.roles.fantome) {
     var fantomeIds = availableIds(allIds);
     if (fantomeIds.length) {
@@ -174,6 +227,7 @@ function resetStageUI() {
   el.startVoteBtn.style.display = '';
   el.startVoteBtn.disabled = true;
   el.summaryBtn.classList.add('summary-btn--hidden');
+  hideMythoPanel();
   resetDiscussionTimer();
 }
 

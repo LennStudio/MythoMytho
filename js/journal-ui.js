@@ -8,6 +8,7 @@ import { saveScoreLog, scoreLog } from './journal.js';
 function computeStats(list) {
   var byPlayer = {};
   var byRole = {};
+  var lies = {};
   var tracked = 0;
   (list || scoreLog).slice().reverse().forEach(function (entry) {
     if (!Array.isArray(entry.players) || !entry.players.length) return;
@@ -33,11 +34,21 @@ function computeStats(list) {
       });
       r.games += 1;
       if (p.won) r.wins += 1;
+      // Mensonges du Mytho (seulement ceux dont le résultat a été renseigné)
+      if (p.lie === 'spotted' || p.lie === 'passed') {
+        var l = lies[p.name] || (lies[p.name] = {
+          games: 0,
+          passed: 0
+        });
+        l.games += 1;
+        if (p.lie === 'passed') l.passed += 1;
+      }
     });
   });
   return {
     byPlayer: byPlayer,
     byRole: byRole,
+    lies: lies,
     tracked: tracked
   };
 }
@@ -101,8 +112,28 @@ function renderScoreModal() {
   el.scoreRolesTitle.style.display = hasStats ? '' : 'none';
   el.scoreRoles.style.display = hasStats ? '' : 'none';
   el.scoreNote.style.display = (hasStats && stats.tracked < entries.length) ? '' : 'none';
+
+  // Mensonges du Mytho : réussis = passés inaperçus
+  var liars = Object.keys(stats.lies).sort(function (a, b) {
+    return percent(stats.lies[b].passed, stats.lies[b].games) - percent(stats.lies[a].passed, stats.lies[a].games);
+  });
+  el.scoreLiesTitle.style.display = liars.length ? '' : 'none';
+  el.scoreLies.style.display = liars.length ? '' : 'none';
+  el.scoreLies.innerHTML = '';
+  liars.forEach(function (name) {
+    var l = stats.lies[name];
+    var li = document.createElement('li');
+    var label = document.createElement('strong');
+    label.textContent = name;
+    var value = document.createElement('span');
+    value.className = 'score-leaderboard__count';
+    value.textContent = l.passed + '/' + l.games + ' réussis · ' + percent(l.passed, l.games) + ' %';
+    li.appendChild(label);
+    li.appendChild(value);
+    el.scoreLies.appendChild(li);
+  });
   el.scoreRoles.innerHTML = '';
-  ['civil', 'undercover', 'mrwhite', 'espion'].forEach(function (role) {
+  ['civil', 'undercover', 'mrwhite', 'espion', 'fauxfrere'].forEach(function (role) {
     var r = stats.byRole[role];
     if (!r) return;
     var li = document.createElement('li');
@@ -159,6 +190,15 @@ function exportScoreJson() {
           wins: r.wins,
           winRate: percent(r.wins, r.games)
         };
+      }),
+      lies: Object.keys(stats.lies).map(function (name) {
+        var l = stats.lies[name];
+        return {
+          name: name,
+          games: l.games,
+          successful: l.passed,
+          successRate: percent(l.passed, l.games)
+        };
       })
     }
   };
@@ -174,7 +214,7 @@ function csvCell(value) {
 
 function exportScoreCsv() {
   var rows = [
-    ['date', 'manche', 'nb_joueurs', 'vainqueur', 'groupe', 'joueur', 'role', 'roles_speciaux', 'victoire', 'elimine', 'difficulte_paire', 'theme']
+    ['date', 'manche', 'nb_joueurs', 'vainqueur', 'groupe', 'joueur', 'role', 'roles_speciaux', 'victoire', 'elimine', 'difficulte_paire', 'theme', 'mensonge']
   ];
   scoreLog.slice().reverse().forEach(function (e) {
     var base = [e.date || '', e.round, e.playerCount, e.winnerLabel, e.group || ''];
@@ -183,12 +223,13 @@ function exportScoreCsv() {
     if (Array.isArray(e.players) && e.players.length) {
       e.players.forEach(function (p) {
         rows.push(base.concat([p.name, ROLE_NAMES[p.role] || p.role, (p.specials || []).join(' + '),
-          p.won ? 'oui' : 'non', p.eliminated ? 'oui' : 'non', diff, theme
+          p.won ? 'oui' : 'non', p.eliminated ? 'oui' : 'non', diff, theme,
+          p.lie === 'passed' ? 'réussi' : (p.lie === 'spotted' ? 'repéré' : '')
         ]));
       });
     } else {
       // Ancienne entrée : seuls les vainqueurs ont été conservés.
-      rows.push(base.concat([(e.winnerNames || []).join(', '), '', '', 'oui', '', diff, theme]));
+      rows.push(base.concat([(e.winnerNames || []).join(', '), '', '', 'oui', '', diff, theme, '']));
     }
   });
   var text = '\ufeff' + rows.map(function (r) {

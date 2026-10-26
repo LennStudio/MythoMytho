@@ -1,9 +1,10 @@
 // Vote, élimination, fin de partie et récapitulatif. [chunk de jeu]
 
 import { CARD_ICON, cardRotation } from './cards.js';
-import { ROLE_NAMES, announce, el, getPlayer, state, vibrate } from './core.js';
+import { ROLE_NAMES, announce, el, getPlayer, isImpostor, isImpostorTeam, state, vibrate } from './core.js';
 import { openGuessModal } from './guess.js';
 import { baseRoleKey, recordScoreEntry } from './journal.js';
+import { showMythoQuestion } from './mytho.js';
 import { stopDiscussionTimer } from './timer.js';
 
 function alivePlayers() {
@@ -109,6 +110,7 @@ function closeVoteConfirm() {
 }
 
 function roleLabel(player) {
+  if (player.isFauxFrere) return player.name + ' était le Faux-Frère';
   if (player.isMrWhite) return player.name + ' était Mr. White';
   if (player.isEspion) return player.name + ' était l\'Espion';
   if (player.isUndercover) return player.name + ' était l\'Undercover';
@@ -178,9 +180,7 @@ function performElimination(id) {
     }
 
     if (!winner && ruleActive && aliveNow.length === 2) {
-      var impostorAlive2 = aliveNow.filter(function (p) {
-        return p.isUndercover || p.isMrWhite || p.isEspion;
-      }).length;
+      var impostorAlive2 = aliveNow.filter(isImpostorTeam).length;
       if (impostorAlive2 > 0) {
         winner = 'undercover';
         winnerReason = 'deadlock2';
@@ -188,11 +188,13 @@ function performElimination(id) {
     }
 
     if (!winner) {
+      // Le Faux-Frère compte avec les imposteurs : les Civils ne gagnent qu'une fois
+      // tous les imposteurs ET le Faux-Frère éliminés.
       var aliveImpostor = state.players.filter(function (p) {
-        return !p.eliminated && (p.isUndercover || p.isMrWhite || p.isEspion);
+        return !p.eliminated && isImpostorTeam(p);
       }).length;
       var aliveCivil = state.players.filter(function (p) {
-        return !p.eliminated && !(p.isUndercover || p.isMrWhite || p.isEspion);
+        return !p.eliminated && !isImpostorTeam(p);
       }).length;
       if (aliveImpostor === 0) winner = 'civils';
       else if (aliveCivil === 0) winner = 'undercover';
@@ -224,8 +226,17 @@ function performElimination(id) {
     return line;
   }).join('<br>');
 
+  var traitorAlive = state.players.some(function (p) {
+    return p.isFauxFrere && !p.eliminated;
+  });
+  var realImpostorsAlive = state.players.some(function (p) {
+    return !p.eliminated && isImpostor(p);
+  });
+
   if (winner === 'civils') {
-    el.elimContinueText.textContent = 'Tous les Undercovers et Mr. White ont été démasqués !';
+    el.elimContinueText.textContent = state.players.some(function (p) {
+      return p.isFauxFrere;
+    }) ? 'Tous les imposteurs et le Faux-Frère ont été démasqués !' : 'Tous les imposteurs ont été démasqués !';
     el.elimContinueBtn.textContent = 'Voir le résultat';
   } else if (winner === 'undercover') {
     el.elimContinueText.textContent = winnerReason === 'deadlock2' ?
@@ -240,6 +251,9 @@ function performElimination(id) {
       'Il ne reste plus que 4 joueurs : les Amoureux l\'emportent automatiquement !' :
       'Les Amoureux sont les deux derniers survivants !';
     el.elimContinueBtn.textContent = 'Voir le résultat';
+  } else if (traitorAlive && !realImpostorsAlive) {
+    el.elimContinueText.textContent = 'Tous les imposteurs ont été démasqués, mais la partie n\'est pas terminée : un traître se cache encore parmi vous !';
+    el.elimContinueBtn.textContent = 'Continuer';
   } else {
     el.elimContinueText.textContent = 'La partie continue — au prochain vote.';
     el.elimContinueBtn.textContent = 'Continuer';
@@ -280,21 +294,24 @@ function enterGameOver(winner) {
   el.summaryBtn.classList.remove('summary-btn--hidden');
   stopDiscussionTimer();
 
-  var impostorPlural = state.players.filter(function (p) {
-    return p.isUndercover || p.isMrWhite || p.isEspion;
-  }).length > 1;
+  var impostorPlural = state.players.filter(isImpostor).length > 1;
+  var traitor = state.players.filter(function (p) {
+    return p.isFauxFrere;
+  })[0];
 
   if (winner === 'civils') {
     el.gameOverTitle.textContent = 'Les Civils ont gagné !';
     el.gameOverSub.textContent = impostorPlural ?
       'Tous les imposteurs ont été démasqués et éliminés.' :
       'L\'imposteur a été démasqué et éliminé.';
+    if (traitor) el.gameOverSub.textContent += ' Le Faux-Frère (' + traitor.name + ') aussi.';
     el.gameOverBanner.classList.add('game-over-banner--civils');
   } else if (winner === 'undercover') {
     el.gameOverTitle.textContent = impostorPlural ? 'Les Undercovers ont gagné !' : 'L\'Undercover a gagné !';
     el.gameOverSub.textContent = state.winnerReason === 'deadlock2' ?
       'Il ne restait plus que 2 joueurs : la situation était dans l\'impasse, l\'imposteur l\'emporte automatiquement.' :
       'Tous les Civils ont été éliminés avant d\'avoir démasqué l\'imposteur.';
+    if (traitor) el.gameOverSub.textContent += ' Le Faux-Frère (' + traitor.name + ') gagne avec eux.';
     el.gameOverBanner.classList.add('game-over-banner--undercover');
   } else if (winner === 'idiot') {
     el.gameOverTitle.textContent = 'L\'Idiot du village a gagné !';
@@ -315,7 +332,8 @@ function enterGameOver(winner) {
 
   el.gameOverBanner.classList.add('game-over-banner--active');
   announce(el.gameOverTitle.textContent);
-  recordScoreEntry(winner);
+  state.lastScoreEntry = recordScoreEntry(winner);
+  showMythoQuestion();
 }
 
 function openSummary() {
@@ -333,7 +351,8 @@ function openSummary() {
     right.style.gap = '6px';
 
     var wordSpan = document.createElement('span');
-    wordSpan.textContent = (player.isMrWhite || player.isEspion) ? 'Aucun mot' : player.word;
+    wordSpan.textContent = (player.isMrWhite || player.isEspion) ? 'Aucun mot' :
+      (player.isJanus ? player.janusWords.join(' / ') : player.word);
     wordSpan.style.color = 'var(--ink-soft)';
     right.appendChild(wordSpan);
 
@@ -344,6 +363,9 @@ function openSummary() {
     } else if (player.isEspion) {
       roleSpan.className = 'summary-role summary-role--undercover';
       roleSpan.textContent = 'Espion';
+    } else if (player.isFauxFrere) {
+      roleSpan.className = 'summary-role summary-role--undercover';
+      roleSpan.textContent = 'Faux-Frère';
     } else if (player.isUndercover) {
       roleSpan.className = 'summary-role summary-role--undercover';
       roleSpan.textContent = 'Undercover';
@@ -358,6 +380,9 @@ function openSummary() {
     if (player.isFantome) specials.push('Fantôme');
     if (player.isMime) specials.push('Mime');
     if (player.isProcureur) specials.push('Procureur');
+    if (player.isMytho) specials.push('Mytho');
+    if (player.isVoyeur) specials.push('Voyeur');
+    if (player.isJanus) specials.push('Janus');
     if (player.loverId !== null) specials.push('Amoureux');
     specials.forEach(function (label) {
       var specialSpan = document.createElement('span');

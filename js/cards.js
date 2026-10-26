@@ -74,6 +74,20 @@ function openCard(id) {
   } else if (player.isEspion) {
     el.modalRole.textContent = 'Tu es l\'Espion — tu n\'as pas de mot, mais un indice t\'attend ci-dessous';
     el.modalWord.textContent = 'Aucun mot';
+  } else if (player.isFauxFrere) {
+    el.modalRole.textContent = 'Tu es le Faux-Frère : tu as le mot des Civils, mais tu gagnes si les imposteurs gagnent.';
+    el.modalWord.textContent = player.word;
+  } else if (player.isMytho) {
+    el.modalRole.textContent = 'Tu es le Mytho : place UN mensonge dans tes indices, sans te faire repérer.';
+    el.modalWord.textContent = player.word;
+  } else if (player.isVoyeur) {
+    var names = player.voyeurNames;
+    el.modalRole.textContent = 'Tu es le Voyeur — ' + names[0] + ', ' + names[1] + ' ou ' + names[2] +
+      ' : l\'un d\'eux est un imposteur. À toi de convaincre les autres.';
+    el.modalWord.textContent = player.word;
+  } else if (player.isJanus) {
+    el.modalRole.textContent = 'Tu es Janus — tu as reçu les deux mots, à toi de deviner lequel est le bon.';
+    el.modalWord.textContent = 'Mot A : ' + player.janusWords[0] + '\nMot B : ' + player.janusWords[1];
   } else if (player.isUndercover) {
     el.modalRole.textContent = 'Tu es l\'Undercover — fonds-toi dans la masse';
     el.modalWord.textContent = player.word;
@@ -82,9 +96,15 @@ function openCard(id) {
     el.modalWord.textContent = player.word;
   }
 
+  // Deux mots (Janus) : un par ligne, en plus petit.
+  el.modalWord.style.whiteSpace = player.isJanus ? 'pre-line' : '';
+  el.modalWord.classList.toggle('modal__word--janus', !!player.isJanus);
+
   // « Tu es [rôle] » : masquable pour les joueurs qui ont un mot (Civils et Undercover).
-  // Mr. White et l'Espion n'ont pas de mot : leur rôle reste toujours affiché.
-  var roleHidden = !state.showRole && !player.isMrWhite && !player.isEspion;
+  // Mr. White, l'Espion et les rôles qui changent la façon de jouer (Mytho, Voyeur, Janus,
+  // Faux-Frère) voient toujours leur rôle.
+  var roleHidden = !state.showRole && !player.isMrWhite && !player.isEspion &&
+    !player.isMytho && !player.isVoyeur && !player.isJanus && !player.isFauxFrere;
   if (roleHidden) el.modalRole.textContent = '';
   el.modalRole.hidden = roleHidden;
 
@@ -115,6 +135,9 @@ function renderModalBadges(player) {
       desc: 'Le mot des Civils commence par la lettre « ' + state.civilWordHint + ' ».'
     });
   }
+  if (player.isFauxFrere) badges.push(ROLE_INFO.fauxfrere);
+  if (player.isMytho) badges.push(ROLE_INFO.mytho);
+  if (player.isJanus) badges.push(ROLE_INFO.janus);
   if (player.isIdiot) badges.push(ROLE_INFO.idiot);
   if (player.isFantome) badges.push(ROLE_INFO.fantome);
   if (player.isMime) badges.push(ROLE_INFO.mime);

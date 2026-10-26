@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_VERSION = "mythomytho-v1.4.4";
+var CACHE_VERSION = "mythomytho-v1.5";
 var APP_SHELL_CACHE = CACHE_VERSION + "-shell";
 var RUNTIME_CACHE = CACHE_VERSION + "-runtime";
 
@@ -27,6 +27,7 @@ var APP_SHELL_FILES = [
     "./js/wakelock.js",
     "./js/guess.js",
     "./js/journal.js",
+    "./js/mytho.js",
     "./js/journal-ui.js",
     "./js/custom-ui.js",
     "./manifest.json",
