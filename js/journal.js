@@ -43,6 +43,9 @@ function playerSpecials(player) {
   if (player.isMytho) specials.push('Mytho');
   if (player.isVoyeur) specials.push('Voyeur');
   if (player.isJanus) specials.push('Janus');
+  if (player.isTiresias) specials.push('Tirésias');
+  if (player.isOrion) specials.push('Orion');
+  if (player.isTwin) specials.push('Jumeaux');
   if (player.loverId !== null) specials.push('Amoureux');
   return specials;
 }

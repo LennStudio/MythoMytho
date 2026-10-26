@@ -5,6 +5,7 @@ import { ROLE_NAMES, announce, el, getPlayer, isImpostor, isImpostorTeam, state,
 import { openGuessModal } from './guess.js';
 import { baseRoleKey, recordScoreEntry } from './journal.js';
 import { showMythoQuestion } from './mytho.js';
+import { openOrionModal } from './orion.js';
 import { stopDiscussionTimer } from './timer.js';
 
 function alivePlayers() {
@@ -49,7 +50,7 @@ function renderEliminatedList() {
   }).forEach(function (player) {
     var chip = document.createElement('span');
     chip.className = 'eliminated-chip' + (player.isFantome ? ' eliminated-chip--fantome' : '');
-    chip.innerHTML = player.name + ' <span class="eliminated-chip__role">' +
+    chip.innerHTML = escapeHtml(player.name) + ' <span class="eliminated-chip__role">' +
       ROLE_NAMES[baseRoleKey(player)] + '</span>' +
       (player.isFantome ? ' <span class="eliminated-chip__fantome">👻 Fantôme — vote encore</span>' : '');
     el.eliminatedList.appendChild(chip);
@@ -117,21 +118,96 @@ function roleLabel(player) {
   return player.name + ' était Civil';
 }
 
+// Marque un joueur (et son/sa partenaire Amoureux) comme éliminé ; renvoie la liste des éliminés.
+function eliminate(player) {
+  var batch = [player];
+  player.eliminated = true;
+  if (player.loverId !== null) {
+    var lover = getPlayer(player.loverId);
+    if (lover && !lover.eliminated) {
+      lover.eliminated = true;
+      batch.push(lover);
+    }
+  }
+  return batch;
+}
+
+// Orion éliminé : en attente du choix de sa cible (la victoire n'est évaluée qu'après son tir).
+var pendingOrion = null;
+
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, function (c) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[c];
+  });
+}
+
+function fillEliminationModal(batch, shotBy) {
+  var namesText = batch.map(function (p) {
+    return p.name;
+  }).join(' et ');
+  el.elimName.textContent = shotBy ?
+    (shotBy.name + ' emporte ' + namesText + ' avec lui/elle !') :
+    (namesText + (batch.length > 1 ? ' ont été éliminés' : ' a été éliminé(e)'));
+  el.elimRole.innerHTML = batch.map(function (p) {
+    var line = escapeHtml(roleLabel(p));
+    if (p.isFantome) {
+      line += '<span class="modal__fantome-note">👻 ' + escapeHtml(p.name) + ' est le Fantôme — il/elle continue de voter aux prochains tours !</span>';
+    }
+    if (p.isOrion) {
+      line += '<span class="modal__fantome-note">🏹 ' + escapeHtml(p.name) + ' est Orion, le Chasseur — il/elle emporte un joueur avec lui/elle !</span>';
+    }
+    return line;
+  }).join('<br>');
+}
+
+function openEliminationModal() {
+  el.eliminationModal.classList.add('modal--open');
+  el.eliminationModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  el.elimContinueBtn.focus();
+  announce(el.elimName.textContent);
+}
+
 function performElimination(id) {
   var player = getPlayer(id);
   if (!player) return;
 
   state.voteCount += 1;
+  resolveElimination(eliminate(player), {
+    fromVote: true,
+    earlier: []
+  });
+}
 
-  var eliminatedNow = [player];
-  player.eliminated = true;
+// Conséquences d'une élimination : tir d'Orion, victoire, dernière chance de Mr. White.
+// opts.fromVote : éliminé par le vote (seul cas où l'Idiot du village gagne) ;
+// opts.earlier : éliminés plus tôt dans le même tour (avant le tir d'Orion) ;
+// opts.shotBy : Orion, quand ce lot d'éliminés est la victime de son tir.
+function resolveElimination(eliminatedNow, opts) {
+  var allNew = (opts.earlier || []).concat(eliminatedNow);
 
-  if (player.loverId !== null) {
-    var lover = getPlayer(player.loverId);
-    if (lover && !lover.eliminated) {
-      lover.eliminated = true;
-      eliminatedNow.push(lover);
-    }
+  // Orion (Chasseur) éliminé : il emporte un joueur avec lui avant que la victoire soit évaluée.
+  var orion = eliminatedNow.filter(function (p) {
+    return p.isOrion && !p.orionDone;
+  })[0];
+  if (orion && alivePlayers().length) {
+    pendingOrion = {
+      orion: orion,
+      earlier: allNew
+    };
+    state.winner = null;
+    state.guessQueue = [];
+    fillEliminationModal(eliminatedNow, opts.shotBy);
+    el.elimContinueText.textContent = 'Orion (' + orion.name + ') emporte un joueur avec lui/elle : désignez sa cible.';
+    el.elimContinueBtn.textContent = 'Désigner la cible';
+    openEliminationModal();
+    return;
   }
 
   var winner = null;
@@ -141,7 +217,7 @@ function performElimination(id) {
   var idiotEliminated = eliminatedNow.filter(function (p) {
     return p.isIdiot;
   })[0];
-  if (state.voteCount === 1 && idiotEliminated) {
+  if (opts.fromVote && state.voteCount === 1 && idiotEliminated) {
     winner = 'idiot';
     winnerDetail = idiotEliminated.name;
   } else {
@@ -209,22 +285,12 @@ function performElimination(id) {
   // même si sa chute donnait la victoire aux Civils (sauf victoire de l'Idiot au 1er vote).
   state.guessQueue = [];
   if (winner !== 'idiot') {
-    state.guessQueue = eliminatedNow.filter(function (p) {
+    state.guessQueue = allNew.filter(function (p) {
       return p.isMrWhite;
     });
   }
 
-  var namesText = eliminatedNow.map(function (p) {
-    return p.name;
-  }).join(' et ');
-  el.elimName.textContent = namesText + (eliminatedNow.length > 1 ? ' ont été éliminés' : ' a été éliminé(e)');
-  el.elimRole.innerHTML = eliminatedNow.map(function (p) {
-    var line = roleLabel(p);
-    if (p.isFantome) {
-      line += '<span class="modal__fantome-note">👻 ' + p.name + ' est le Fantôme — il/elle continue de voter aux prochains tours !</span>';
-    }
-    return line;
-  }).join('<br>');
+  fillEliminationModal(eliminatedNow, opts.shotBy);
 
   var traitorAlive = state.players.some(function (p) {
     return p.isFauxFrere && !p.eliminated;
@@ -265,11 +331,21 @@ function performElimination(id) {
     el.elimContinueBtn.textContent = 'Tenter sa chance';
   }
 
-  el.eliminationModal.classList.add('modal--open');
-  el.eliminationModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  el.elimContinueBtn.focus();
-  announce(el.elimName.textContent);
+  openEliminationModal();
+}
+
+// Choix de la cible d'Orion : on élimine la cible, puis on évalue la victoire.
+function handleOrionChoice(targetId) {
+  var pending = pendingOrion;
+  pendingOrion = null;
+  if (!pending) return;
+  var target = getPlayer(targetId);
+  if (!target || target.eliminated) return;
+  pending.orion.orionDone = true;
+  resolveElimination(eliminate(target), {
+    earlier: pending.earlier,
+    shotBy: pending.orion
+  });
 }
 
 function closeEliminationModal() {
@@ -351,7 +427,7 @@ function openSummary() {
     right.style.gap = '6px';
 
     var wordSpan = document.createElement('span');
-    wordSpan.textContent = (player.isMrWhite || player.isEspion) ? 'Aucun mot' :
+    wordSpan.textContent = (player.isMrWhite || player.isEspion || player.isTiresias) ? 'Aucun mot' :
       (player.isJanus ? player.janusWords.join(' / ') : player.word);
     wordSpan.style.color = 'var(--ink-soft)';
     right.appendChild(wordSpan);
@@ -383,6 +459,9 @@ function openSummary() {
     if (player.isMytho) specials.push('Mytho');
     if (player.isVoyeur) specials.push('Voyeur');
     if (player.isJanus) specials.push('Janus');
+    if (player.isTiresias) specials.push('Tirésias');
+    if (player.isOrion) specials.push('Orion');
+    if (player.isTwin) specials.push(player.twinTitle + ' (Jumeaux)');
     if (player.loverId !== null) specials.push('Amoureux');
     specials.forEach(function (label) {
       var specialSpan = document.createElement('span');
@@ -426,6 +505,10 @@ export function bootVote() {
 
   el.elimContinueBtn.addEventListener('click', function () {
     closeEliminationModal();
+    if (pendingOrion) {
+      openOrionModal(pendingOrion.orion, alivePlayers(), handleOrionChoice);
+      return;
+    }
     if (state.guessQueue.length) {
       openGuessModal();
     } else {

@@ -7,6 +7,7 @@ import { bootVote } from './vote.js';
 import { bootWakelock } from './wakelock.js';
 import { bootGuess } from './guess.js';
 import { bootMytho } from './mytho.js';
+import { bootOrion } from './orion.js';
 
 // Ce module regroupe tout ce qui sert une fois la partie lancée (cartes, minuteur,
 // vote, dernière chance de Mr. White, journal, écran maintenu allumé). Il est chargé
@@ -21,4 +22,5 @@ export function boot() {
   bootWakelock();
   bootGuess();
   bootMytho();
+  bootOrion();
 }

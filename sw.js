@@ -28,6 +28,7 @@ var APP_SHELL_FILES = [
     "./js/guess.js",
     "./js/journal.js",
     "./js/mytho.js",
+    "./js/orion.js",
     "./js/journal-ui.js",
     "./js/custom-ui.js",
     "./manifest.json",

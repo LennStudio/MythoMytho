@@ -47,7 +47,8 @@ export function manualUndercoverChange() {
 function specialSlots() {
   return (state.roles.idiot ? 1 : 0) + (state.roles.fantome ? 1 : 0) + (state.roles.mime ? 1 : 0) +
     (state.roles.procureur ? 1 : 0) + (state.roles.amoureux ? 2 : 0) + (state.roles.mytho ? 1 : 0) +
-    (state.roles.voyeur ? 1 : 0) + (state.roles.janus ? 1 : 0) + (state.roles.fauxfrere ? 1 : 0);
+    (state.roles.voyeur ? 1 : 0) + (state.roles.janus ? 1 : 0) + (state.roles.fauxfrere ? 1 : 0) +
+    (state.roles.jumeaux ? 2 : 0) + (state.roles.tiresias ? 1 : 0) + (state.roles.orion ? 1 : 0);
 }
 
 function computeBalanceNotes() {
@@ -95,12 +96,23 @@ function computeBalanceNotes() {
 
   var bigTable = [];
   if (state.roles.voyeur) bigTable.push('le Voyeur');
+  if (state.roles.jumeaux) bigTable.push('les Jumeaux');
   if (state.roles.fauxfrere) bigTable.push('le Faux-Frère');
   if (bigTable.length && n < 8) {
+    var listText = bigTable.length > 1 ?
+      bigTable.slice(0, -1).join(', ') + ' et ' + bigTable[bigTable.length - 1] : bigTable[0];
+    var plural = bigTable.length > 1 || bigTable[0] === 'les Jumeaux';
     notes.push({
       level: 'warn',
-      text: (bigTable.join(' et ').charAt(0).toUpperCase() + bigTable.join(' et ').slice(1)) + (bigTable.length > 1 ? ' sont conçus' : ' est conçu') +
+      text: listText.charAt(0).toUpperCase() + listText.slice(1) + (plural ? ' sont conçus' : ' est conçu') +
         ' pour 8 joueurs ou plus : en dessous, la partie peut être déséquilibrée.'
+    });
+  }
+
+  if (state.roles.tiresias) {
+    notes.push({
+      level: 'info',
+      text: 'Tirésias n\'a pas de mot : rôle difficile à jouer, plutôt pour des groupes aguerris.'
     });
   }
 

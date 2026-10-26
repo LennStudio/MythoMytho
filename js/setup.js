@@ -141,6 +141,9 @@ function renderRolesSummary() {
     if (state.roles.voyeur) labels.push('Voyeur');
     if (state.roles.janus) labels.push('Janus');
     if (state.roles.fauxfrere) labels.push('Faux-Frère');
+    if (state.roles.jumeaux) labels.push('Jumeaux');
+    if (state.roles.tiresias) labels.push('Tirésias');
+    if (state.roles.orion) labels.push('Orion');
     if (labels.length) parts.push(labels.join(', '));
     el.rolesSummary.textContent = parts.length ? parts.join(' + ') : 'Aucun rôle activé';
   }
@@ -271,7 +274,10 @@ export function bootSetup() {
     [el.roleMytho, 'mytho'],
     [el.roleVoyeur, 'voyeur'],
     [el.roleJanus, 'janus'],
-    [el.roleFauxFrere, 'fauxfrere']
+    [el.roleFauxFrere, 'fauxfrere'],
+    [el.roleJumeaux, 'jumeaux'],
+    [el.roleTiresias, 'tiresias'],
+    [el.roleOrion, 'orion']
   ].forEach(function (pair) {
     pair[0].addEventListener('change', function () {
       state.roles[pair[1]] = pair[0].checked;

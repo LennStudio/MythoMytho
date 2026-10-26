@@ -88,6 +88,19 @@ function openCard(id) {
   } else if (player.isJanus) {
     el.modalRole.textContent = 'Tu es Janus — tu as reçu les deux mots, à toi de deviner lequel est le bon.';
     el.modalWord.textContent = 'Mot A : ' + player.janusWords[0] + '\nMot B : ' + player.janusWords[1];
+  } else if (player.isTiresias) {
+    var hint = player.tiresiasHint;
+    el.modalRole.textContent = 'Tu es Tirésias — le mot des Civils commence par « ' + hint.prefix + ' » et compte ' +
+      hint.count + ' lettres.';
+    el.modalWord.textContent = 'Aucun mot';
+  } else if (player.isOrion) {
+    el.modalRole.textContent = 'Tu es Orion, le Chasseur : si tu es éliminé, tu emportes un joueur avec toi.';
+    el.modalWord.textContent = player.word;
+  } else if (player.isTwin) {
+    var twin = getPlayer(player.twinId);
+    el.modalRole.textContent = 'Tu es ' + player.twinTitle + ' — ton jumeau ' + twin.twinTitle + ' est ' + twin.name +
+      '. Vous êtes tous deux Civils.';
+    el.modalWord.textContent = player.word;
   } else if (player.isUndercover) {
     el.modalRole.textContent = 'Tu es l\'Undercover — fonds-toi dans la masse';
     el.modalWord.textContent = player.word;
@@ -104,7 +117,8 @@ function openCard(id) {
   // Mr. White, l'Espion et les rôles qui changent la façon de jouer (Mytho, Voyeur, Janus,
   // Faux-Frère) voient toujours leur rôle.
   var roleHidden = !state.showRole && !player.isMrWhite && !player.isEspion &&
-    !player.isMytho && !player.isVoyeur && !player.isJanus && !player.isFauxFrere;
+    !player.isMytho && !player.isVoyeur && !player.isJanus && !player.isFauxFrere &&
+    !player.isTiresias && !player.isOrion && !player.isTwin;
   if (roleHidden) el.modalRole.textContent = '';
   el.modalRole.hidden = roleHidden;
 
@@ -137,6 +151,8 @@ function renderModalBadges(player) {
   }
   if (player.isFauxFrere) badges.push(ROLE_INFO.fauxfrere);
   if (player.isMytho) badges.push(ROLE_INFO.mytho);
+  if (player.isTiresias) badges.push(ROLE_INFO.tiresias);
+  if (player.isOrion) badges.push(ROLE_INFO.orion);
   if (player.isJanus) badges.push(ROLE_INFO.janus);
   if (player.isIdiot) badges.push(ROLE_INFO.idiot);
   if (player.isFantome) badges.push(ROLE_INFO.fantome);

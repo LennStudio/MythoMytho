@@ -59,6 +59,14 @@ export var ROLE_INFO = {
     label: 'Les deux visages',
     desc: 'L\'un des deux mots est celui des Civils, l\'autre celui de l\'Undercover. Repère qui parle de l\'un ou de l\'autre, mais tes indices doivent coller aux deux mots. Tu gagnes avec les Civils.'
   },
+  tiresias: {
+    label: 'Sans mot',
+    desc: 'Tu n\'as pas de mot à toi : fonds-toi parmi les Civils grâce à cet indice, sans te faire passer pour un imposteur. Tu gagnes avec les Civils.'
+  },
+  orion: {
+    label: 'Dernier tir',
+    desc: 'Éliminé (par un vote ou autrement), tu désignes publiquement un joueur encore en vie, qui est éliminé avec toi. Tu gagnes avec les Civils.'
+  },
   fauxfrere: {
     label: 'Traître',
     desc: 'Les Civils ne gagnent que lorsque tous les imposteurs ET toi êtes éliminés. Tu comptes avec les imposteurs pour les conditions « plus de Civils » et d\'impasse.'
@@ -67,6 +75,26 @@ export var ROLE_INFO = {
 
 // Camps : les « vrais » imposteurs (Undercover, Mr. White, Espion), et l'équipe des imposteurs,
 // qui compte aussi le Faux-Frère (il a le mot des Civils mais gagne avec les imposteurs).
+// Indice de Tirésias : les 2 premières lettres (1 seule si le mot est très court) et le nombre de lettres.
+export function makeTiresiasHint(word) {
+  var chars = Array.from(String(word));
+  var isLetter = function (c) {
+    return /[\p{L}\p{N}]/u.test(c);
+  };
+  var count = chars.filter(isLetter).length;
+  var shown = count <= 3 ? 1 : 2;
+  var prefix = '';
+  var taken = 0;
+  for (var i = 0; i < chars.length && taken < shown; i++) {
+    prefix += chars[i];
+    if (isLetter(chars[i])) taken += 1;
+  }
+  return {
+    prefix: prefix,
+    count: count
+  };
+}
+
 export function isImpostor(player) {
   return !!(player.isUndercover || player.isMrWhite || player.isEspion);
 }
@@ -89,7 +117,10 @@ export var state = {
     mytho: false,
     voyeur: false,
     janus: false,
-    fauxfrere: false
+    fauxfrere: false,
+    jumeaux: false,
+    tiresias: false,
+    orion: false
   },
   players: [],
   round: 1,
@@ -153,6 +184,13 @@ export var el = {
   roleVoyeur: document.getElementById('roleVoyeur'),
   roleJanus: document.getElementById('roleJanus'),
   roleFauxFrere: document.getElementById('roleFauxFrere'),
+  roleJumeaux: document.getElementById('roleJumeaux'),
+  roleTiresias: document.getElementById('roleTiresias'),
+  roleOrion: document.getElementById('roleOrion'),
+  orionModal: document.getElementById('orionModal'),
+  orionIntro: document.getElementById('orionIntro'),
+  orionList: document.getElementById('orionList'),
+  orionConfirmBtn: document.getElementById('orionConfirmBtn'),
   mythoPanel: document.getElementById('mythoPanel'),
   mythoQuestion: document.getElementById('mythoQuestion'),
   mythoSpotted: document.getElementById('mythoSpotted'),

@@ -2441,3 +2441,41 @@ summary.setup-block__head::marker {
     font-size: .85rem;
     color: var(--text);
 }
+
+/* ===== Orion (Chasseur) : choix de la cible ===== */
+.orion-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 4px 0 18px;
+    max-height: 38vh;
+    overflow-y: auto;
+}
+
+.orion-target {
+    appearance: none;
+    padding: 10px 8px;
+    background: #fbf7ea;
+    color: var(--ink);
+    border: 1px solid var(--paper-shadow);
+    border-radius: var(--radius-s);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+.orion-target:hover {
+    border-color: var(--gold);
+}
+
+.orion-target:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+.orion-target--selected {
+    background: var(--gold);
+    border-color: var(--gold);
+}

@@ -1,7 +1,7 @@
 // Déroulement d'une partie : attribution des rôles, lancement, nouvelle manche. [chunk de jeu]
 
 import { renderCards } from './cards.js';
-import { MIN_PLAYERS, MIN_UNDERCOVER, clamp, el, getPlayer, isImpostor, maxImpostors, showToast, shuffle, state } from './core.js';
+import { MIN_PLAYERS, MIN_UNDERCOVER, clamp, el, getPlayer, isImpostor, makeTiresiasHint, maxImpostors, showToast, shuffle, state } from './core.js';
 import { hideMythoPanel } from './mytho.js';
 import { clampRoleCounts } from './setup.js';
 import { pickWordPair, selectedThemeKeys, wordsLoaded } from './themes.js';
@@ -52,6 +52,13 @@ function assignRoles() {
     player.isVoyeur = false;
     player.isJanus = false;
     player.isFauxFrere = false;
+    player.isOrion = false;
+    player.orionDone = false;
+    player.isTiresias = false;
+    player.tiresiasHint = null;
+    player.isTwin = false;
+    player.twinId = null;
+    player.twinTitle = '';
     player.voyeurNames = [];
     player.janusWords = [];
     player.loverId = null;
@@ -104,6 +111,33 @@ function assignRoles() {
     var janus = pickCivilFor('isJanus', 'Janus');
     if (janus) janus.janusWords = shuffle([words.civilWord, words.undercoverWord]);
   }
+  if (state.roles.orion) pickCivilFor('isOrion', 'Orion');
+  if (state.roles.tiresias) {
+    var tiresias = pickCivilFor('isTiresias', 'Tirésias');
+    if (tiresias) tiresias.tiresiasHint = makeTiresiasHint(words.civilWord);
+  }
+  if (state.roles.jumeaux) {
+    // Deux Civils distincts (jamais le Faux-Frère, déjà attribué et exclu du groupe disponible).
+    var twinIds = shuffle(availableIds(state.players.filter(function (p) {
+      return !isImpostor(p);
+    }).map(function (p) {
+      return p.id;
+    }))).slice(0, 2);
+    if (twinIds.length < 2) {
+      skippedRoles.push('Jumeaux');
+    } else {
+      var castor = getPlayer(twinIds[0]);
+      var pollux = getPlayer(twinIds[1]);
+      castor.isTwin = pollux.isTwin = true;
+      castor.twinId = pollux.id;
+      pollux.twinId = castor.id;
+      castor.twinTitle = 'Castor';
+      pollux.twinTitle = 'Pollux';
+      usedForSpecial[castor.id] = true;
+      usedForSpecial[pollux.id] = true;
+    }
+  }
+
   if (state.roles.voyeur) {
     var voyeur = pickCivilFor('isVoyeur', 'Voyeur');
     if (voyeur) {

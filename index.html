@@ -387,6 +387,29 @@
                     aussi. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs.</small>
                 </span>
               </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleJumeaux">
+                <span>
+                  <strong>Les Jumeaux (Castor et Pollux)</strong>
+                  <small>Deux Civils qui se connaissent : chacun voit le nom de l'autre sur sa carte. Information forte,
+                    conseillée à partir de 8 joueurs.</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleTiresias">
+                <span>
+                  <strong>Tirésias</strong>
+                  <small>Civil sans mot : il reçoit seulement les 2 premières lettres et le nombre de lettres du mot des
+                    Civils. Difficile à jouer, plutôt pour les groupes aguerris.</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleOrion">
+                <span>
+                  <strong>Orion (le Chasseur)</strong>
+                  <small>Civil qui, une fois éliminé, désigne un joueur encore en vie qui est éliminé avec lui.</small>
+                </span>
+              </label>
             </div>
             <p class="hint-text hint-text--role hint-text--info">Un joueur ne peut recevoir qu'un seul rôle spécial
               ci-dessous. Être
@@ -722,6 +745,20 @@
         <button type="button" id="guessSubmitBtn" class="btn btn--primary">Valider <span
             class="btn-arrow">→</span></button>
         <button type="button" id="guessContinueBtn" class="btn btn--primary" hidden>Continuer <span
+            class="btn-arrow">→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="orionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="orionTitle" aria-hidden="true">
+    <div class="modal__scrim"></div>
+    <div class="modal__panel">
+      <div class="modal__stamp">dernier tir</div>
+      <div class="modal__owner" id="orionTitle">Orion, le Chasseur</div>
+      <p class="modal__privacy" id="orionIntro"></p>
+      <div class="orion-list" id="orionList" role="group" aria-label="Cibles possibles"></div>
+      <div class="modal__buttons">
+        <button type="button" id="orionConfirmBtn" class="btn btn--primary" disabled>Confirmer la cible <span
             class="btn-arrow">→</span></button>
       </div>
     </div>
