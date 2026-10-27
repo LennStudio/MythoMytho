@@ -27,6 +27,7 @@ export function saveScoreLog() {
 export var scoreLog = loadScoreLog();
 
 export function baseRoleKey(player) {
+  if (player.isJudas) return 'judas';
   if (player.isFauxFrere) return 'fauxfrere';
   if (player.isMrWhite) return 'mrwhite';
   if (player.isEspion) return 'espion';
@@ -45,6 +46,8 @@ function playerSpecials(player) {
   if (player.isJanus) specials.push('Janus');
   if (player.isTiresias) specials.push('Tirésias');
   if (player.isOrion) specials.push('Orion');
+  if (player.isPrometheus) specials.push('Prométhée');
+  if (player.isHercule) specials.push('Hercule');
   if (player.isTwin) specials.push('Jumeaux');
   if (player.loverId !== null) specials.push('Amoureux');
   return specials;
@@ -106,6 +109,11 @@ export function recordScoreEntry(winner) {
       };
       // Mytho : « spotted » / « passed », renseigné par la question de fin de manche.
       if (p.isMytho) row.lie = null;
+      // Hercule : « success » / « fail », renseigné par la question de fin de manche.
+      if (p.isHercule) {
+        row.mission = null;
+        row.missionText = p.mission;
+      }
       return row;
     })
   };

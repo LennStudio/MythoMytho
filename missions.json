@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "words": [
+    "cloche", "bateau", "trottinette", "parapluie", "fromage", "horloge", "marteau", "citrouille",
+    "balançoire", "lunettes", "valise", "chaussette", "tambour", "volcan", "escargot", "pyramide",
+    "ballon", "éponge", "guitare", "nuage", "tortue", "moustache", "bougie", "échelle", "perroquet",
+    "tonnerre", "lanterne", "biscuit", "marmotte", "boussole"
+  ],
+  "missions": [
+    "Fais prononcer le mot « {mot} » par un autre joueur, sans le prononcer toi-même.",
+    "Place le mot « {mot} » dans l'un de tes indices, sans que cela paraisse suspect.",
+    "Termine l'un de tes indices par une question.",
+    "Cite un animal dans l'un de tes indices.",
+    "Cite une couleur dans l'un de tes indices.",
+    "Cite un pays ou une ville dans l'un de tes indices.",
+    "Cite un aliment dans l'un de tes indices.",
+    "Cite un instrument de musique dans l'un de tes indices.",
+    "Donne un indice en exactement trois mots.",
+    "Donne un indice qui rime.",
+    "Donne un indice qui contient un chiffre.",
+    "Commence l'un de tes indices par « Franchement, ».",
+    "Termine l'un de tes indices par « …ou presque. ».",
+    "Utilise le mot « finalement » dans l'un de tes indices.",
+    "Utilise un mot en anglais dans l'un de tes indices.",
+    "Dis « Je le jure » ou « Croyez-moi » au moins une fois.",
+    "Appelle au moins deux autres joueurs par leur prénom en parlant.",
+    "Pose une question à un autre joueur sur son indice.",
+    "Répète le dernier mot de l'indice d'un autre joueur dans le tien.",
+    "Fais rire au moins un joueur avec l'un de tes indices.",
+    "Fais référence à un film ou à un personnage célèbre dans un indice.",
+    "Fais une référence à la mythologie grecque dans l'un de tes indices.",
+    "Soutiens le vote d'un autre joueur avec un argument inventé de toutes pièces.",
+    "Prends un ton très solennel pour donner l'un de tes indices."
+  ]
+}

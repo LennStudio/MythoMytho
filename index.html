@@ -410,6 +410,30 @@
                   <small>Civil qui, une fois éliminé, désigne un joueur encore en vie qui est éliminé avec lui.</small>
                 </span>
               </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleHercule">
+                <span>
+                  <strong>Hercule</strong>
+                  <small>Civil qui tire une mission secrète (faire dire un mot, terminer un indice par une question…). En
+                    fin de manche, le groupe dit s'il l'a accomplie : statistique « missions réussies ».</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="rolePrometheus">
+                <span>
+                  <strong>Prométhée</strong>
+                  <small>Civil qui, une fois éliminé, désigne un joueur encore en vie : l'appli révèle à tous son camp
+                    (Civil ou imposteur). Information forte, conseillée à partir de 8 joueurs.</small>
+                </span>
+              </label>
+              <label class="toggle-item">
+                <input type="checkbox" id="roleJudas">
+                <span>
+                  <strong>Judas</strong>
+                  <small>Un Faux-Frère informé : il a le mot des Civils, gagne avec les imposteurs et connaît le nom
+                    d'un imposteur. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs.</small>
+                </span>
+              </label>
             </div>
             <p class="hint-text hint-text--role hint-text--info">Un joueur ne peut recevoir qu'un seul rôle spécial
               ci-dessous. Être
@@ -602,6 +626,15 @@
         <p class="mytho-panel__done" id="mythoDone" hidden></p>
       </div>
 
+      <div id="herculePanel" class="mytho-panel" hidden>
+        <p class="mytho-panel__question" id="herculeQuestion">Hercule a-t-il accompli sa mission ?</p>
+        <div class="mytho-panel__buttons">
+          <button type="button" id="herculeFail" class="btn btn--ghost btn--small">Non, ratée</button>
+          <button type="button" id="herculeSuccess" class="btn btn--primary btn--small">Oui, accomplie</button>
+        </div>
+        <p class="mytho-panel__done" id="herculeDone" hidden></p>
+      </div>
+
       <div class="actions-row">
         <div class="actions-row__group">
           <button type="button" id="startVoteBtn" class="btn btn--primary" disabled>Lancer le vote <span
@@ -676,6 +709,8 @@
         <ul class="score-leaderboard score-roles" id="scoreRoles"></ul>
         <h4 class="score-section-title" id="scoreLiesTitle">Mensonges du Mytho</h4>
         <ul class="score-leaderboard score-roles" id="scoreLies"></ul>
+        <h4 class="score-section-title" id="scoreMissionsTitle">Missions d'Hercule</h4>
+        <ul class="score-leaderboard score-roles" id="scoreMissions"></ul>
         <p class="score-note" id="scoreNote">Les taux et séries ne comptent que les manches enregistrées depuis
           l'ajout des statistiques.</p>
 
@@ -750,15 +785,15 @@
     </div>
   </div>
 
-  <div id="orionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="orionTitle" aria-hidden="true">
+  <div id="pickerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pickerTitle" aria-hidden="true">
     <div class="modal__scrim"></div>
     <div class="modal__panel">
-      <div class="modal__stamp">dernier tir</div>
-      <div class="modal__owner" id="orionTitle">Orion, le Chasseur</div>
-      <p class="modal__privacy" id="orionIntro"></p>
-      <div class="orion-list" id="orionList" role="group" aria-label="Cibles possibles"></div>
+      <div class="modal__stamp" id="pickerStamp">dernier tir</div>
+      <div class="modal__owner" id="pickerTitle">Orion, le Chasseur</div>
+      <p class="modal__privacy" id="pickerIntro"></p>
+      <div class="picker-list" id="pickerList" role="group" aria-label="Cibles possibles"></div>
       <div class="modal__buttons">
-        <button type="button" id="orionConfirmBtn" class="btn btn--primary" disabled>Confirmer la cible <span
+        <button type="button" id="pickerConfirmBtn" class="btn btn--primary" disabled>Confirmer la cible <span
             class="btn-arrow">→</span></button>
       </div>
     </div>

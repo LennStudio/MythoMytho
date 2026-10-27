@@ -15,7 +15,7 @@ function recommendedImpostors(n) {
 
 function recommendedUndercover(n) {
   var cap = maxImpostors(n);
-  var others = state.mrWhiteCount + state.espionCount + (state.roles.fauxfrere ? 1 : 0);
+  var others = state.mrWhiteCount + state.espionCount + (state.roles.fauxfrere ? 1 : 0) + (state.roles.judas ? 1 : 0);
   return clamp(recommendedImpostors(n) - others, MIN_UNDERCOVER, Math.max(MIN_UNDERCOVER, cap - others));
 }
 
@@ -48,14 +48,15 @@ function specialSlots() {
   return (state.roles.idiot ? 1 : 0) + (state.roles.fantome ? 1 : 0) + (state.roles.mime ? 1 : 0) +
     (state.roles.procureur ? 1 : 0) + (state.roles.amoureux ? 2 : 0) + (state.roles.mytho ? 1 : 0) +
     (state.roles.voyeur ? 1 : 0) + (state.roles.janus ? 1 : 0) + (state.roles.fauxfrere ? 1 : 0) +
-    (state.roles.jumeaux ? 2 : 0) + (state.roles.tiresias ? 1 : 0) + (state.roles.orion ? 1 : 0);
+    (state.roles.jumeaux ? 2 : 0) + (state.roles.tiresias ? 1 : 0) + (state.roles.orion ? 1 : 0) +
+    (state.roles.hercule ? 1 : 0) + (state.roles.prometheus ? 1 : 0) + (state.roles.judas ? 1 : 0);
 }
 
 function computeBalanceNotes() {
   var n = state.playerCount;
-  // Le Faux-Frère compte comme un imposteur de plus (il gagne avec eux).
+  // Le Faux-Frère et Judas comptent chacun comme un imposteur de plus (ils gagnent avec eux).
   var realImp = state.undercoverCount + state.mrWhiteCount + state.espionCount;
-  var imp = realImp + (state.roles.fauxfrere ? 1 : 0);
+  var imp = realImp + (state.roles.fauxfrere ? 1 : 0) + (state.roles.judas ? 1 : 0);
   var rec = recommendedImpostors(n);
   var slots = specialSlots();
   var notes = [];
@@ -77,7 +78,7 @@ function computeBalanceNotes() {
   if (imp > rec + 1) {
     notes.push({
       level: 'warn',
-      text: 'Beaucoup d\'imposteurs (' + imp + ' sur ' + n + (state.roles.fauxfrere ? ', Faux-Frère compris' : '') +
+      text: 'Beaucoup d\'imposteurs (' + imp + ' sur ' + n + ((state.roles.fauxfrere || state.roles.judas) ? ', traîtres compris' : '') +
         ') : les Civils auront du mal à gagner. Recommandé : ' + rec + '.'
     });
   } else if (imp < rec) {
@@ -98,6 +99,8 @@ function computeBalanceNotes() {
   if (state.roles.voyeur) bigTable.push('le Voyeur');
   if (state.roles.jumeaux) bigTable.push('les Jumeaux');
   if (state.roles.fauxfrere) bigTable.push('le Faux-Frère');
+  if (state.roles.judas) bigTable.push('Judas');
+  if (state.roles.prometheus) bigTable.push('Prométhée');
   if (bigTable.length && n < 8) {
     var listText = bigTable.length > 1 ?
       bigTable.slice(0, -1).join(', ') + ' et ' + bigTable[bigTable.length - 1] : bigTable[0];

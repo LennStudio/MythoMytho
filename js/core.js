@@ -59,6 +59,18 @@ export var ROLE_INFO = {
     label: 'Les deux visages',
     desc: 'L\'un des deux mots est celui des Civils, l\'autre celui de l\'Undercover. Repère qui parle de l\'un ou de l\'autre, mais tes indices doivent coller aux deux mots. Tu gagnes avec les Civils.'
   },
+  hercule: {
+    label: 'Mission secrète',
+    desc: 'En fin de manche, le groupe dira si tu as accompli ta mission : le résultat alimente tes statistiques. Tu gagnes avec les Civils.'
+  },
+  prometheus: {
+    label: 'Sacrifice',
+    desc: 'Éliminé, tu désignes un joueur encore en vie : l\'appli révèle à tous s\'il est Civil ou imposteur (le Faux-Frère et Judas comptent comme imposteurs). Tu gagnes avec les Civils.'
+  },
+  judas: {
+    label: 'Traître informé',
+    desc: 'Les Civils ne gagnent que lorsque tous les imposteurs ET les traîtres sont éliminés. Tu comptes avec les imposteurs pour les conditions « plus de Civils » et d\'impasse.'
+  },
   tiresias: {
     label: 'Sans mot',
     desc: 'Tu n\'as pas de mot à toi : fonds-toi parmi les Civils grâce à cet indice, sans te faire passer pour un imposteur. Tu gagnes avec les Civils.'
@@ -99,8 +111,13 @@ export function isImpostor(player) {
   return !!(player.isUndercover || player.isMrWhite || player.isEspion);
 }
 
+// Traîtres : Faux-Frère et Judas ont le mot des Civils mais gagnent avec les imposteurs.
+export function isTraitor(player) {
+  return !!(player.isFauxFrere || player.isJudas);
+}
+
 export function isImpostorTeam(player) {
-  return isImpostor(player) || !!player.isFauxFrere;
+  return isImpostor(player) || isTraitor(player);
 }
 
 export var state = {
@@ -120,7 +137,10 @@ export var state = {
     fauxfrere: false,
     jumeaux: false,
     tiresias: false,
-    orion: false
+    orion: false,
+    hercule: false,
+    prometheus: false,
+    judas: false
   },
   players: [],
   round: 1,
@@ -187,10 +207,22 @@ export var el = {
   roleJumeaux: document.getElementById('roleJumeaux'),
   roleTiresias: document.getElementById('roleTiresias'),
   roleOrion: document.getElementById('roleOrion'),
-  orionModal: document.getElementById('orionModal'),
-  orionIntro: document.getElementById('orionIntro'),
-  orionList: document.getElementById('orionList'),
-  orionConfirmBtn: document.getElementById('orionConfirmBtn'),
+  pickerModal: document.getElementById('pickerModal'),
+  pickerStamp: document.getElementById('pickerStamp'),
+  pickerTitle: document.getElementById('pickerTitle'),
+  pickerIntro: document.getElementById('pickerIntro'),
+  pickerList: document.getElementById('pickerList'),
+  pickerConfirmBtn: document.getElementById('pickerConfirmBtn'),
+  roleHercule: document.getElementById('roleHercule'),
+  rolePrometheus: document.getElementById('rolePrometheus'),
+  roleJudas: document.getElementById('roleJudas'),
+  herculePanel: document.getElementById('herculePanel'),
+  herculeQuestion: document.getElementById('herculeQuestion'),
+  herculeSuccess: document.getElementById('herculeSuccess'),
+  herculeFail: document.getElementById('herculeFail'),
+  herculeDone: document.getElementById('herculeDone'),
+  scoreMissionsTitle: document.getElementById('scoreMissionsTitle'),
+  scoreMissions: document.getElementById('scoreMissions'),
   mythoPanel: document.getElementById('mythoPanel'),
   mythoQuestion: document.getElementById('mythoQuestion'),
   mythoSpotted: document.getElementById('mythoSpotted'),
@@ -403,7 +435,8 @@ export var ROLE_NAMES = {
   undercover: 'Undercover',
   mrwhite: 'Mr. White',
   espion: 'Espion',
-  fauxfrere: 'Faux-Frère'
+  fauxfrere: 'Faux-Frère',
+  judas: 'Judas'
 };
 
 export function downloadFile(filename, mime, text) {

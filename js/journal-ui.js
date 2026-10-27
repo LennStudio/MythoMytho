@@ -9,6 +9,7 @@ function computeStats(list) {
   var byPlayer = {};
   var byRole = {};
   var lies = {};
+  var missions = {};
   var tracked = 0;
   (list || scoreLog).slice().reverse().forEach(function (entry) {
     if (!Array.isArray(entry.players) || !entry.players.length) return;
@@ -43,12 +44,22 @@ function computeStats(list) {
         l.games += 1;
         if (p.lie === 'passed') l.passed += 1;
       }
+      // Missions d'Hercule (seulement celles dont le résultat a été renseigné)
+      if (p.mission === 'success' || p.mission === 'fail') {
+        var m = missions[p.name] || (missions[p.name] = {
+          games: 0,
+          success: 0
+        });
+        m.games += 1;
+        if (p.mission === 'success') m.success += 1;
+      }
     });
   });
   return {
     byPlayer: byPlayer,
     byRole: byRole,
     lies: lies,
+    missions: missions,
     tracked: tracked
   };
 }
@@ -132,8 +143,28 @@ function renderScoreModal() {
     li.appendChild(value);
     el.scoreLies.appendChild(li);
   });
+
+  // Missions d'Hercule : réussies = accomplies
+  var heroes = Object.keys(stats.missions).sort(function (a, b) {
+    return percent(stats.missions[b].success, stats.missions[b].games) - percent(stats.missions[a].success, stats.missions[a].games);
+  });
+  el.scoreMissionsTitle.style.display = heroes.length ? '' : 'none';
+  el.scoreMissions.style.display = heroes.length ? '' : 'none';
+  el.scoreMissions.innerHTML = '';
+  heroes.forEach(function (name) {
+    var m = stats.missions[name];
+    var li = document.createElement('li');
+    var label = document.createElement('strong');
+    label.textContent = name;
+    var value = document.createElement('span');
+    value.className = 'score-leaderboard__count';
+    value.textContent = m.success + '/' + m.games + ' réussies · ' + percent(m.success, m.games) + ' %';
+    li.appendChild(label);
+    li.appendChild(value);
+    el.scoreMissions.appendChild(li);
+  });
   el.scoreRoles.innerHTML = '';
-  ['civil', 'undercover', 'mrwhite', 'espion', 'fauxfrere'].forEach(function (role) {
+  ['civil', 'undercover', 'mrwhite', 'espion', 'fauxfrere', 'judas'].forEach(function (role) {
     var r = stats.byRole[role];
     if (!r) return;
     var li = document.createElement('li');
@@ -191,6 +222,15 @@ function exportScoreJson() {
           winRate: percent(r.wins, r.games)
         };
       }),
+      missions: Object.keys(stats.missions).map(function (name) {
+        var m = stats.missions[name];
+        return {
+          name: name,
+          games: m.games,
+          successful: m.success,
+          successRate: percent(m.success, m.games)
+        };
+      }),
       lies: Object.keys(stats.lies).map(function (name) {
         var l = stats.lies[name];
         return {
@@ -214,7 +254,7 @@ function csvCell(value) {
 
 function exportScoreCsv() {
   var rows = [
-    ['date', 'manche', 'nb_joueurs', 'vainqueur', 'groupe', 'joueur', 'role', 'roles_speciaux', 'victoire', 'elimine', 'difficulte_paire', 'theme', 'mensonge']
+    ['date', 'manche', 'nb_joueurs', 'vainqueur', 'groupe', 'joueur', 'role', 'roles_speciaux', 'victoire', 'elimine', 'difficulte_paire', 'theme', 'mensonge', 'mission']
   ];
   scoreLog.slice().reverse().forEach(function (e) {
     var base = [e.date || '', e.round, e.playerCount, e.winnerLabel, e.group || ''];
@@ -224,12 +264,13 @@ function exportScoreCsv() {
       e.players.forEach(function (p) {
         rows.push(base.concat([p.name, ROLE_NAMES[p.role] || p.role, (p.specials || []).join(' + '),
           p.won ? 'oui' : 'non', p.eliminated ? 'oui' : 'non', diff, theme,
-          p.lie === 'passed' ? 'réussi' : (p.lie === 'spotted' ? 'repéré' : '')
+          p.lie === 'passed' ? 'réussi' : (p.lie === 'spotted' ? 'repéré' : ''),
+          p.mission === 'success' ? 'accomplie' : (p.mission === 'fail' ? 'ratée' : '')
         ]));
       });
     } else {
       // Ancienne entrée : seuls les vainqueurs ont été conservés.
-      rows.push(base.concat([(e.winnerNames || []).join(', '), '', '', 'oui', '', diff, theme, '']));
+      rows.push(base.concat([(e.winnerNames || []).join(', '), '', '', 'oui', '', diff, theme, '', '']));
     }
   });
   var text = '\ufeff' + rows.map(function (r) {

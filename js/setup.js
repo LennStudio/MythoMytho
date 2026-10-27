@@ -144,6 +144,9 @@ function renderRolesSummary() {
     if (state.roles.jumeaux) labels.push('Jumeaux');
     if (state.roles.tiresias) labels.push('Tirésias');
     if (state.roles.orion) labels.push('Orion');
+    if (state.roles.hercule) labels.push('Hercule');
+    if (state.roles.prometheus) labels.push('Prométhée');
+    if (state.roles.judas) labels.push('Judas');
     if (labels.length) parts.push(labels.join(', '));
     el.rolesSummary.textContent = parts.length ? parts.join(' + ') : 'Aucun rôle activé';
   }
@@ -277,11 +280,14 @@ export function bootSetup() {
     [el.roleFauxFrere, 'fauxfrere'],
     [el.roleJumeaux, 'jumeaux'],
     [el.roleTiresias, 'tiresias'],
-    [el.roleOrion, 'orion']
+    [el.roleOrion, 'orion'],
+    [el.roleHercule, 'hercule'],
+    [el.rolePrometheus, 'prometheus'],
+    [el.roleJudas, 'judas']
   ].forEach(function (pair) {
     pair[0].addEventListener('change', function () {
       state.roles[pair[1]] = pair[0].checked;
-      if (pair[1] === 'fauxfrere') updateUnderCounter();
+      if (pair[1] === 'fauxfrere' || pair[1] === 'judas') updateUnderCounter();
       else renderRolesSummary();
     });
   });

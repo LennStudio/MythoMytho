@@ -2442,8 +2442,8 @@ summary.setup-block__head::marker {
     color: var(--text);
 }
 
-/* ===== Orion (Chasseur) : choix de la cible ===== */
-.orion-list {
+/* ===== Choix d'une cible : tir d'Orion, révélation de Prométhée ===== */
+.picker-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
@@ -2452,7 +2452,7 @@ summary.setup-block__head::marker {
     overflow-y: auto;
 }
 
-.orion-target {
+.picker-target {
     appearance: none;
     padding: 10px 8px;
     background: #fbf7ea;
@@ -2466,16 +2466,16 @@ summary.setup-block__head::marker {
     overflow-wrap: anywhere;
 }
 
-.orion-target:hover {
+.picker-target:hover {
     border-color: var(--gold);
 }
 
-.orion-target:focus-visible {
+.picker-target:focus-visible {
     outline: 2px solid var(--gold);
     outline-offset: 2px;
 }
 
-.orion-target--selected {
+.picker-target--selected {
     background: var(--gold);
     border-color: var(--gold);
 }

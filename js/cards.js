@@ -77,6 +77,10 @@ function openCard(id) {
   } else if (player.isFauxFrere) {
     el.modalRole.textContent = 'Tu es le Faux-Frère : tu as le mot des Civils, mais tu gagnes si les imposteurs gagnent.';
     el.modalWord.textContent = player.word;
+  } else if (player.isJudas) {
+    el.modalRole.textContent = 'Tu es Judas : tu as le mot des Civils, mais tu gagnes si les imposteurs gagnent. ' +
+      player.judasName + ' est un imposteur.';
+    el.modalWord.textContent = player.word;
   } else if (player.isMytho) {
     el.modalRole.textContent = 'Tu es le Mytho : place UN mensonge dans tes indices, sans te faire repérer.';
     el.modalWord.textContent = player.word;
@@ -95,6 +99,12 @@ function openCard(id) {
     el.modalWord.textContent = 'Aucun mot';
   } else if (player.isOrion) {
     el.modalRole.textContent = 'Tu es Orion, le Chasseur : si tu es éliminé, tu emportes un joueur avec toi.';
+    el.modalWord.textContent = player.word;
+  } else if (player.isPrometheus) {
+    el.modalRole.textContent = 'Tu es Prométhée : si tu es éliminé, tu désignes un joueur et son camp est révélé à tous.';
+    el.modalWord.textContent = player.word;
+  } else if (player.isHercule) {
+    el.modalRole.textContent = 'Tu es Hercule — ta mission secrète : ' + player.mission;
     el.modalWord.textContent = player.word;
   } else if (player.isTwin) {
     var twin = getPlayer(player.twinId);
@@ -118,7 +128,8 @@ function openCard(id) {
   // Faux-Frère) voient toujours leur rôle.
   var roleHidden = !state.showRole && !player.isMrWhite && !player.isEspion &&
     !player.isMytho && !player.isVoyeur && !player.isJanus && !player.isFauxFrere &&
-    !player.isTiresias && !player.isOrion && !player.isTwin;
+    !player.isTiresias && !player.isOrion && !player.isTwin && !player.isJudas && !player.isPrometheus &&
+    !player.isHercule;
   if (roleHidden) el.modalRole.textContent = '';
   el.modalRole.hidden = roleHidden;
 
@@ -150,6 +161,9 @@ function renderModalBadges(player) {
     });
   }
   if (player.isFauxFrere) badges.push(ROLE_INFO.fauxfrere);
+  if (player.isJudas) badges.push(ROLE_INFO.judas);
+  if (player.isPrometheus) badges.push(ROLE_INFO.prometheus);
+  if (player.isHercule) badges.push(ROLE_INFO.hercule);
   if (player.isMytho) badges.push(ROLE_INFO.mytho);
   if (player.isTiresias) badges.push(ROLE_INFO.tiresias);
   if (player.isOrion) badges.push(ROLE_INFO.orion);

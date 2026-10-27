@@ -2,7 +2,8 @@
 
 import { renderCards } from './cards.js';
 import { MIN_PLAYERS, MIN_UNDERCOVER, clamp, el, getPlayer, isImpostor, makeTiresiasHint, maxImpostors, showToast, shuffle, state } from './core.js';
-import { hideMythoPanel } from './mytho.js';
+import { loadMissions, missionsReady, pickMission } from './missions.js';
+import { hideQuestionPanels } from './questions.js';
 import { clampRoleCounts } from './setup.js';
 import { pickWordPair, selectedThemeKeys, wordsLoaded } from './themes.js';
 import { resetDiscussionTimer, startDiscussionTimer, stopDiscussionTimer } from './timer.js';
@@ -56,6 +57,12 @@ function assignRoles() {
     player.orionDone = false;
     player.isTiresias = false;
     player.tiresiasHint = null;
+    player.isHercule = false;
+    player.mission = '';
+    player.isPrometheus = false;
+    player.prometheusDone = false;
+    player.isJudas = false;
+    player.judasName = '';
     player.isTwin = false;
     player.twinId = null;
     player.twinTitle = '';
@@ -106,12 +113,34 @@ function assignRoles() {
   }
 
   if (state.roles.fauxfrere) pickCivilFor('isFauxFrere', 'Faux-Frère');
+  if (state.roles.judas) {
+    // Judas : un Faux-Frère informé, qui connaît le nom d'un vrai imposteur.
+    var judas = pickCivilFor('isJudas', 'Judas');
+    if (judas) {
+      judas.judasName = shuffle(state.players.filter(isImpostor).map(function (p) {
+        return p.name;
+      }))[0];
+    }
+  }
   if (state.roles.mytho) pickCivilFor('isMytho', 'Mytho');
   if (state.roles.janus) {
     var janus = pickCivilFor('isJanus', 'Janus');
     if (janus) janus.janusWords = shuffle([words.civilWord, words.undercoverWord]);
   }
   if (state.roles.orion) pickCivilFor('isOrion', 'Orion');
+  if (state.roles.prometheus) pickCivilFor('isPrometheus', 'Prométhée');
+  if (state.roles.hercule) {
+    var hercule = pickCivilFor('isHercule', 'Hercule');
+    if (hercule) {
+      hercule.mission = pickMission([words.civilWord, words.undercoverWord]);
+      if (!hercule.mission) {
+        // Missions non chargées : rôle non attribué (ce n'est pas un manque de joueurs).
+        hercule.isHercule = false;
+        usedForSpecial[hercule.id] = false;
+        showToast('Missions indisponibles : Hercule n\'a pas été attribué cette manche.', 3600);
+      }
+    }
+  }
   if (state.roles.tiresias) {
     var tiresias = pickCivilFor('isTiresias', 'Tirésias');
     if (tiresias) tiresias.tiresiasHint = makeTiresiasHint(words.civilWord);
@@ -261,7 +290,7 @@ function resetStageUI() {
   el.startVoteBtn.style.display = '';
   el.startVoteBtn.disabled = true;
   el.summaryBtn.classList.add('summary-btn--hidden');
-  hideMythoPanel();
+  hideQuestionPanels();
   resetDiscussionTimer();
 }
 
@@ -393,6 +422,11 @@ export function handleStartClick() {
   }
   if (!selectedThemeKeys().length) {
     showToast('Sélectionnez au moins un thème de mots avant de lancer la manche.');
+    return;
+  }
+  // Hercule : les missions sont chargées d'avance ; sinon on les attend (ou on s'en passe en cas d'échec).
+  if (state.roles.hercule && !missionsReady()) {
+    loadMissions().then(startGame).catch(startGame);
     return;
   }
   startGame();

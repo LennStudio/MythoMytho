@@ -1,11 +1,11 @@
 // Vote, élimination, fin de partie et récapitulatif. [chunk de jeu]
 
 import { CARD_ICON, cardRotation } from './cards.js';
-import { ROLE_NAMES, announce, el, getPlayer, isImpostor, isImpostorTeam, state, vibrate } from './core.js';
+import { ROLE_NAMES, announce, el, getPlayer, isImpostor, isImpostorTeam, isTraitor, state, vibrate } from './core.js';
 import { openGuessModal } from './guess.js';
 import { baseRoleKey, recordScoreEntry } from './journal.js';
-import { showMythoQuestion } from './mytho.js';
-import { openOrionModal } from './orion.js';
+import { openPicker } from './picker.js';
+import { showEndQuestions } from './questions.js';
 import { stopDiscussionTimer } from './timer.js';
 
 function alivePlayers() {
@@ -111,6 +111,7 @@ function closeVoteConfirm() {
 }
 
 function roleLabel(player) {
+  if (player.isJudas) return player.name + ' était Judas';
   if (player.isFauxFrere) return player.name + ' était le Faux-Frère';
   if (player.isMrWhite) return player.name + ' était Mr. White';
   if (player.isEspion) return player.name + ' était l\'Espion';
@@ -134,6 +135,8 @@ function eliminate(player) {
 
 // Orion éliminé : en attente du choix de sa cible (la victoire n'est évaluée qu'après son tir).
 var pendingOrion = null;
+// Prométhée éliminé : en attente du choix du joueur dont le camp sera révélé.
+var pendingPrometheus = null;
 
 function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, function (c) {
@@ -161,6 +164,9 @@ function fillEliminationModal(batch, shotBy) {
     }
     if (p.isOrion) {
       line += '<span class="modal__fantome-note">🏹 ' + escapeHtml(p.name) + ' est Orion, le Chasseur — il/elle emporte un joueur avec lui/elle !</span>';
+    }
+    if (p.isPrometheus) {
+      line += '<span class="modal__fantome-note">🔥 ' + escapeHtml(p.name) + ' est Prométhée — il/elle éclaire le groupe en révélant le camp d\'un joueur !</span>';
     }
     return line;
   }).join('<br>');
@@ -293,16 +299,23 @@ function resolveElimination(eliminatedNow, opts) {
   fillEliminationModal(eliminatedNow, opts.shotBy);
 
   var traitorAlive = state.players.some(function (p) {
-    return p.isFauxFrere && !p.eliminated;
+    return isTraitor(p) && !p.eliminated;
   });
+  var traitorTitles = [];
+  if (state.players.some(function (p) {
+      return p.isFauxFrere;
+    })) traitorTitles.push('le Faux-Frère');
+  if (state.players.some(function (p) {
+      return p.isJudas;
+    })) traitorTitles.push('Judas');
   var realImpostorsAlive = state.players.some(function (p) {
     return !p.eliminated && isImpostor(p);
   });
 
   if (winner === 'civils') {
-    el.elimContinueText.textContent = state.players.some(function (p) {
-      return p.isFauxFrere;
-    }) ? 'Tous les imposteurs et le Faux-Frère ont été démasqués !' : 'Tous les imposteurs ont été démasqués !';
+    el.elimContinueText.textContent = traitorTitles.length ?
+      'Tous les imposteurs et ' + traitorTitles.join(' et ') + ' ont été démasqués !' :
+      'Tous les imposteurs ont été démasqués !';
     el.elimContinueBtn.textContent = 'Voir le résultat';
   } else if (winner === 'undercover') {
     el.elimContinueText.textContent = winnerReason === 'deadlock2' ?
@@ -331,6 +344,17 @@ function resolveElimination(eliminatedNow, opts) {
     el.elimContinueBtn.textContent = 'Tenter sa chance';
   }
 
+  // Prométhée éliminé alors que la partie continue : il désigne un joueur dont le camp sera révélé.
+  var prometheus = allNew.filter(function (p) {
+    return p.isPrometheus && !p.prometheusDone;
+  })[0];
+  if (prometheus && !state.winner && alivePlayers().length) {
+    pendingPrometheus = prometheus;
+    el.elimContinueText.textContent = 'Prométhée (' + prometheus.name +
+      ') se sacrifie pour éclairer le groupe : il/elle désigne un joueur dont le camp sera révélé à tous.';
+    el.elimContinueBtn.textContent = 'Désigner un joueur';
+  }
+
   openEliminationModal();
 }
 
@@ -346,6 +370,28 @@ function handleOrionChoice(targetId) {
     earlier: pending.earlier,
     shotBy: pending.orion
   });
+}
+
+// Prométhée a désigné un joueur : on révèle son camp (le Faux-Frère et Judas comptent comme imposteurs).
+function handlePrometheusChoice(targetId) {
+  var prometheus = pendingPrometheus;
+  pendingPrometheus = null;
+  if (!prometheus) return;
+  prometheus.prometheusDone = true;
+  var target = getPlayer(targetId);
+  if (!target) return;
+  el.elimName.textContent = 'Prométhée éclaire le groupe : ' + target.name + ' est ' +
+    (isImpostorTeam(target) ? 'un imposteur' : 'un Civil') + ' !';
+  el.elimRole.textContent = '';
+  if (state.guessQueue.length) {
+    el.elimContinueText.textContent = (state.guessQueue.length > 1 ? 'Les Mr. White ont' : 'Mr. White a') +
+      ' une dernière chance : deviner le mot des Civils.';
+    el.elimContinueBtn.textContent = 'Tenter sa chance';
+  } else {
+    el.elimContinueText.textContent = 'La partie continue — au prochain vote.';
+    el.elimContinueBtn.textContent = 'Continuer';
+  }
+  openEliminationModal();
 }
 
 function closeEliminationModal() {
@@ -371,23 +417,25 @@ function enterGameOver(winner) {
   stopDiscussionTimer();
 
   var impostorPlural = state.players.filter(isImpostor).length > 1;
-  var traitor = state.players.filter(function (p) {
-    return p.isFauxFrere;
-  })[0];
+  var traitors = state.players.filter(isTraitor);
 
   if (winner === 'civils') {
     el.gameOverTitle.textContent = 'Les Civils ont gagné !';
     el.gameOverSub.textContent = impostorPlural ?
       'Tous les imposteurs ont été démasqués et éliminés.' :
       'L\'imposteur a été démasqué et éliminé.';
-    if (traitor) el.gameOverSub.textContent += ' Le Faux-Frère (' + traitor.name + ') aussi.';
+    traitors.forEach(function (t) {
+      el.gameOverSub.textContent += ' ' + (t.isJudas ? 'Judas' : 'Le Faux-Frère') + ' (' + t.name + ') aussi.';
+    });
     el.gameOverBanner.classList.add('game-over-banner--civils');
   } else if (winner === 'undercover') {
     el.gameOverTitle.textContent = impostorPlural ? 'Les Undercovers ont gagné !' : 'L\'Undercover a gagné !';
     el.gameOverSub.textContent = state.winnerReason === 'deadlock2' ?
       'Il ne restait plus que 2 joueurs : la situation était dans l\'impasse, l\'imposteur l\'emporte automatiquement.' :
       'Tous les Civils ont été éliminés avant d\'avoir démasqué l\'imposteur.';
-    if (traitor) el.gameOverSub.textContent += ' Le Faux-Frère (' + traitor.name + ') gagne avec eux.';
+    traitors.forEach(function (t) {
+      el.gameOverSub.textContent += ' ' + (t.isJudas ? 'Judas' : 'Le Faux-Frère') + ' (' + t.name + ') gagne avec eux.';
+    });
     el.gameOverBanner.classList.add('game-over-banner--undercover');
   } else if (winner === 'idiot') {
     el.gameOverTitle.textContent = 'L\'Idiot du village a gagné !';
@@ -409,7 +457,7 @@ function enterGameOver(winner) {
   el.gameOverBanner.classList.add('game-over-banner--active');
   announce(el.gameOverTitle.textContent);
   state.lastScoreEntry = recordScoreEntry(winner);
-  showMythoQuestion();
+  showEndQuestions();
 }
 
 function openSummary() {
@@ -439,6 +487,9 @@ function openSummary() {
     } else if (player.isEspion) {
       roleSpan.className = 'summary-role summary-role--undercover';
       roleSpan.textContent = 'Espion';
+    } else if (player.isJudas) {
+      roleSpan.className = 'summary-role summary-role--undercover';
+      roleSpan.textContent = 'Judas';
     } else if (player.isFauxFrere) {
       roleSpan.className = 'summary-role summary-role--undercover';
       roleSpan.textContent = 'Faux-Frère';
@@ -461,6 +512,8 @@ function openSummary() {
     if (player.isJanus) specials.push('Janus');
     if (player.isTiresias) specials.push('Tirésias');
     if (player.isOrion) specials.push('Orion');
+    if (player.isPrometheus) specials.push('Prométhée');
+    if (player.isHercule) specials.push('Hercule');
     if (player.isTwin) specials.push(player.twinTitle + ' (Jumeaux)');
     if (player.loverId !== null) specials.push('Amoureux');
     specials.forEach(function (label) {
@@ -506,7 +559,23 @@ export function bootVote() {
   el.elimContinueBtn.addEventListener('click', function () {
     closeEliminationModal();
     if (pendingOrion) {
-      openOrionModal(pendingOrion.orion, alivePlayers(), handleOrionChoice);
+      openPicker({
+        stamp: 'dernier tir',
+        title: 'Orion, le Chasseur',
+        intro: pendingOrion.orion.name + ' était Orion, le Chasseur : il/elle emporte un joueur avec lui/elle. ' +
+          'Touchez la cible désignée à voix haute, puis confirmez.',
+        say: pendingOrion.orion.name + ' était Orion : désignez la cible de son dernier tir.'
+      }, alivePlayers(), handleOrionChoice);
+      return;
+    }
+    if (pendingPrometheus) {
+      openPicker({
+        stamp: 'le feu volé',
+        title: 'Prométhée',
+        intro: pendingPrometheus.name + ' était Prométhée : il/elle désigne un joueur encore en vie, dont le camp ' +
+          '(Civil ou imposteur) sera révélé à tous. Touchez ce joueur, puis confirmez.',
+        say: pendingPrometheus.name + ' était Prométhée : désignez un joueur dont le camp sera révélé.'
+      }, alivePlayers(), handlePrometheusChoice);
       return;
     }
     if (state.guessQueue.length) {
