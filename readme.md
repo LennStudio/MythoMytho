@@ -328,7 +328,7 @@ Les missions d'Hercule sont dans un fichier à part, chargé avec le jeu. Pour e
 - **Manifeste** (`manifest.json`) : nom « Undercover — jeu de mots & de déduction », affichage `standalone`, orientation portrait, langue `fr`, catégories jeux / divertissement, icônes 192 et 512 px (dont des versions *maskable*) et icône Apple Touch.
 - **Raccourcis d'application** : « Nouvelle manche » et « Journal des scores ».
 - **Captures d'écran** déclarées (`narrow` et `wide`) pour la fiche d'installation.
-- **Service Worker** (`sw.js`, cache `mythomytho-v1.6`) :
+- **Service Worker** (`sw.js`, cache `mythomytho-v1.6.1`) :
   - **précache** obligatoire de l'application (HTML, CSS, **les 23 modules de `js/`**, manifeste, `words.json`, `missions.json`) : les modules chargés à la demande sont donc eux aussi disponibles hors ligne ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
   - navigation : **réseau d'abord**, repli sur `index.html` en cache ;
   - fichiers de l'application : **cache d'abord**, rafraîchis en arrière-plan (*stale-while-revalidate*) ;

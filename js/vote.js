@@ -420,7 +420,7 @@ function enterGameOver(winner) {
   var traitors = state.players.filter(isTraitor);
 
   if (winner === 'civils') {
-    el.gameOverTitle.textContent = 'Les Civils ont gagné !';
+    el.gameOverTitle.textContent = 'Les Civils ont gagne !';
     el.gameOverSub.textContent = impostorPlural ?
       'Tous les imposteurs ont été démasqués et éliminés.' :
       'L\'imposteur a été démasqué et éliminé.';
@@ -429,7 +429,7 @@ function enterGameOver(winner) {
     });
     el.gameOverBanner.classList.add('game-over-banner--civils');
   } else if (winner === 'undercover') {
-    el.gameOverTitle.textContent = impostorPlural ? 'Les Undercovers ont gagné !' : 'L\'Undercover a gagné !';
+    el.gameOverTitle.textContent = impostorPlural ? 'Les Undercovers ont gagne !' : 'L\'Undercover a gagne !';
     el.gameOverSub.textContent = state.winnerReason === 'deadlock2' ?
       'Il ne restait plus que 2 joueurs : la situation était dans l\'impasse, l\'imposteur l\'emporte automatiquement.' :
       'Tous les Civils ont été éliminés avant d\'avoir démasqué l\'imposteur.';
@@ -438,16 +438,16 @@ function enterGameOver(winner) {
     });
     el.gameOverBanner.classList.add('game-over-banner--undercover');
   } else if (winner === 'idiot') {
-    el.gameOverTitle.textContent = 'L\'Idiot du village a gagné !';
+    el.gameOverTitle.textContent = 'L\'Idiot du village a gagne !';
     el.gameOverSub.textContent = state.winnerDetail + ' a été éliminé(e) dès le tout premier vote et remporte la partie à lui/elle seul(e) !';
     el.gameOverBanner.classList.add('game-over-banner--idiot');
   } else if (winner === 'mrwhite') {
-    el.gameOverTitle.textContent = 'Mr. White a gagné !';
+    el.gameOverTitle.textContent = 'Mr. White a gagne !';
     el.gameOverSub.textContent = state.winnerDetail + ' a deviné le mot des Civils' +
       (state.civilWord ? ' (« ' + state.civilWord + ' »)' : '') + ' et remporte la partie à lui/elle seul(e) !';
     el.gameOverBanner.classList.add('game-over-banner--mrwhite');
   } else if (winner === 'amoureux') {
-    el.gameOverTitle.textContent = 'Les Amoureux ont gagné !';
+    el.gameOverTitle.textContent = 'Les Amoureux ont gagne !';
     el.gameOverSub.textContent = state.winnerReason === 'deadlock4' ?
       'Il ne restait plus que 4 joueurs : la situation était dans l\'impasse, les Amoureux l\'emportent automatiquement.' :
       'Peu importe leurs camps respectifs, ils ont survécu ensemble à tous les autres joueurs !';

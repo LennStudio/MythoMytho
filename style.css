@@ -36,7 +36,7 @@
     font-weight: 100 900; /* une seule graisse : évite le faux gras synthétique */
     font-style: normal;
     font-display: swap;
-    unicode-range: U+0041-005A, U+0061-007A; /* la police ne contient que A–Z / a–z : accents, chiffres et ponctuation passent sur la police de secours */
+    unicode-range: U+0041-005A, U+0061-007A; /* la police ne contient que A–Z / a–z : chiffres et ponctuation passent sur la police de secours */
 }
 
 :root {
@@ -742,10 +742,10 @@ summary.setup-block__head::marker {
     cursor: pointer;
     font-family: var(--font-body);
     font-weight: 600;
-    letter-spacing: .02em;
+    letter-spacing: 0;
     border-radius: var(--radius-s);
-    padding: 13px 26px;
-    font-size: 1.05rem;
+    padding: 12px 22px;
+    font-size: .9rem;
     transition: transform .12s ease, filter .12s ease;
 }
 
@@ -1661,6 +1661,7 @@ summary.setup-block__head::marker {
     .vote-grid {
         grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
         gap: 9px;
+        padding-inline: 4px; /* les cartes sont légèrement inclinées : évite qu'elles débordent à droite */
     }
 
     .card {
@@ -1762,11 +1763,11 @@ summary.setup-block__head::marker {
     }
 
     .actions-row__group {
-        justify-content: stretch;
+        flex-direction: column;
     }
 
     .actions-row__group .btn {
-        flex: 1;
+        width: 100%;
     }
 
     .vote-section__hint {
@@ -2533,4 +2534,25 @@ summary.setup-block__head::marker {
 .picker-target--selected {
     background: var(--gold);
     border-color: var(--gold);
+}
+
+/* Boutons des fenêtres modales : texte réduit pour tenir sur une ligne sur petits écrans */
+.modal .btn {
+    font-size: clamp(.74rem, 3.4vw, .9rem);
+    padding-inline: 14px;
+}
+
+/* Titres : Sirelia n'a qu'une graisse ; les caractères de secours (chiffres, &, ponctuation) restent en normal */
+h1,
+h2,
+h3,
+h4,
+.difficulty__title,
+.game-over-banner__title,
+.score-section-title,
+.balance__title,
+.groups__title,
+.subsection__title {
+    font-weight: 400;
+    font-variant-ligatures: none; /* les ligatures de Sirelia (ia, ga, oa, ma…) pointent vers des glyphes vides */
 }

@@ -153,7 +153,7 @@ export function renderBalance() {
 
   var title = document.createElement('h3');
   title.className = 'balance__title';
-  title.textContent = 'Équilibrage';
+  title.textContent = 'Equilibrage';
   el.balanceBox.appendChild(title);
 
   if (!notes.length) {

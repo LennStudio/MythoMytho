@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_VERSION = "mythomytho-v1.6";
+var CACHE_VERSION = "mythomytho-v1.6.1";
 var APP_SHELL_CACHE = CACHE_VERSION + "-shell";
 var RUNTIME_CACHE = CACHE_VERSION + "-runtime";
 
