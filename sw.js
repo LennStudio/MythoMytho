@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_VERSION = "mythomytho-v1.5";
+var CACHE_VERSION = "mythomytho-v1.6";
 var APP_SHELL_CACHE = CACHE_VERSION + "-shell";
 var RUNTIME_CACHE = CACHE_VERSION + "-runtime";
 
@@ -39,11 +39,18 @@ var APP_SHELL_FILES = [
 
 // Icônes : mises en cache au mieux, sans jamais bloquer l'installation.
 var OPTIONAL_FILES = [
-    "./assets/logo-192.png",
-    "./assets/logo-512.png",
-    "./assets/logo-maskable-192.png",
-    "./assets/logo-maskable-512.png",
-    "./assets/logo-apple-touch.png"
+    "./assets/logo.svg",
+    "./assets/favicon.svg",
+    "./assets/fonts/Sirelia.otf",
+    "./assets/fonts/CourierPrime-Regular.ttf",
+    "./assets/fonts/CourierPrime-Italic.ttf",
+    "./assets/fonts/CourierPrime-Bold.ttf",
+    "./assets/fonts/CourierPrime-BoldItalic.ttf",
+    "./assets/favicon-192.png",
+    "./assets/favicon-512.png",
+    "./assets/favicon-maskable-192.png",
+    "./assets/favicon-maskable-512.png",
+    "./assets/favicon-apple-touch.png"
 ];
 
 self.addEventListener("install", function (event) {

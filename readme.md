@@ -328,7 +328,7 @@ Les missions d'Hercule sont dans un fichier à part, chargé avec le jeu. Pour e
 - **Manifeste** (`manifest.json`) : nom « Undercover — jeu de mots & de déduction », affichage `standalone`, orientation portrait, langue `fr`, catégories jeux / divertissement, icônes 192 et 512 px (dont des versions *maskable*) et icône Apple Touch.
 - **Raccourcis d'application** : « Nouvelle manche » et « Journal des scores ».
 - **Captures d'écran** déclarées (`narrow` et `wide`) pour la fiche d'installation.
-- **Service Worker** (`sw.js`, cache `mythomytho-v1.5`) :
+- **Service Worker** (`sw.js`, cache `mythomytho-v1.6`) :
   - **précache** obligatoire de l'application (HTML, CSS, **les 23 modules de `js/`**, manifeste, `words.json`, `missions.json`) : les modules chargés à la demande sont donc eux aussi disponibles hors ligne ; les **icônes** sont mises en cache « au mieux » : une icône manquante ne bloque pas l'installation ;
   - navigation : **réseau d'abord**, repli sur `index.html` en cache ;
   - fichiers de l'application : **cache d'abord**, rafraîchis en arrière-plan (*stale-while-revalidate*) ;
@@ -417,7 +417,7 @@ Les liens de partage de « Mes paires » contiennent **les mots eux-mêmes** (en
 
 L'application ne nécessite ni build ni dépendance à installer.
 
-1. Placez les fichiers `index.html`, `style.css`, `words.json`, `missions.json`, `manifest.json` et `sw.js` à la racine, avec le dossier `js/` (les 23 modules) et le dossier `assets/` contenant les icônes (`logo-192.png`, `logo-512.png`, `logo-maskable-192.png`, `logo-maskable-512.png`, `logo-apple-touch.png`) et les captures d'écran (`screenshot-setup.png`, `screenshot-game.png`, `screenshot-wide.png`).
+1. Placez les fichiers `index.html`, `style.css`, `words.json`, `missions.json`, `manifest.json` et `sw.js` à la racine, avec le dossier `js/` (les 23 modules) et le dossier `assets/` contenant les icônes (`favicon-192.png`, `favicon-512.png`, `favicon-maskable-192.png`, `favicon-maskable-512.png`, `favicon-apple-touch.png`) et les captures d'écran (`screenshot-setup.png`, `screenshot-game.png`, `screenshot-wide.png`).
 2. Servez le dossier en **HTTPS** (GitHub Pages, Netlify, Vercel…) ou en local, par exemple avec `npx serve` ou `python -m http.server`. Le chargement de `words.json`, des modules `js/`, le service worker et l'installation PWA **ne fonctionnent pas** en ouvrant directement le fichier (`file://`). Le serveur doit servir les fichiers `.js` avec un type MIME JavaScript (c'est le cas de tous les hébergeurs courants).
 3. Ouvrez l'adresse dans un navigateur moderne, puis :
    - **Android / Chrome** : bouton **Installer l'app** ou menu → *Installer l'application* ;
@@ -468,7 +468,7 @@ Une connexion est nécessaire au **premier chargement** (mots et polices) ; ensu
 
 - **HTML5 / CSS3** : variables CSS, Flexbox, Grid, `prefers-color-scheme`, `env(safe-area-inset-*)`
 - **JavaScript** vanilla en **modules ES** (`import` statique, `import()` dynamique, `modulepreload`, `requestIdleCallback`), sans framework ni bundler
-- **Google Fonts** : Barlow Condensed (titres), Courier Prime (texte), avec polices de secours
+- **Polices en local** (`assets/fonts/`) : Sirelia (titres), Courier Prime (tout le reste), avec polices de secours
 - **Service Worker** et **Web App Manifest** (raccourcis, captures d'écran, `beforeinstallprompt`)
 - **Web Audio API** (sonnerie du minuteur), **Vibration API**, **Screen Wake Lock API**
 - **Web Speech API** (`SpeechRecognition`) pour la dictée de Mr. White, quand elle est disponible

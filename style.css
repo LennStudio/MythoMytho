@@ -1,3 +1,44 @@
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('assets/fonts/CourierPrime-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('assets/fonts/CourierPrime-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('assets/fonts/CourierPrime-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('assets/fonts/CourierPrime-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sirelia';
+    src: url('assets/fonts/Sirelia.otf') format('opentype');
+    font-weight: 100 900; /* une seule graisse : évite le faux gras synthétique */
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0041-005A, U+0061-007A; /* la police ne contient que A–Z / a–z : accents, chiffres et ponctuation passent sur la police de secours */
+}
+
 :root {
     --bg: #10161a;
     --bg-vignette: #0a0d0f;
@@ -18,6 +59,8 @@
     --gold: #b6924e;
     --gold-soft: #8a7440;
     --ok: #5c8a5a;
+    --font-body: 'Courier Prime', ui-monospace, 'SFMono-Regular', 'Courier New', monospace;
+    --font-title: 'Sirelia', var(--font-body);
     --radius-s: 4px;
     --radius-m: 8px;
     --shadow-card: 0 10px 24px -12px rgba(0, 0, 0, .55);
@@ -53,7 +96,7 @@ body {
     background:
         radial-gradient(circle at 50% -10%, var(--bg-glow) 0%, var(--bg) 45%, var(--bg-vignette) 100%);
     color: var(--text);
-    font-family: 'Courier Prime', ui-monospace, 'SFMono-Regular', monospace;
+    font-family: var(--font-body);
     min-height: 100%;
     display: flex;
     flex-direction: column;
@@ -77,8 +120,13 @@ body::before {
 
 h1,
 h2,
-h3 {
-    font-family: 'Barlow Condensed', system-ui, sans-serif;
+h3,
+h4,
+.difficulty__title,
+.game-over-banner__title,
+.score-section-title,
+.balance__title {
+    font-family: var(--font-title);
     margin: 0;
     letter-spacing: .01em;
 }
@@ -100,15 +148,22 @@ button {
 }
 
 .wordmark h1 {
-    font-size: clamp(2.4rem, 7vw, 3.4rem);
-    font-weight: 700;
-    color: var(--text);
-    line-height: .95;
+    margin: 0;
+    line-height: 0;
+}
+
+.wordmark__logo {
+    --logo-w: clamp(300px, 70vw, 480px);
+    display: block;
+    width: var(--logo-w);
+    height: auto;
+    /* le SVG contient des marges vides : on les rogne pour garder le rythme vertical */
+    margin: calc(var(--logo-w) * -.06) auto calc(var(--logo-w) * -.055);
 }
 
 .wordmark span {
     display: block;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .72rem;
     letter-spacing: .32em;
     color: var(--gold);
@@ -169,7 +224,7 @@ button {
     background: none;
     border: none;
     padding: 4px 0;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .7rem;
     letter-spacing: .06em;
     color: var(--gold);
@@ -266,7 +321,7 @@ button {
 .counter__value {
     min-width: 64px;
     text-align: center;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--text);
@@ -274,7 +329,7 @@ button {
 
 .counter__value small {
     display: block;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .6rem;
     letter-spacing: .14em;
     color: var(--muted-cream);
@@ -295,7 +350,7 @@ button {
 }
 
 .counter-field__label {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--text);
@@ -326,7 +381,7 @@ button {
     border: 1px solid var(--paper-shadow);
     border-radius: var(--radius-s);
     padding: 8px 10px;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: 1rem; /* >= 16px : évite le zoom automatique d'iOS au focus */
 }
 
@@ -430,7 +485,7 @@ summary.setup-block__head::marker {
     border-radius: 50%;
     border: 1px solid var(--gold-soft);
     color: var(--gold);
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: .9rem;
     display: flex;
@@ -587,7 +642,7 @@ summary.setup-block__head::marker {
 }
 
 .toggle-item strong {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-size: .92rem;
     font-weight: 600;
     color: var(--text);
@@ -613,7 +668,7 @@ summary.setup-block__head::marker {
 
 .toggle-item__count {
     flex-shrink: 0;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .58rem;
     color: var(--gold);
     background: rgba(182, 146, 78, .12);
@@ -662,7 +717,7 @@ summary.setup-block__head::marker {
 
 .modal__badge strong {
     display: block;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-size: .8rem;
     letter-spacing: .04em;
     color: var(--red-deep);
@@ -685,7 +740,7 @@ summary.setup-block__head::marker {
     appearance: none;
     border: none;
     cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
     letter-spacing: .02em;
     border-radius: var(--radius-s);
@@ -833,7 +888,7 @@ summary.setup-block__head::marker {
 }
 
 .round-roles__line strong {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
     letter-spacing: .03em;
     color: var(--gold);
@@ -888,7 +943,7 @@ summary.setup-block__head::marker {
 }
 
 .card__index {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-size: .66rem;
     letter-spacing: .08em;
     color: var(--ink-soft);
@@ -902,7 +957,7 @@ summary.setup-block__head::marker {
 }
 
 .card__name {
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .68rem;
     text-align: center;
     line-height: 1.25;
@@ -987,7 +1042,7 @@ summary.setup-block__head::marker {
 
 .eliminated-chip__role {
     text-decoration: none;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     letter-spacing: .06em;
     color: var(--red);
 }
@@ -998,7 +1053,7 @@ summary.setup-block__head::marker {
 
 .eliminated-chip__fantome {
     text-decoration: none;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     letter-spacing: .04em;
     color: var(--muted-cream);
     background: rgba(139, 149, 153, .18);
@@ -1059,7 +1114,7 @@ summary.setup-block__head::marker {
 }
 
 .game-over-banner__title {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-title);
     font-size: clamp(1.6rem, 6vw, 2.2rem);
     font-weight: 700;
     color: var(--text);
@@ -1164,7 +1219,7 @@ summary.setup-block__head::marker {
     position: absolute;
     top: 14px;
     right: -10px;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: .64rem;
     letter-spacing: .18em;
@@ -1184,7 +1239,7 @@ summary.setup-block__head::marker {
 }
 
 .modal__role {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 600;
     color: var(--red-deep);
@@ -1199,7 +1254,7 @@ summary.setup-block__head::marker {
 }
 
 .modal__word {
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: clamp(1.6rem, 7vw, 2.1rem);
     line-height: 1.15;
@@ -1260,7 +1315,7 @@ summary.setup-block__head::marker {
 }
 
 .summary-list li strong {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
 }
 
@@ -1438,7 +1493,7 @@ summary.setup-block__head::marker {
 }
 
 .discussion-timer__time {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--gold);
@@ -1500,7 +1555,7 @@ summary.setup-block__head::marker {
 }
 
 .score-section-title {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-title);
     font-size: .95rem;
     font-weight: 600;
     color: var(--ink);
@@ -1529,13 +1584,13 @@ summary.setup-block__head::marker {
 }
 
 .score-leaderboard li strong {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
 }
 
 .score-leaderboard__count,
 .score-history__round {
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .66rem;
     color: var(--ink-soft);
     white-space: nowrap;
@@ -1847,7 +1902,7 @@ summary.setup-block__head::marker {
     display: block;
     text-align: center;
     padding: 8px 10px;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
     font-size: .95rem;
     color: var(--gold);
@@ -1894,7 +1949,7 @@ summary.setup-block__head::marker {
     border: 1px solid var(--panel-line);
     border-radius: var(--radius-s);
     padding: 8px 10px;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: 1rem;
 }
 
@@ -1910,7 +1965,7 @@ summary.setup-block__head::marker {
 .guess__input {
     border-radius: var(--radius-s);
     padding: 9px 11px;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: 1rem;
     width: 100%;
     min-width: 0;
@@ -2101,7 +2156,7 @@ summary.setup-block__head::marker {
 
 .score-leaderboard__meta {
     flex-basis: 100%;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .62rem;
     color: var(--ink-soft);
 }
@@ -2154,7 +2209,7 @@ summary.setup-block__head::marker {
     border: 1px solid var(--panel-line);
     border-radius: var(--radius-s);
     padding: 8px 10px;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: 1rem;
     min-width: 0;
     flex: 1;
@@ -2209,7 +2264,7 @@ summary.setup-block__head::marker {
     border: none;
     background: none;
     color: var(--text);
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
     font-size: .95rem;
     cursor: pointer;
@@ -2221,7 +2276,7 @@ summary.setup-block__head::marker {
 
 .group-chip__load small {
     color: var(--gold);
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .7rem;
 }
 
@@ -2262,7 +2317,7 @@ summary.setup-block__head::marker {
 }
 
 .balance__title {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-title);
     font-size: .8rem;
     letter-spacing: .14em;
     text-transform: uppercase;
@@ -2377,13 +2432,13 @@ summary.setup-block__head::marker {
     padding: 10px 12px 10px 28px;
     background: rgba(164, 55, 42, .1);
     border-left: 3px solid var(--red, #a4372a);
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .78rem;
     line-height: 1.6;
 }
 
 .boot-error__detail {
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-body);
     font-size: .72rem !important;
     color: var(--ink-soft, #5a5240);
     overflow-wrap: anywhere;
@@ -2459,7 +2514,7 @@ summary.setup-block__head::marker {
     color: var(--ink);
     border: 1px solid var(--paper-shadow);
     border-radius: var(--radius-s);
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;

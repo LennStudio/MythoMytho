@@ -28,16 +28,15 @@
     })();
   </script>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="assets/logo-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/logo-apple-touch.png">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/favicon-apple-touch.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="MythoMytho">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
+  <link rel="preload" href="assets/fonts/Sirelia.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="assets/fonts/CourierPrime-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/CourierPrime-Bold.ttf" as="font" type="font/ttf" crossorigin>
   <link href="style.css" rel="stylesheet">
   <!-- Code de la page d'accueil, récupéré en parallèle ; le jeu, le journal et « Mes paires » se chargent à la demande -->
   <link rel="modulepreload" href="js/core.js">
@@ -183,7 +182,7 @@
   </button>
 
   <div class="wordmark">
-    <h1>MythoMytho</h1>
+    <h1><img src="assets/logo.svg" alt="MythoMytho" class="wordmark__logo" width="800" height="300"></h1>
     <span>jeu de mots &amp; de déduction</span>
   </div>
 
