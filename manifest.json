@@ -1,95 +1,30 @@
 {
-  "name": "MythoMytho — jeu de mots & de déduction",
-  "short_name": "MythoMytho",
-  "description": "Jeu de déduction façon Mr. White : démasquez l'Undercover avant qu'il ne devine votre mot.",
-  "start_url": "./index.html",
-  "scope": "./",
-  "id": "./index.html",
-  "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#10161a",
-  "theme_color": "#10161a",
-  "lang": "fr",
-  "dir": "ltr",
-  "categories": [
-    "games",
-    "entertainment"
-  ],
-  "icons": [
-    {
-      "src": "assets/favicon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "assets/favicon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "assets/favicon-maskable-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "assets/favicon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Nouvelle manche",
-      "short_name": "Nouvelle",
-      "description": "Configurer et lancer une nouvelle partie",
-      "url": "./index.html?action=new",
-      "icons": [
-        {
-          "src": "assets/favicon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Journal des scores",
-      "short_name": "Scores",
-      "description": "Classement, taux de victoire et séries",
-      "url": "./index.html?action=scores",
-      "icons": [
-        {
-          "src": "assets/favicon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "assets/screenshot-setup.png",
-      "sizes": "540x960",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Configuration de la partie : joueurs, rôles, thèmes et difficulté"
-    },
-    {
-      "src": "assets/screenshot-game.png",
-      "sizes": "540x960",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Manche en cours : cartes secrètes à consulter chacun son tour"
-    },
-    {
-      "src": "assets/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Écran de configuration sur grand écran"
-    }
-  ]
+"name":"MythoMytho — jeu de mots & de déduction",
+"short_name":"MythoMytho",
+"description":"Jeu de déduction façon Mr. White : démasquez l'Undercover avant qu'il ne devine votre mot.",
+"start_url":"./index.html",
+"scope":"./",
+"id":"./index.html",
+"display":"standalone",
+"orientation":"portrait-primary",
+"background_color":"#10161a",
+"theme_color":"#10161a",
+"lang":"fr",
+"dir":"ltr",
+"categories":["games","entertainment"],
+"icons":[
+{"src":"assets/favicon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+{"src":"assets/favicon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+{"src":"assets/favicon-maskable-192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},
+{"src":"assets/favicon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+],
+"shortcuts":[
+{"name":"Nouvelle manche","short_name":"Nouvelle","description":"Configurer et lancer une nouvelle partie","url":"./index.html?action=new","icons":[{"src":"assets/favicon-192.png","sizes":"192x192","type":"image/png"}]},
+{"name":"Journal des scores","short_name":"Scores","description":"Classement, taux de victoire et séries","url":"./index.html?action=scores","icons":[{"src":"assets/favicon-192.png","sizes":"192x192","type":"image/png"}]}
+],
+"screenshots":[
+{"src":"assets/screenshot-setup.png","sizes":"540x960","type":"image/png","form_factor":"narrow","label":"Configuration de la partie : joueurs, rôles, thèmes et difficulté"},
+{"src":"assets/screenshot-game.png","sizes":"540x960","type":"image/png","form_factor":"narrow","label":"Manche en cours : cartes secrètes à consulter chacun son tour"},
+{"src":"assets/screenshot-wide.png","sizes":"1280x720","type":"image/png","form_factor":"wide","label":"Écran de configuration sur grand écran"}
+]
 }

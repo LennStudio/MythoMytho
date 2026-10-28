@@ -1,50 +1,6 @@
-// Écran maintenu allumé pendant les cartes et la discussion. [chunk de jeu]
-
-import { el, state } from './core.js';
-
-// ======================================================================
-// Écran maintenu allumé (Wake Lock) pendant les cartes et la discussion
-// ======================================================================
-var wakeLockSentinel = null;
-
-var wakeLockPending = false;
-
-function wakeLockWanted() {
-  return 'wakeLock' in window.navigator &&
-    el.gameScreen.classList.contains('screen--active') &&
-    document.visibilityState === 'visible' &&
-    (state.phase === 'reveal' || state.timerRunning);
-}
-
-function releaseWakeLock() {
-  if (!wakeLockSentinel) return;
-  var s = wakeLockSentinel;
-  wakeLockSentinel = null;
-  try {
-    s.release().catch(function () {});
-  } catch (e) {}
-}
-
-export function syncWakeLock() {
-  if (!('wakeLock' in window.navigator)) return;
-  if (!wakeLockWanted()) {
-    releaseWakeLock();
-    return;
-  }
-  if (wakeLockSentinel || wakeLockPending) return;
-  wakeLockPending = true;
-  window.navigator.wakeLock.request('screen').then(function (sentinel) {
-    wakeLockPending = false;
-    wakeLockSentinel = sentinel;
-    sentinel.addEventListener('release', function () {
-      if (wakeLockSentinel === sentinel) wakeLockSentinel = null;
-    });
-    if (!wakeLockWanted()) releaseWakeLock();
-  }).catch(function () {
-    wakeLockPending = false;
-  });
-}
-
-export function bootWakelock() {
-  document.addEventListener('visibilitychange', syncWakeLock);
-}
+import{el as r,state as i}from"./core.js";
+var e=null,t=!1;
+function a(){return"wakeLock"in window.navigator&&r.gameScreen.classList.contains("screen--active")&&document.visibilityState==="visible"&&(i.phase==="reveal"||i.timerRunning)}
+function c(){if(e){var n=e;e=null;try{n.release().catch(function(){})}catch{}}}
+export function syncWakeLock(){if("wakeLock"in window.navigator){if(!a()){c();return}e||t||(t=!0,window.navigator.wakeLock.request("screen").then(function(n){t=!1,e=n,n.addEventListener("release",function(){e===n&&(e=null)}),a()||c()}).catch(function(){t=!1}))}}
+export function bootWakelock(){document.addEventListener("visibilitychange",syncWakeLock)}

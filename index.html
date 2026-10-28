@@ -1,859 +1,435 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="UTF-8">
-  <script>
-    (function () {
-      try {
-        var t = window.localStorage.getItem('undercover_theme_v1');
-        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
-      } catch (e) {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    })();
-  </script>
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>MythoMytho — jeu de déduction</title>
-  <meta name="description" content="Jeu de déduction façon Mr. White, à jouer entre amis sur un seul appareil.">
-  <meta name="theme-color" content="#f1ecdd">
-  <script>
-    (function () {
-      try {
-        if (window.localStorage.getItem('undercover_theme_v1') === 'dark') {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#10161a');
-        }
-      } catch (e) {}
-    })();
-  </script>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="icon" href="assets/favicon-192.png" type="image/png" sizes="192x192">
-  <link rel="apple-touch-icon" href="assets/favicon-apple-touch.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="MythoMytho">
-  <link rel="preload" href="assets/fonts/Sirelia.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preload" href="assets/fonts/CourierPrime-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="assets/fonts/CourierPrime-Bold.ttf" as="font" type="font/ttf" crossorigin>
-  <link href="style.css" rel="stylesheet">
-  <!-- Code de la page d'accueil, récupéré en parallèle ; le jeu, le journal et « Mes paires » se chargent à la demande -->
-  <link rel="modulepreload" href="js/core.js">
-  <link rel="modulepreload" href="js/theme.js">
-  <link rel="modulepreload" href="js/themes.js">
-  <link rel="modulepreload" href="js/setup.js">
-  <link rel="modulepreload" href="js/options.js">
-  <link rel="modulepreload" href="js/balance.js">
-  <link rel="modulepreload" href="js/groups.js">
-  <link rel="modulepreload" href="js/audio.js">
-  <link rel="modulepreload" href="js/pwa.js">
-  <link rel="modulepreload" href="js/main.js">
-  <link rel="preload" href="words.json" as="fetch" crossorigin>
+<meta charset="UTF-8">
+<script>
+(function(){try{var t=window.localStorage.getItem("undercover_theme_v1");t!=="dark"&&document.documentElement.setAttribute("data-theme","light")}catch{document.documentElement.setAttribute("data-theme","light")}})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MythoMytho — jeu de déduction</title>
+<meta name="description" content="Jeu de déduction façon Mr. White, à jouer entre amis sur un seul appareil.">
+<meta name="theme-color" content="#f1ecdd">
+<script>
+(function(){try{window.localStorage.getItem("undercover_theme_v1")==="dark"&&document.querySelector('meta[name="theme-color"]').setAttribute("content","#10161a")}catch{}})();
+</script>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/favicon-apple-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MythoMytho">
+<link rel="preload" href="assets/fonts/Sirelia.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="assets/fonts/CourierPrime-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="assets/fonts/CourierPrime-Bold.ttf" as="font" type="font/ttf" crossorigin>
+<link href="style.css" rel="stylesheet">
+<link rel="modulepreload" href="js/core.js">
+<link rel="modulepreload" href="js/theme.js">
+<link rel="modulepreload" href="js/themes.js">
+<link rel="modulepreload" href="js/setup.js">
+<link rel="modulepreload" href="js/options.js">
+<link rel="modulepreload" href="js/balance.js">
+<link rel="modulepreload" href="js/groups.js">
+<link rel="modulepreload" href="js/audio.js">
+<link rel="modulepreload" href="js/pwa.js">
+<link rel="modulepreload" href="js/main.js">
+<link rel="preload" href="words.json" as="fetch" crossorigin>
 </head>
-
 <body>
-
-  <!-- Garde-fou au chargement : message clair + « Réessayer » si les modules JavaScript ne démarrent pas -->
-  <div id="bootError" class="boot-error" role="alert" aria-live="assertive" hidden>
-    <div class="boot-error__panel">
-      <h2 id="bootErrorTitle">L'application n'a pas pu demarrer</h2>
-      <p id="bootErrorMsg"></p>
-      <ul id="bootErrorFiles" class="boot-error__files" hidden></ul>
-      <p id="bootErrorDetail" class="boot-error__detail" hidden></p>
-      <div class="boot-error__actions">
-        <button type="button" id="bootRetry" class="btn btn--primary">Réessayer</button>
-        <button type="button" id="bootReset" class="btn btn--ghost" hidden>Vider le cache et réessayer</button>
-      </div>
-    </div>
-  </div>
-  <noscript>
-    <p class="boot-noscript">MythoMytho a besoin de JavaScript pour fonctionner : activez-le, puis rechargez la page.</p>
-  </noscript>
-  <script>
-    (function () {
-      var RANK = { slow: 1, load: 3, error: 3, file: 4 };
-      var TEXTS = {
-        file: ['Ouvrez l\u2019application depuis un serveur',
-          'Cette page est ouverte directement depuis un fichier (file://) : les navigateurs bloquent alors les modules JavaScript de l\u2019application. Lancez un petit serveur local (extension Live Server de VS Code, ou \u00ab py -m http.server \u00bb dans le dossier du projet), puis ouvrez http://localhost:\u2026'],
-        load: ['Un fichier de l\u2019application n\u2019a pas pu \u00eatre charg\u00e9',
-          'V\u00e9rifiez votre connexion, puis r\u00e9essayez. Si le probl\u00e8me persiste, un fichier est peut-\u00eatre absent du serveur.'],
-        error: ['L\u2019application n\u2019a pas pu d\u00e9marrer',
-          'Une erreur est survenue au d\u00e9marrage. R\u00e9essayez ; si elle revient, notez le message ci-dessous.'],
-        slow: ['Le chargement prend plus de temps que pr\u00e9vu',
-          'La connexion est peut-\u00eatre lente. Patientez un instant, ou r\u00e9essayez.']
-      };
-      var current = null, booted = false, probed = false;
-      function $(id) { return document.getElementById(id); }
-
-      function render(kind, detail) {
-        $('bootErrorTitle').textContent = TEXTS[kind][0];
-        $('bootErrorMsg').textContent = TEXTS[kind][1];
-        $('bootErrorDetail').textContent = detail || '';
-        $('bootErrorDetail').hidden = !detail;
-        $('bootReset').hidden = location.protocol === 'file:' || navigator.onLine === false;
-        current = kind;
-      }
-
-      // Cherche les fichiers de d\u00e9marrage introuvables (modulepreload + words.json) pour les nommer.
-      function probe() {
-        if (probed || location.protocol === 'file:' || !window.fetch) return;
-        probed = true;
-        var links = document.querySelectorAll('link[rel="modulepreload"], link[rel="preload"][as="fetch"]');
-        var checks = [].map.call(links, function (l) {
-          var name = l.getAttribute('href');
-          return fetch(l.href, { cache: 'no-store' }).then(function (r) {
-            return r.ok ? null : name + ' \u2014 erreur ' + r.status;
-          }).catch(function () { return name + ' \u2014 injoignable'; });
-        });
-        Promise.all(checks).then(function (res) {
-          var bad = res.filter(Boolean), ul = $('bootErrorFiles');
-          if (booted || !bad.length) return;
-          ul.innerHTML = '';
-          bad.forEach(function (t) { var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
-          ul.hidden = false;
-          if (RANK[current] < RANK.load) render('load');
-        });
-      }
-
-      function show(kind, detail) {
-        if (booted) return;
-        if (current && RANK[kind] < RANK[current]) return;
-        if (current === kind && !detail) return;
-        render(kind, detail);
-        $('bootError').hidden = false;
-        if (kind !== 'file') probe();
-        $('bootRetry').focus();
-      }
-
-      function ok() {
-        booted = true;
-        $('bootError').hidden = true;
-      }
-
-      $('bootRetry').addEventListener('click', function () { location.reload(); });
-      $('bootReset').addEventListener('click', function () {
-        var jobs = [];
-        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
-          jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
-            return Promise.all(rs.map(function (r) { return r.unregister(); }));
-          }));
-        }
-        if (window.caches) {
-          jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
-        }
-        Promise.all(jobs).catch(function () {}).then(function () { location.reload(); });
-      });
-
-      // \u00c9chec de chargement d\u2019un script (404, r\u00e9seau) ou erreur d\u2019ex\u00e9cution dans un module au d\u00e9marrage.
-      // \u00c9coute en phase de capture : les erreurs de chargement d\u2019un \u00e9l\u00e9ment ne remontent pas.
-      window.addEventListener('error', function (e) {
-        if (booted) return;
-        var t = e.target;
-        if (t && t.tagName === 'SCRIPT') { show('load'); return; }
-        var f = e && e.filename ? String(e.filename) : '';
-        if (f.indexOf('/js/') !== -1) {
-          show('error', (e.message || 'Erreur inconnue') + ' (' + f.split('/').slice(-2).join('/') + ')');
-        }
-      }, true);
-
-      window.__mythoGuard = {
-        fail: function (kind) { show(kind || 'load'); },
-        ok: ok
-      };
-
-      if (location.protocol === 'file:') show('file');
-      setTimeout(function () { if (!booted) show('slow'); }, 10000);
-    })();
-  </script>
-
-  <button type="button" id="themeToggle" class="theme-toggle" aria-label="Passer en mode sombre" aria-pressed="true">
-    <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.6" aria-hidden="true">
-      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-    <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.6" aria-hidden="true">
-      <circle cx="12" cy="12" r="4.6" />
-      <path
-        d="M12 2.5v2.6M12 18.9v2.6M4.6 4.6l1.85 1.85M17.55 17.55l1.85 1.85M2.5 12h2.6M18.9 12h2.6M4.6 19.4l1.85-1.85M17.55 6.45l1.85-1.85"
-        stroke-linecap="round" />
-    </svg>
-  </button>
-
-  <div class="wordmark">
-    <h1><img src="assets/logo.svg" alt="MythoMytho" class="wordmark__logo" width="800" height="300"></h1>
-    <span>jeu de mots &amp; de déduction</span>
-  </div>
-
-  <div class="scene">
-
-    <section id="setup" class="screen screen--active" aria-labelledby="setup-title">
-      <div class="dossier">
-        <div class="dossier__intro">
-          <h2 id="setup-title">Nouvelle manche</h2>
-          <div class="dossier__intro-actions">
-            <button type="button" id="scoreLogToggle" class="rules-toggle">
-              Journal des scores
-            </button>
-            <button type="button" id="installBtn" class="rules-toggle" hidden>Installer l'app</button>
-            <button type="button" id="rulesToggle" class="rules-toggle" aria-expanded="false" aria-controls="rulesText">
-              Comment jouer<span class="rules-toggle__chevron" aria-hidden="true"></span>
-            </button>
-          </div>
-        </div>
-        <p class="dossier__lead" id="rulesText" hidden>
-          Chaque joueur reçoit un mot en secret. Tous les civils reçoivent le même mot ;
-          l'Undercover reçoit un mot différent, mais proche. À vous de démasquer l'imposteur
-          avant qu'il ne devine votre mot.
-        </p>
-
-        <div class="setup-block setup-block--flat">
-          <div class="setup-block__head setup-block__head--static">
-            <span class="setup-block__num">1</span>
-            <h2>Joueurs &amp; Undercover</h2>
-          </div>
-          <div class="counters-row">
-            <div class="counter-field">
-              <span class="counter-field__label">Joueurs</span>
-              <div class="counter">
-                <button type="button" id="countMinus" aria-label="Retirer un joueur">−</button>
-                <div class="counter__value"><span id="countDisplay">6</span><small>de 3 à 20</small></div>
-                <button type="button" id="countPlus" aria-label="Ajouter un joueur">+</button>
-              </div>
-            </div>
-            <div class="counter-field">
-              <span class="counter-field__label">Undercover</span>
-              <div class="counter">
-                <button type="button" id="underMinus" aria-label="Retirer un Undercover">−</button>
-                <div class="counter__value"><span id="underDisplay">1</span><small id="underRange">de 1 à 2</small>
-                </div>
-                <button type="button" id="underPlus" aria-label="Ajouter un Undercover">+</button>
-              </div>
-            </div>
-          </div>
-          <div class="toggle-list toggle-list--single auto-balance">
-            <label class="toggle-item">
-              <input type="checkbox" id="autoUndercover" checked>
-              <span>
-                <strong>Nombre d'Undercovers automatique</strong>
-                <small id="autoUnderHint"></small>
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <details class="setup-block" id="themesBlock" open>
-          <summary class="setup-block__head">
-            <span class="setup-block__num">2</span>
-            <h2>Themes des mots</h2>
-            <span class="setup-block__summary" id="themesSummary">1 thème sélectionné</span>
-            <span class="setup-block__chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="setup-block__body">
-            <p class="hint-text hint-text--role">Sélectionnez un ou plusieurs thèmes : les mots seront piochés parmi
-              ceux-ci. Une paire ne revient jamais tant que tout le stock du thème choisi n'a pas été utilisé.</p>
-            <div id="themesGrid" class="toggle-list toggle-list--compact"></div>
-
-            <div class="difficulty">
-              <label class="toggle-item">
-                <input type="checkbox" id="difficultyEnabled">
-                <span>
-                  <strong>Difficulté des paires</strong>
-                  <small>Choisissez un niveau selon la proximité des deux mots. Désactivée, toutes les paires sont
-                    mélangées.</small>
-                </span>
-              </label>
-              <div class="difficulty__levels" id="difficultyLevels" hidden>
-                <div class="segmented" role="radiogroup" aria-label="Niveau de difficulté">
-                  <label class="segmented__item"><input type="radio" name="difficulty" value="1"><span>Facile</span></label>
-                  <label class="segmented__item"><input type="radio" name="difficulty" value="2"><span>Moyenne</span></label>
-                  <label class="segmented__item"><input type="radio" name="difficulty" value="3"><span>Difficile</span></label>
-                </div>
-                <p class="hint-text" id="difficultyHint"></p>
-              </div>
-            </div>
-
-            <div class="custom-pairs-row">
-              <button type="button" id="customManageBtn" class="btn btn--ghost btn--small">Gérer « Mes paires »</button>
-              <span class="hint-text" id="customCountHint"></span>
-            </div>
-          </div>
-        </details>
-
-        <details class="setup-block" id="rolesBlock">
-          <summary class="setup-block__head">
-            <span class="setup-block__num">3</span>
-            <h2>Roles speciaux</h2>
-            <span class="setup-block__summary" id="rolesSummary">Aucun rôle activé</span>
-            <span class="setup-block__chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="setup-block__body">
-            <div class="field-row field-row--tight">
-              <h3>Mr. White</h3>
-              <div class="counter">
-                <button type="button" id="mrwhiteMinus" aria-label="Retirer un Mr. White">−</button>
-                <div class="counter__value"><span id="mrwhiteDisplay">0</span><small id="mrwhiteRange">de 0 à
-                    1</small>
-                </div>
-                <button type="button" id="mrwhitePlus" aria-label="Ajouter un Mr. White">+</button>
-              </div>
-            </div>
-            <p class="hint-text hint-text--role">Ne reçoit aucun mot : il doit improviser pour ne pas se faire
-              repérer. S'il est éliminé, il a toujours une dernière chance : saisir ou dicter le mot des Civils pour
-              gagner seul.
-            </p>
-
-            <div class="field-row field-row--tight">
-              <h3>Espion</h3>
-              <div class="counter">
-                <button type="button" id="espionMinus" aria-label="Retirer un Espion">−</button>
-                <div class="counter__value"><span id="espionDisplay">0</span><small id="espionRange">de 0 à
-                    1</small>
-                </div>
-                <button type="button" id="espionPlus" aria-label="Ajouter un Espion">+</button>
-              </div>
-            </div>
-            <p class="hint-text hint-text--role">Ne reçoit aucun mot lui non plus, mais est autorisé à connaître la
-              première lettre du mot des Civils — un indice discret pour se fondre dans la masse.
-            </p>
-
-            <div class="toggle-list">
-              <label class="toggle-item">
-                <input type="checkbox" id="roleIdiot">
-                <span>
-                  <strong>Idiot du village</strong>
-                  <small>Gagne seul s'il est éliminé dès le tout premier vote.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleFantome">
-                <span>
-                  <strong>Fantôme</strong>
-                  <small>Peut continuer à voter même après avoir été éliminé.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleMime">
-                <span>
-                  <strong>Mime</strong>
-                  <small>Doit décrire son mot uniquement par gestes, sans parler.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleProcureur">
-                <span>
-                  <strong>Procureur</strong>
-                  <small>Tranche lui-même en cas d'égalité au vote.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleAmoureux">
-                <span>
-                  <strong>Les Amoureux</strong>
-                  <small>Liés à un autre joueur : si l'un est éliminé, l'autre l'est aussi. Ils gagnent à 2</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleMytho">
-                <span>
-                  <strong>Le Mytho</strong>
-                  <small>Civil qui doit placer UN mensonge dans ses indices sans se faire repérer. En fin de manche, le
-                    groupe dit s'il l'a repéré : statistique « mensonges réussis » au journal.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleVoyeur">
-                <span>
-                  <strong>Le Voyeur</strong>
-                  <small>Civil qui reçoit 3 noms dont exactement un imposteur : il doit convaincre les autres. Conseillé à
-                    partir de 8 joueurs.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleJanus">
-                <span>
-                  <strong>Janus</strong>
-                  <small>Civil qui reçoit les deux mots (Civils et Undercover) dans un ordre aléatoire, sans savoir lequel
-                    est le bon.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleFauxFrere">
-                <span>
-                  <strong>Le Faux-Frère</strong>
-                  <small>A le mot des Civils mais gagne avec les imposteurs : les Civils ne gagnent que s'il est éliminé
-                    aussi. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleJumeaux">
-                <span>
-                  <strong>Les Jumeaux (Castor et Pollux)</strong>
-                  <small>Deux Civils qui se connaissent : chacun voit le nom de l'autre sur sa carte. Information forte,
-                    conseillée à partir de 8 joueurs.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleTiresias">
-                <span>
-                  <strong>Tirésias</strong>
-                  <small>Civil sans mot : il reçoit seulement les 2 premières lettres et le nombre de lettres du mot des
-                    Civils. Difficile à jouer, plutôt pour les groupes aguerris.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleOrion">
-                <span>
-                  <strong>Orion (le Chasseur)</strong>
-                  <small>Civil qui, une fois éliminé, désigne un joueur encore en vie qui est éliminé avec lui.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleHercule">
-                <span>
-                  <strong>Hercule</strong>
-                  <small>Civil qui tire une mission secrète (faire dire un mot, terminer un indice par une question…). En
-                    fin de manche, le groupe dit s'il l'a accomplie : statistique « missions réussies ».</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="rolePrometheus">
-                <span>
-                  <strong>Prométhée</strong>
-                  <small>Civil qui, une fois éliminé, désigne un joueur encore en vie : l'appli révèle à tous son camp
-                    (Civil ou imposteur). Information forte, conseillée à partir de 8 joueurs.</small>
-                </span>
-              </label>
-              <label class="toggle-item">
-                <input type="checkbox" id="roleJudas">
-                <span>
-                  <strong>Judas</strong>
-                  <small>Un Faux-Frère informé : il a le mot des Civils, gagne avec les imposteurs et connaît le nom
-                    d'un imposteur. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs.</small>
-                </span>
-              </label>
-            </div>
-            <p class="hint-text hint-text--role hint-text--info">Un joueur ne peut recevoir qu'un seul rôle spécial
-              ci-dessous. Être
-              Undercover ou Mr. White ne compte pas dans cette limite.</p>
-          </div>
-        </details>
-
-        <details class="setup-block" id="namesBlock">
-          <summary class="setup-block__head">
-            <span class="setup-block__num">4</span>
-            <h2>Noms des joueurs</h2>
-            <span class="setup-block__summary" id="namesSummary">Optionnel</span>
-            <span class="setup-block__chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="setup-block__body">
-            <div class="groups">
-              <h3 class="groups__title">Groupes de joueurs</h3>
-              <div class="group-chips" id="groupList"></div>
-              <p class="hint-text" id="groupEmpty">Aucun groupe enregistré. Saisissez les noms ci-dessous, donnez un nom
-                au groupe (« Famille », « Soirée du samedi »…) puis enregistrez-le pour le recharger en un tap.</p>
-              <div class="groups__save">
-                <input type="text" id="groupNameInput" class="field-input" maxlength="24" autocomplete="off"
-                  placeholder="Nom du groupe" aria-label="Nom du groupe">
-                <button type="button" id="groupSaveBtn" class="btn btn--ghost btn--small">Enregistrer les noms</button>
-              </div>
-            </div>
-            <p class="hint-text">Laissez un champ vide pour garder le nom par défaut "Joueur".</p>
-            <div id="namesGrid" class="names-grid"></div>
-          </div>
-        </details>
-
-        <details class="setup-block" id="timerBlock">
-          <summary class="setup-block__head">
-            <span class="setup-block__num">5</span>
-            <h2>Minuteur &amp; confidentialite</h2>
-            <span class="setup-block__summary" id="timerSummary">Sans minuteur · standard</span>
-            <span class="setup-block__chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="setup-block__body">
-            <label class="toggle-item toggle-item--switch">
-              <input type="checkbox" id="timerEnabled">
-              <span>
-                <strong>Activer le minuteur</strong>
-                <small>Affiche un compte à rebours visuel une fois toutes les cartes consultées, pour cadrer la
-                  durée de la discussion avant le vote.</small>
-              </span>
-            </label>
-            <div class="counter-field counter-field--timer" id="timerDurationField">
-              <span class="counter-field__label">Durée de la discussion</span>
-              <div class="counter">
-                <button type="button" id="timerMinus" aria-label="Réduire la durée du minuteur">−</button>
-                <div class="counter__value"><span id="timerDisplay">3</span><small>minutes</small></div>
-                <button type="button" id="timerPlus" aria-label="Augmenter la durée du minuteur">+</button>
-              </div>
-            </div>
-            <div id="timerExtras" class="timer-extras">
-              <label class="toggle-item toggle-item--switch">
-                <input type="checkbox" id="timerSound" checked>
-                <span>
-                  <strong>Son de fin</strong>
-                  <small>Joue une courte sonnerie à la fin du temps, en plus de la vibration.</small>
-                </span>
-              </label>
-            </div>
-
-            <div class="subsection">
-              <h3 class="subsection__title">Confidentialite des cartes</h3>
-              <div class="toggle-list toggle-list--single">
-                <label class="toggle-item">
-                  <input type="radio" name="privacy" value="standard" checked>
-                  <span>
-                    <strong>Standard</strong>
-                    <small>Le mot reste affiché jusqu'à « Cacher &amp; passer au suivant ».</small>
-                  </span>
-                </label>
-                <label class="toggle-item">
-                  <input type="radio" name="privacy" value="auto">
-                  <span>
-                    <strong>Masquage automatique</strong>
-                    <small>Le mot se masque tout seul après quelques secondes. Il reste possible de le réafficher.</small>
-                  </span>
-                </label>
-                <label class="toggle-item">
-                  <input type="radio" name="privacy" value="hold">
-                  <span>
-                    <strong>Maintenir pour révéler</strong>
-                    <small>Le mot n'apparaît que tant que le doigt reste appuyé sur le bouton.</small>
-                  </span>
-                </label>
-              </div>
-              <div class="counter-field counter-field--timer" id="autoHideField">
-                <label class="counter-field__label" for="autoHideSelect">Masquer après</label>
-                <select id="autoHideSelect" class="field-select">
-                  <option value="5">5 secondes</option>
-                  <option value="8">8 secondes</option>
-                  <option value="12">12 secondes</option>
-                  <option value="20">20 secondes</option>
-                </select>
-              </div>
-              <div class="toggle-list toggle-list--single role-toggle">
-                <label class="toggle-item">
-                  <input type="checkbox" id="showRole" checked>
-                  <span>
-                    <strong>Afficher « Tu es [rôle] » sur la carte</strong>
-                    <small>Désactivé, les Civils et l'Undercover ne voient que leur mot et ignorent leur camp, comme dans
-                      le jeu classique. Mr. White et l'Espion, qui n'ont pas de mot, voient toujours leur rôle.</small>
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </details>
-
-        <section class="balance" id="balanceBox" aria-label="Équilibrage de la partie"></section>
-
-        <div class="setup-recap" id="setupRecap"></div>
-
-        <div class="dossier__footer">
-          <button type="button" id="startBtn" class="btn btn--primary btn--block">Lancer la manche <span
-              class="btn-arrow">→</span></button>
-        </div>
-      </div>
-    </section>
-
-    <section id="game" class="screen" aria-labelledby="game-title">
-      <div class="game-header">
-        <div>
-          <h2 id="game-title">Manche <span id="roundNumber">1</span></h2>
-          <div class="game-header__meta"><span id="playerCountLabel">6</span> agents en jeu</div>
-        </div>
-        <div class="progress-wrap">
-          <div class="progress-label"><span id="viewedCount">0</span>/<span id="totalCount">6</span> cartes consultées
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="roundRolesBanner" class="round-roles" role="list" aria-label="Rôles publics de la manche"></div>
-
-      <p class="table-note" id="tableNote">
-        Faites circuler l'appareil. Chaque joueur clique sur <strong>sa propre carte</strong>, mémorise
-        son mot en privé, puis appuie sur « Cacher » avant de transmettre l'appareil au suivant.
-        Une carte déjà consultée ne peut pas être rouverte.
-      </p>
-
-      <div id="statusBanner" class="status-banner">
-        Toutes les cartes ont été consultées. La discussion peut commencer, puis lancez le vote.
-      </div>
-
-      <div id="discussionTimer" class="discussion-timer" role="timer" aria-live="off">
-        <div class="discussion-timer__row">
-          <span class="discussion-timer__label">Temps de discussion</span>
-          <span class="discussion-timer__time" id="discussionTimerDisplay">03:00</span>
-        </div>
-        <div class="discussion-timer__track">
-          <div class="discussion-timer__fill" id="discussionTimerFill"></div>
-        </div>
-        <div class="discussion-timer__controls">
-          <button type="button" id="discussionTimerToggle" class="btn btn--ghost btn--small">Pause</button>
-          <button type="button" id="discussionTimerExtend" class="btn btn--ghost btn--small">+1 min</button>
-        </div>
-      </div>
-
-      <div id="cardsGrid" class="cards-grid" role="list"></div>
-
-      <div id="voteSection" class="vote-section">
-        <div class="vote-section__header">
-          <h3>Vote d'elimination</h3>
-          <p class="vote-section__hint">
-            Le groupe discute, puis désigne d'un commun accord le joueur à éliminer en appuyant sur sa carte.
-          </p>
-        </div>
-        <div id="eliminatedList" class="eliminated-list"></div>
-        <div id="voteGrid" class="cards-grid vote-grid" role="list"></div>
-      </div>
-
-      <div id="gameOverBanner" class="game-over-banner">
-        <div class="game-over-banner__title" id="gameOverTitle">—</div>
-        <p class="game-over-banner__sub" id="gameOverSub"></p>
-      </div>
-
-      <div id="mythoPanel" class="mytho-panel" hidden>
-        <p class="mytho-panel__question" id="mythoQuestion">Le groupe a-t-il repéré le mensonge ?</p>
-        <div class="mytho-panel__buttons">
-          <button type="button" id="mythoSpotted" class="btn btn--ghost btn--small">Oui, repéré</button>
-          <button type="button" id="mythoPassed" class="btn btn--primary btn--small">Non, il est passé</button>
-        </div>
-        <p class="mytho-panel__done" id="mythoDone" hidden></p>
-      </div>
-
-      <div id="herculePanel" class="mytho-panel" hidden>
-        <p class="mytho-panel__question" id="herculeQuestion">Hercule a-t-il accompli sa mission ?</p>
-        <div class="mytho-panel__buttons">
-          <button type="button" id="herculeFail" class="btn btn--ghost btn--small">Non, ratée</button>
-          <button type="button" id="herculeSuccess" class="btn btn--primary btn--small">Oui, accomplie</button>
-        </div>
-        <p class="mytho-panel__done" id="herculeDone" hidden></p>
-      </div>
-
-      <div class="actions-row">
-        <div class="actions-row__group">
-          <button type="button" id="startVoteBtn" class="btn btn--primary" disabled>Lancer le vote <span
-              class="btn-arrow">→</span></button>
-          <button type="button" id="summaryBtn" class="btn btn--gold summary-btn--hidden">Voir tous les rôles</button>
-        </div>
-        <div class="actions-row__group">
-          <button type="button" id="scoreLogBtnGame" class="btn btn--ghost">Journal des scores</button>
-          <button type="button" id="newRoundBtn" class="btn btn--ghost">Nouvelle manche (mêmes joueurs)</button>
-          <button type="button" id="resetBtn" class="btn btn--ghost">Nouvelle partie</button>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-  <div id="wordModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalOwner" aria-hidden="true">
-    <div class="modal__scrim"></div>
-    <div class="modal__panel">
-      <div class="modal__autobar" id="autoHideBar" hidden><span></span></div>
-      <div class="modal__stamp">confidentiel</div>
-      <div class="modal__owner" id="modalOwner">Carte de —</div>
-      <div class="modal__role" id="modalRole">Civil</div>
-      <div class="modal__word-label">Ton mot</div>
-      <div class="modal__word" id="modalWord">—</div>
-      <div class="modal__badges" id="modalBadges"></div>
-      <p class="modal__privacy">Assure-toi que personne d'autre ne regarde l'écran avant de continuer.</p>
-      <div class="modal__reveal-row" id="revealRow" hidden>
-        <button type="button" id="revealBtn" class="btn btn--gold modal__reveal">Maintenir pour révéler</button>
-      </div>
-      <div class="modal__buttons">
-        <button type="button" id="hideWordBtn" class="btn btn--primary">Cacher &amp; passer au suivant <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="summaryModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="summaryTitle"
-    aria-hidden="true">
-    <div class="modal__scrim" id="summaryScrim"></div>
-    <div class="modal__panel summary-panel">
-      <h3 id="summaryTitle">Bilan de la manche</h3>
-      <p class="summary-sub">À révéler une fois la discussion et le vote terminés.</p>
-      <ul class="summary-list" id="summaryList"></ul>
-      <div class="modal__buttons">
-        <button type="button" id="closeSummaryBtn" class="btn btn--ghost">Fermer</button>
-        <button type="button" id="summaryNewRoundBtn" class="btn btn--primary">Nouvelle manche <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="scoreModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="scoreModalTitle"
-    aria-hidden="true">
-    <div class="modal__scrim" id="scoreScrim"></div>
-    <div class="modal__panel summary-panel score-panel">
-      <h3 id="scoreModalTitle">Journal des scores</h3>
-      <p class="summary-sub">Historique des manches jouées sur cet appareil.</p>
-
-      <p class="score-empty" id="scoreEmptyState">Aucune manche terminée pour l'instant — les résultats
-        apparaîtront ici après la première partie.</p>
-
-      <div id="scoreContent" class="score-content">
-        <div class="score-filter" id="scoreFilterRow" hidden>
-          <label for="scoreGroupFilter">Groupe</label>
-          <select id="scoreGroupFilter" class="field-select"></select>
-        </div>
-        <h4 class="score-section-title">Classement des joueurs</h4>
-        <ul class="score-leaderboard" id="scoreLeaderboard"></ul>
-
-        <h4 class="score-section-title" id="scoreRolesTitle">Taux de victoire par role</h4>
-        <ul class="score-leaderboard score-roles" id="scoreRoles"></ul>
-        <h4 class="score-section-title" id="scoreLiesTitle">Mensonges du Mytho</h4>
-        <ul class="score-leaderboard score-roles" id="scoreLies"></ul>
-        <h4 class="score-section-title" id="scoreMissionsTitle">Missions d'Hercule</h4>
-        <ul class="score-leaderboard score-roles" id="scoreMissions"></ul>
-        <p class="score-note" id="scoreNote">Les taux et séries ne comptent que les manches enregistrées depuis
-          l'ajout des statistiques.</p>
-
-        <h4 class="score-section-title">Historique des manches</h4>
-        <ul class="score-history" id="scoreHistory"></ul>
-      </div>
-
-      <div class="modal__buttons score-export">
-        <button type="button" id="scoreExportJson" class="btn btn--ghost btn--small">Exporter en JSON</button>
-        <button type="button" id="scoreExportCsv" class="btn btn--ghost btn--small">Exporter en CSV</button>
-      </div>
-
-      <div class="modal__buttons">
-        <button type="button" id="scoreResetBtn" class="btn btn--ghost">Réinitialiser le journal</button>
-        <button type="button" id="closeScoreBtn" class="btn btn--primary">Fermer <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="voteConfirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="voteConfirmTitle"
-    aria-hidden="true">
-    <div class="modal__scrim"></div>
-    <div class="modal__panel">
-      <div class="modal__stamp">vote</div>
-      <div class="modal__owner" id="voteConfirmTitle">Confirmer le vote</div>
-      <div class="modal__word" id="voteConfirmName">—</div>
-      <p class="modal__privacy">Le groupe est d'accord pour éliminer ce joueur ?</p>
-      <div class="modal__buttons">
-        <button type="button" id="voteConfirmCancel" class="btn btn--ghost">Annuler</button>
-        <button type="button" id="voteConfirmYes" class="btn btn--primary">Éliminer <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="eliminationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="elimName"
-    aria-hidden="true">
-    <div class="modal__scrim"></div>
-    <div class="modal__panel">
-      <div class="modal__stamp">élimination</div>
-      <div class="modal__owner" id="elimName">—</div>
-      <div class="modal__role" id="elimRole">Civil</div>
-      <p class="modal__privacy" id="elimContinueText">La partie continue.</p>
-      <div class="modal__buttons">
-        <button type="button" id="elimContinueBtn" class="btn btn--primary">Continuer <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="guessModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="guessTitle" aria-hidden="true">
-    <div class="modal__scrim"></div>
-    <div class="modal__panel">
-      <div class="modal__stamp">dernière chance</div>
-      <div class="modal__owner" id="guessTitle">Mr. White</div>
-      <p class="modal__privacy" id="guessIntro">Devine le mot des Civils. Si tu le trouves, tu gagnes seul(e) la partie !</p>
-      <div class="guess__row" id="guessInputRow">
-        <input type="text" id="guessInput" class="guess__input" maxlength="40" autocomplete="off" autocapitalize="off"
-          spellcheck="false" placeholder="Le mot des Civils…" aria-label="Mot des Civils">
-        <button type="button" id="guessMicBtn" class="btn btn--ghost btn--small guess__mic" hidden
-          aria-pressed="false">Dicter</button>
-      </div>
-      <p class="guess__result" id="guessResult" role="status" aria-live="polite"></p>
-      <div class="modal__buttons">
-        <button type="button" id="guessSkipBtn" class="btn btn--ghost">Renoncer</button>
-        <button type="button" id="guessSubmitBtn" class="btn btn--primary">Valider <span
-            class="btn-arrow">→</span></button>
-        <button type="button" id="guessContinueBtn" class="btn btn--primary" hidden>Continuer <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="pickerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pickerTitle" aria-hidden="true">
-    <div class="modal__scrim"></div>
-    <div class="modal__panel">
-      <div class="modal__stamp" id="pickerStamp">dernier tir</div>
-      <div class="modal__owner" id="pickerTitle">Orion, le Chasseur</div>
-      <p class="modal__privacy" id="pickerIntro"></p>
-      <div class="picker-list" id="pickerList" role="group" aria-label="Cibles possibles"></div>
-      <div class="modal__buttons">
-        <button type="button" id="pickerConfirmBtn" class="btn btn--primary" disabled>Confirmer la cible <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="customModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="customTitle" aria-hidden="true">
-    <div class="modal__scrim" id="customScrim"></div>
-    <div class="modal__panel summary-panel custom-panel">
-      <h3 id="customTitle">Mes paires</h3>
-      <p class="summary-sub">Vos propres paires de mots, enregistrées sur cet appareil. Elles apparaissent dans le
-        thème « Mes paires ».</p>
-
-      <div class="custom-import" id="customImportBanner" hidden>
-        <p id="customImportText"></p>
-        <div class="modal__buttons">
-          <button type="button" id="customImportDismiss" class="btn btn--ghost btn--small">Ignorer</button>
-          <button type="button" id="customImportConfirm" class="btn btn--primary btn--small">Ajouter</button>
-        </div>
-      </div>
-
-      <div class="custom-form">
-        <div class="custom-form__words">
-          <input type="text" id="customWordA" class="paper-input" maxlength="40" autocomplete="off"
-            placeholder="Mot des Civils" aria-label="Premier mot">
-          <input type="text" id="customWordB" class="paper-input" maxlength="40" autocomplete="off"
-            placeholder="Mot de l'Undercover" aria-label="Second mot">
-        </div>
-        <div class="custom-form__row">
-          <select id="customDifficulty" class="field-select" aria-label="Difficulté de la paire">
-            <option value="1">Facile</option>
-            <option value="2" selected>Moyenne</option>
-            <option value="3">Difficile</option>
-          </select>
-          <button type="button" id="customAddBtn" class="btn btn--primary btn--small">Ajouter la paire</button>
-        </div>
-        <p class="hint-text custom-form__hint">Les deux mots sont tirés au hasard entre Civils et Undercover à chaque
-          manche : leur ordre n'a pas d'importance.</p>
-      </div>
-
-      <h4 class="score-section-title" id="customCount">0 paire</h4>
-      <p class="score-empty" id="customEmpty">Aucune paire pour l'instant. Ajoutez-en une ci-dessus, ou importez un
-        fichier / un lien de partage.</p>
-      <ul class="custom-list" id="customList"></ul>
-
-      <div class="modal__buttons custom-tools">
-        <button type="button" id="customExportBtn" class="btn btn--ghost btn--small">Exporter</button>
-        <button type="button" id="customImportBtn" class="btn btn--ghost btn--small">Importer</button>
-        <button type="button" id="customShareBtn" class="btn btn--ghost btn--small">Partager par lien</button>
-        <input type="file" id="customImportFile" accept="application/json,.json" hidden>
-      </div>
-
-      <div class="modal__buttons">
-        <button type="button" id="customCloseBtn" class="btn btn--primary">Fermer <span
-            class="btn-arrow">→</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <div class="visually-hidden" aria-live="polite" id="srAnnounce"></div>
-  <script type="module" src="js/main.js"></script>
+<div id="bootError" class="boot-error" role="alert" aria-live="assertive" hidden>
+<div class="boot-error__panel">
+<h2 id="bootErrorTitle">L'application n'a pas pu demarrer</h2>
+<p id="bootErrorMsg"></p>
+<ul id="bootErrorFiles" class="boot-error__files" hidden></ul>
+<p id="bootErrorDetail" class="boot-error__detail" hidden></p>
+<div class="boot-error__actions">
+<button type="button" id="bootRetry" class="btn btn--primary">Réessayer</button> <button type="button" id="bootReset" class="btn btn--ghost" hidden>Vider le cache et réessayer</button>
+</div>
+</div>
+</div>
+<noscript>
+<p class="boot-noscript">MythoMytho a besoin de JavaScript pour fonctionner : activez-le, puis rechargez la page.</p>
+</noscript>
+<script>
+(function(){var s={slow:1,load:3,error:3,file:4},c={file:["Ouvrez l’application depuis un serveur","Cette page est ouverte directement depuis un fichier (file://) : les navigateurs bloquent alors les modules JavaScript de l’application. Lancez un petit serveur local (extension Live Server de VS Code, ou « py -m http.server » dans le dossier du projet), puis ouvrez http://localhost:…"],load:["Un fichier de l’application n’a pas pu être chargé","Vérifiez votre connexion, puis réessayez. Si le problème persiste, un fichier est peut-être absent du serveur."],error:["L’application n’a pas pu démarrer","Une erreur est survenue au démarrage. Réessayez ; si elle revient, notez le message ci-dessous."],slow:["Le chargement prend plus de temps que prévu","La connexion est peut-être lente. Patientez un instant, ou réessayez."]},i=null,u=!1,f=!1;function t(e){return document.getElementById(e)}function d(e,r){t("bootErrorTitle").textContent=c[e][0],t("bootErrorMsg").textContent=c[e][1],t("bootErrorDetail").textContent=r||"",t("bootErrorDetail").hidden=!r,t("bootReset").hidden=location.protocol==="file:"||navigator.onLine===!1,i=e}function h(){if(!(f||location.protocol==="file:"||!window.fetch)){f=!0;var e=document.querySelectorAll('link[rel="modulepreload"], link[rel="preload"][as="fetch"]'),r=[].map.call(e,function(n){var l=n.getAttribute("href");return fetch(n.href,{cache:"no-store"}).then(function(o){return o.ok?null:l+" — erreur "+o.status}).catch(function(){return l+" — injoignable"})});Promise.all(r).then(function(n){var l=n.filter(Boolean),o=t("bootErrorFiles");u||!l.length||(o.innerHTML="",l.forEach(function(m){var p=document.createElement("li");p.textContent=m,o.appendChild(p)}),o.hidden=!1,s[i]<s.load&&d("load"))})}}function a(e,r){u||i&&s[e]<s[i]||i===e&&!r||(d(e,r),t("bootError").hidden=!1,e!=="file"&&h(),t("bootRetry").focus())}function v(){u=!0,t("bootError").hidden=!0}t("bootRetry").addEventListener("click",function(){location.reload()}),t("bootReset").addEventListener("click",function(){var e=[];navigator.serviceWorker&&navigator.serviceWorker.getRegistrations&&e.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(n){return n.unregister()}))})),window.caches&&e.push(caches.keys().then(function(r){return Promise.all(r.map(function(n){return caches.delete(n)}))})),Promise.all(e).catch(function(){}).then(function(){location.reload()})}),window.addEventListener("error",function(e){if(!u){var r=e.target;if(r&&r.tagName==="SCRIPT"){a("load");return}var n=e&&e.filename?String(e.filename):"";n.indexOf("/js/")!==-1&&a("error",(e.message||"Erreur inconnue")+" ("+n.split("/").slice(-2).join("/")+")")}},!0),window.__mythoGuard={fail:function(e){a(e||"load")},ok:v},location.protocol==="file:"&&a("file"),setTimeout(function(){u||a("slow")},1e4)})();
+</script>
+<button type="button" id="themeToggle" class="theme-toggle" aria-label="Passer en mode sombre" aria-pressed="true"> <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"> <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" stroke-linecap="round" stroke-linejoin="round"/> </svg> <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"> <circle cx="12" cy="12" r="4.6"/> <path d="M12 2.5v2.6M12 18.9v2.6M4.6 4.6l1.85 1.85M17.55 17.55l1.85 1.85M2.5 12h2.6M18.9 12h2.6M4.6 19.4l1.85-1.85M17.55 6.45l1.85-1.85" stroke-linecap="round"/> </svg> </button>
+<div class="wordmark">
+<h1><img src="assets/logo.svg" alt="MythoMytho" class="wordmark__logo" width="800" height="300"></h1>
+<span>jeu de mots &amp; de déduction</span>
+</div>
+<div class="scene">
+<section id="setup" class="screen screen--active" aria-labelledby="setup-title">
+<div class="dossier">
+<div class="dossier__intro">
+<h2 id="setup-title">Nouvelle manche</h2>
+<div class="dossier__intro-actions">
+<button type="button" id="scoreLogToggle" class="rules-toggle"> Journal des scores </button> <button type="button" id="installBtn" class="rules-toggle" hidden>Installer l'app</button> <button type="button" id="rulesToggle" class="rules-toggle" aria-expanded="false" aria-controls="rulesText"> Comment jouer<span class="rules-toggle__chevron" aria-hidden="true"></span> </button>
+</div>
+</div>
+<p class="dossier__lead" id="rulesText" hidden>
+Chaque joueur reçoit un mot en secret. Tous les civils reçoivent le même mot ; l'Undercover reçoit un mot différent, mais proche. À vous de démasquer l'imposteur avant qu'il ne devine votre mot.
+</p>
+<div class="setup-block setup-block--flat">
+<div class="setup-block__head setup-block__head--static">
+<span class="setup-block__num">1</span>
+<h2>Joueurs et Undercover</h2>
+</div>
+<div class="counters-row">
+<div class="counter-field">
+<span class="counter-field__label">Joueurs</span>
+<div class="counter">
+<button type="button" id="countMinus" aria-label="Retirer un joueur">−</button>
+<div class="counter__value"><span id="countDisplay">6</span><small>de 3 à 20</small></div>
+<button type="button" id="countPlus" aria-label="Ajouter un joueur">+</button>
+</div>
+</div>
+<div class="counter-field">
+<span class="counter-field__label">Undercover</span>
+<div class="counter">
+<button type="button" id="underMinus" aria-label="Retirer un Undercover">−</button>
+<div class="counter__value"><span id="underDisplay">1</span><small id="underRange">de 1 à 2</small>
+</div>
+<button type="button" id="underPlus" aria-label="Ajouter un Undercover">+</button>
+</div>
+</div>
+</div>
+<div class="toggle-list toggle-list--single auto-balance">
+<label class="toggle-item"> <input type="checkbox" id="autoUndercover" checked> <span> <strong>Nombre d'Undercovers automatique</strong> <small id="autoUnderHint"></small> </span> </label>
+</div>
+</div>
+<details class="setup-block" id="themesBlock" open>
+<summary class="setup-block__head">
+<span class="setup-block__num">2</span>
+<h2>Themes des mots</h2>
+<span class="setup-block__summary" id="themesSummary">1 thème sélectionné</span> <span class="setup-block__chevron" aria-hidden="true"></span>
+</summary>
+<div class="setup-block__body">
+<p class="hint-text hint-text--role">Sélectionnez un ou plusieurs thèmes : les mots seront piochés parmi ceux-ci. Une paire ne revient jamais tant que tout le stock du thème choisi n'a pas été utilisé.</p>
+<div id="themesGrid" class="toggle-list toggle-list--compact"></div>
+<div class="difficulty">
+<label class="toggle-item"> <input type="checkbox" id="difficultyEnabled"> <span> <strong>Difficulté des paires</strong> <small>Choisissez un niveau selon la proximité des deux mots. Désactivée, toutes les paires sont mélangées.</small> </span> </label>
+<div class="difficulty__levels" id="difficultyLevels" hidden>
+<div class="segmented" role="radiogroup" aria-label="Niveau de difficulté">
+<label class="segmented__item"><input type="radio" name="difficulty" value="1"><span>Facile</span></label> <label class="segmented__item"><input type="radio" name="difficulty" value="2"><span>Moyenne</span></label> <label class="segmented__item"><input type="radio" name="difficulty" value="3"><span>Difficile</span></label>
+</div>
+<p class="hint-text" id="difficultyHint"></p>
+</div>
+</div>
+<div class="custom-pairs-row">
+<button type="button" id="customManageBtn" class="btn btn--ghost btn--small">Gérer « Mes paires »</button> <span class="hint-text" id="customCountHint"></span>
+</div>
+</div>
+</details>
+<details class="setup-block" id="rolesBlock">
+<summary class="setup-block__head">
+<span class="setup-block__num">3</span>
+<h2>Roles speciaux</h2>
+<span class="setup-block__summary" id="rolesSummary">Aucun rôle activé</span> <span class="setup-block__chevron" aria-hidden="true"></span>
+</summary>
+<div class="setup-block__body">
+<div class="field-row field-row--tight">
+<h3>Mr. White</h3>
+<div class="counter">
+<button type="button" id="mrwhiteMinus" aria-label="Retirer un Mr. White">−</button>
+<div class="counter__value"><span id="mrwhiteDisplay">0</span><small id="mrwhiteRange">de 0 à 1</small>
+</div>
+<button type="button" id="mrwhitePlus" aria-label="Ajouter un Mr. White">+</button>
+</div>
+</div>
+<p class="hint-text hint-text--role">Ne reçoit aucun mot : il doit improviser pour ne pas se faire repérer. S'il est éliminé, il a toujours une dernière chance : saisir ou dicter le mot des Civils pour gagner seul.
+</p>
+<div class="field-row field-row--tight">
+<h3>Espion</h3>
+<div class="counter">
+<button type="button" id="espionMinus" aria-label="Retirer un Espion">−</button>
+<div class="counter__value"><span id="espionDisplay">0</span><small id="espionRange">de 0 à 1</small>
+</div>
+<button type="button" id="espionPlus" aria-label="Ajouter un Espion">+</button>
+</div>
+</div>
+<p class="hint-text hint-text--role">Ne reçoit aucun mot lui non plus, mais est autorisé à connaître la première lettre du mot des Civils — un indice discret pour se fondre dans la masse.
+</p>
+<div class="toggle-list">
+<label class="toggle-item"> <input type="checkbox" id="roleIdiot"> <span> <strong>Idiot du village</strong> <small>Gagne seul s'il est éliminé dès le tout premier vote.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleFantome"> <span> <strong>Fantôme</strong> <small>Peut continuer à voter même après avoir été éliminé.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleMime"> <span> <strong>Mime</strong> <small>Doit décrire son mot uniquement par gestes, sans parler.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleProcureur"> <span> <strong>Procureur</strong> <small>Tranche lui-même en cas d'égalité au vote.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleAmoureux"> <span> <strong>Les Amoureux</strong> <small>Liés à un autre joueur : si l'un est éliminé, l'autre l'est aussi. Ils gagnent à 2</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleMytho"> <span> <strong>Le Mytho</strong> <small>Civil qui doit placer UN mensonge dans ses indices sans se faire repérer. En fin de manche, le groupe dit s'il l'a repéré : statistique « mensonges réussis » au journal.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleVoyeur"> <span> <strong>Le Voyeur</strong> <small>Civil qui reçoit 3 noms dont exactement un imposteur : il doit convaincre les autres. Conseillé à partir de 8 joueurs.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleJanus"> <span> <strong>Janus</strong> <small>Civil qui reçoit les deux mots (Civils et Undercover) dans un ordre aléatoire, sans savoir lequel est le bon.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleFauxFrere"> <span> <strong>Le Faux-Frère</strong> <small>A le mot des Civils mais gagne avec les imposteurs : les Civils ne gagnent que s'il est éliminé aussi. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleJumeaux"> <span> <strong>Les Jumeaux (Castor et Pollux)</strong> <small>Deux Civils qui se connaissent : chacun voit le nom de l'autre sur sa carte. Information forte, conseillée à partir de 8 joueurs.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleTiresias"> <span> <strong>Tirésias</strong> <small>Civil sans mot : il reçoit seulement les 2 premières lettres et le nombre de lettres du mot des Civils. Difficile à jouer, plutôt pour les groupes aguerris.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleOrion"> <span> <strong>Orion (le Chasseur)</strong> <small>Civil qui, une fois éliminé, désigne un joueur encore en vie qui est éliminé avec lui.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleHercule"> <span> <strong>Hercule</strong> <small>Civil qui tire une mission secrète (faire dire un mot, terminer un indice par une question…). En fin de manche, le groupe dit s'il l'a accomplie : statistique « missions réussies ».</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="rolePrometheus"> <span> <strong>Prométhée</strong> <small>Civil qui, une fois éliminé, désigne un joueur encore en vie : l'appli révèle à tous son camp (Civil ou imposteur). Information forte, conseillée à partir de 8 joueurs.</small> </span> </label> <label class="toggle-item"> <input type="checkbox" id="roleJudas"> <span> <strong>Judas</strong> <small>Un Faux-Frère informé : il a le mot des Civils, gagne avec les imposteurs et connaît le nom d'un imposteur. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs.</small> </span> </label>
+</div>
+<p class="hint-text hint-text--role hint-text--info">Un joueur ne peut recevoir qu'un seul rôle spécial ci-dessous. Être Undercover ou Mr. White ne compte pas dans cette limite.</p>
+</div>
+</details>
+<details class="setup-block" id="namesBlock">
+<summary class="setup-block__head">
+<span class="setup-block__num">4</span>
+<h2>Noms des joueurs</h2>
+<span class="setup-block__summary" id="namesSummary">Optionnel</span> <span class="setup-block__chevron" aria-hidden="true"></span>
+</summary>
+<div class="setup-block__body">
+<div class="groups">
+<h3 class="groups__title">Groupes de joueurs</h3>
+<div class="group-chips" id="groupList"></div>
+<p class="hint-text" id="groupEmpty">Aucun groupe enregistré. Saisissez les noms ci-dessous, donnez un nom au groupe (« Famille », « Soirée du samedi »…) puis enregistrez-le pour le recharger en un tap.</p>
+<div class="groups__save">
+<input type="text" id="groupNameInput" class="field-input" maxlength="24" autocomplete="off" placeholder="Nom du groupe" aria-label="Nom du groupe"> <button type="button" id="groupSaveBtn" class="btn btn--ghost btn--small">Enregistrer les noms</button>
+</div>
+</div>
+<p class="hint-text">Laissez un champ vide pour garder le nom par défaut "Joueur".</p>
+<div id="namesGrid" class="names-grid"></div>
+</div>
+</details>
+<details class="setup-block" id="timerBlock">
+<summary class="setup-block__head">
+<span class="setup-block__num">5</span>
+<h2>Minuteur et confidentialite</h2>
+<span class="setup-block__summary" id="timerSummary">Sans minuteur · standard</span> <span class="setup-block__chevron" aria-hidden="true"></span>
+</summary>
+<div class="setup-block__body">
+<label class="toggle-item toggle-item--switch"> <input type="checkbox" id="timerEnabled"> <span> <strong>Activer le minuteur</strong> <small>Affiche un compte à rebours visuel une fois toutes les cartes consultées, pour cadrer la durée de la discussion avant le vote.</small> </span> </label>
+<div class="counter-field counter-field--timer" id="timerDurationField">
+<span class="counter-field__label">Durée de la discussion</span>
+<div class="counter">
+<button type="button" id="timerMinus" aria-label="Réduire la durée du minuteur">−</button>
+<div class="counter__value"><span id="timerDisplay">3</span><small>minutes</small></div>
+<button type="button" id="timerPlus" aria-label="Augmenter la durée du minuteur">+</button>
+</div>
+</div>
+<div id="timerExtras" class="timer-extras">
+<label class="toggle-item toggle-item--switch"> <input type="checkbox" id="timerSound" checked> <span> <strong>Son de fin</strong> <small>Joue une courte sonnerie à la fin du temps, en plus de la vibration.</small> </span> </label>
+</div>
+<div class="subsection">
+<h3 class="subsection__title">Confidentialite des cartes</h3>
+<div class="toggle-list toggle-list--single">
+<label class="toggle-item"> <input type="radio" name="privacy" value="standard" checked> <span> <strong>Standard</strong> <small>Le mot reste affiché jusqu'à « Cacher &amp; passer au suivant ».</small> </span> </label> <label class="toggle-item"> <input type="radio" name="privacy" value="auto"> <span> <strong>Masquage automatique</strong> <small>Le mot se masque tout seul après quelques secondes. Il reste possible de le réafficher.</small> </span> </label> <label class="toggle-item"> <input type="radio" name="privacy" value="hold"> <span> <strong>Maintenir pour révéler</strong> <small>Le mot n'apparaît que tant que le doigt reste appuyé sur le bouton.</small> </span> </label>
+</div>
+<div class="counter-field counter-field--timer" id="autoHideField">
+<label class="counter-field__label" for="autoHideSelect">Masquer après</label> <select id="autoHideSelect" class="field-select"> <option value="5">5 secondes</option> <option value="8">8 secondes</option> <option value="12">12 secondes</option> <option value="20">20 secondes</option> </select>
+</div>
+<div class="toggle-list toggle-list--single role-toggle">
+<label class="toggle-item"> <input type="checkbox" id="showRole" checked> <span> <strong>Afficher « Tu es [rôle] » sur la carte</strong> <small>Désactivé, les Civils et l'Undercover ne voient que leur mot et ignorent leur camp, comme dans le jeu classique. Mr. White et l'Espion, qui n'ont pas de mot, voient toujours leur rôle.</small> </span> </label>
+</div>
+</div>
+</div>
+</details>
+<section class="balance" id="balanceBox" aria-label="Équilibrage de la partie"></section>
+<div class="setup-recap" id="setupRecap"></div>
+<div class="dossier__footer">
+<button type="button" id="startBtn" class="btn btn--primary btn--block">Lancer la manche <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</section>
+<section id="game" class="screen" aria-labelledby="game-title">
+<div class="game-header">
+<div>
+<h2 id="game-title">Manche <span id="roundNumber">1</span></h2>
+<div class="game-header__meta"><span id="playerCountLabel">6</span> agents en jeu</div>
+</div>
+<div class="progress-wrap">
+<div class="progress-label"><span id="viewedCount">0</span>/<span id="totalCount">6</span> cartes consultées
+</div>
+<div class="progress-track">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+</div>
+</div>
+<div id="roundRolesBanner" class="round-roles" role="list" aria-label="Rôles publics de la manche"></div>
+<p class="table-note" id="tableNote">
+Faites circuler l'appareil. Chaque joueur clique sur <strong>sa propre carte</strong>, mémorise son mot en privé, puis appuie sur « Cacher » avant de transmettre l'appareil au suivant. Une carte déjà consultée ne peut pas être rouverte.
+</p>
+<div id="statusBanner" class="status-banner">
+Toutes les cartes ont été consultées. La discussion peut commencer, puis lancez le vote.
+</div>
+<div id="discussionTimer" class="discussion-timer" role="timer" aria-live="off">
+<div class="discussion-timer__row">
+<span class="discussion-timer__label">Temps de discussion</span> <span class="discussion-timer__time" id="discussionTimerDisplay">03:00</span>
+</div>
+<div class="discussion-timer__track">
+<div class="discussion-timer__fill" id="discussionTimerFill"></div>
+</div>
+<div class="discussion-timer__controls">
+<button type="button" id="discussionTimerToggle" class="btn btn--ghost btn--small">Pause</button> <button type="button" id="discussionTimerExtend" class="btn btn--ghost btn--small">+1 min</button>
+</div>
+</div>
+<div id="cardsGrid" class="cards-grid" role="list"></div>
+<div id="voteSection" class="vote-section">
+<div class="vote-section__header">
+<h3>Vote d'elimination</h3>
+<p class="vote-section__hint">
+Le groupe discute, puis désigne d'un commun accord le joueur à éliminer en appuyant sur sa carte.
+</p>
+</div>
+<div id="eliminatedList" class="eliminated-list"></div>
+<div id="voteGrid" class="cards-grid vote-grid" role="list"></div>
+</div>
+<div id="gameOverBanner" class="game-over-banner">
+<div class="game-over-banner__title" id="gameOverTitle">—</div>
+<p class="game-over-banner__sub" id="gameOverSub"></p>
+</div>
+<div id="mythoPanel" class="mytho-panel" hidden>
+<p class="mytho-panel__question" id="mythoQuestion">Le groupe a-t-il repéré le mensonge ?</p>
+<div class="mytho-panel__buttons">
+<button type="button" id="mythoSpotted" class="btn btn--ghost btn--small">Oui, repéré</button> <button type="button" id="mythoPassed" class="btn btn--primary btn--small">Non, il est passé</button>
+</div>
+<p class="mytho-panel__done" id="mythoDone" hidden></p>
+</div>
+<div id="herculePanel" class="mytho-panel" hidden>
+<p class="mytho-panel__question" id="herculeQuestion">Hercule a-t-il accompli sa mission ?</p>
+<div class="mytho-panel__buttons">
+<button type="button" id="herculeFail" class="btn btn--ghost btn--small">Non, ratée</button> <button type="button" id="herculeSuccess" class="btn btn--primary btn--small">Oui, accomplie</button>
+</div>
+<p class="mytho-panel__done" id="herculeDone" hidden></p>
+</div>
+<div class="actions-row">
+<div class="actions-row__group">
+<button type="button" id="startVoteBtn" class="btn btn--primary" disabled>Lancer le vote <span class="btn-arrow">→</span></button> <button type="button" id="summaryBtn" class="btn btn--gold summary-btn--hidden">Voir tous les rôles</button>
+</div>
+<div class="actions-row__group">
+<button type="button" id="scoreLogBtnGame" class="btn btn--ghost">Journal des scores</button> <button type="button" id="newRoundBtn" class="btn btn--ghost">Nouvelle manche (mêmes joueurs)</button> <button type="button" id="resetBtn" class="btn btn--ghost">Nouvelle partie</button>
+</div>
+</div>
+</section>
+</div>
+<div id="wordModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalOwner" aria-hidden="true">
+<div class="modal__scrim"></div>
+<div class="modal__panel">
+<div class="modal__autobar" id="autoHideBar" hidden><span></span></div>
+<div class="modal__stamp">confidentiel</div>
+<div class="modal__owner" id="modalOwner">Carte de —</div>
+<div class="modal__role" id="modalRole">Civil</div>
+<div class="modal__word-label">Ton mot</div>
+<div class="modal__word" id="modalWord">—</div>
+<div class="modal__badges" id="modalBadges"></div>
+<p class="modal__privacy">Assure-toi que personne d'autre ne regarde l'écran avant de continuer.</p>
+<div class="modal__reveal-row" id="revealRow" hidden>
+<button type="button" id="revealBtn" class="btn btn--gold modal__reveal">Maintenir pour révéler</button>
+</div>
+<div class="modal__buttons">
+<button type="button" id="hideWordBtn" class="btn btn--primary">Cacher &amp; passer au suivant <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="summaryModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="summaryTitle" aria-hidden="true">
+<div class="modal__scrim" id="summaryScrim"></div>
+<div class="modal__panel summary-panel">
+<h3 id="summaryTitle">Bilan de la manche</h3>
+<p class="summary-sub">À révéler une fois la discussion et le vote terminés.</p>
+<ul class="summary-list" id="summaryList"></ul>
+<div class="modal__buttons">
+<button type="button" id="closeSummaryBtn" class="btn btn--ghost">Fermer</button> <button type="button" id="summaryNewRoundBtn" class="btn btn--primary">Nouvelle manche <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="scoreModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="scoreModalTitle" aria-hidden="true">
+<div class="modal__scrim" id="scoreScrim"></div>
+<div class="modal__panel summary-panel score-panel">
+<h3 id="scoreModalTitle">Journal des scores</h3>
+<p class="summary-sub">Historique des manches jouées sur cet appareil.</p>
+<p class="score-empty" id="scoreEmptyState">Aucune manche terminée pour l'instant — les résultats apparaîtront ici après la première partie.</p>
+<div id="scoreContent" class="score-content">
+<div class="score-filter" id="scoreFilterRow" hidden>
+<label for="scoreGroupFilter">Groupe</label> <select id="scoreGroupFilter" class="field-select"></select>
+</div>
+<h4 class="score-section-title">Classement des joueurs</h4>
+<ul class="score-leaderboard" id="scoreLeaderboard"></ul>
+<h4 class="score-section-title" id="scoreRolesTitle">Taux de victoire par role</h4>
+<ul class="score-leaderboard score-roles" id="scoreRoles"></ul>
+<h4 class="score-section-title" id="scoreLiesTitle">Mensonges du Mytho</h4>
+<ul class="score-leaderboard score-roles" id="scoreLies"></ul>
+<h4 class="score-section-title" id="scoreMissionsTitle">Missions d'Hercule</h4>
+<ul class="score-leaderboard score-roles" id="scoreMissions"></ul>
+<p class="score-note" id="scoreNote">Les taux et séries ne comptent que les manches enregistrées depuis l'ajout des statistiques.</p>
+<h4 class="score-section-title">Historique des manches</h4>
+<ul class="score-history" id="scoreHistory"></ul>
+</div>
+<div class="modal__buttons score-export">
+<button type="button" id="scoreExportJson" class="btn btn--ghost btn--small">Exporter en JSON</button> <button type="button" id="scoreExportCsv" class="btn btn--ghost btn--small">Exporter en CSV</button>
+</div>
+<div class="modal__buttons">
+<button type="button" id="scoreResetBtn" class="btn btn--ghost">Réinitialiser le journal</button> <button type="button" id="closeScoreBtn" class="btn btn--primary">Fermer <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="voteConfirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="voteConfirmTitle" aria-hidden="true">
+<div class="modal__scrim"></div>
+<div class="modal__panel">
+<div class="modal__stamp">vote</div>
+<div class="modal__owner" id="voteConfirmTitle">Confirmer le vote</div>
+<div class="modal__word" id="voteConfirmName">—</div>
+<p class="modal__privacy">Le groupe est d'accord pour éliminer ce joueur ?</p>
+<div class="modal__buttons">
+<button type="button" id="voteConfirmCancel" class="btn btn--ghost">Annuler</button> <button type="button" id="voteConfirmYes" class="btn btn--primary">Éliminer <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="eliminationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="elimName" aria-hidden="true">
+<div class="modal__scrim"></div>
+<div class="modal__panel">
+<div class="modal__stamp">élimination</div>
+<div class="modal__owner" id="elimName">—</div>
+<div class="modal__role" id="elimRole">Civil</div>
+<p class="modal__privacy" id="elimContinueText">La partie continue.</p>
+<div class="modal__buttons">
+<button type="button" id="elimContinueBtn" class="btn btn--primary">Continuer <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="guessModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="guessTitle" aria-hidden="true">
+<div class="modal__scrim"></div>
+<div class="modal__panel">
+<div class="modal__stamp">dernière chance</div>
+<div class="modal__owner" id="guessTitle">Mr. White</div>
+<p class="modal__privacy" id="guessIntro">Devine le mot des Civils. Si tu le trouves, tu gagnes seul(e) la partie !</p>
+<div class="guess__row" id="guessInputRow">
+<input type="text" id="guessInput" class="guess__input" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Le mot des Civils…" aria-label="Mot des Civils"> <button type="button" id="guessMicBtn" class="btn btn--ghost btn--small guess__mic" hidden aria-pressed="false">Dicter</button>
+</div>
+<p class="guess__result" id="guessResult" role="status" aria-live="polite"></p>
+<div class="modal__buttons">
+<button type="button" id="guessSkipBtn" class="btn btn--ghost">Renoncer</button> <button type="button" id="guessSubmitBtn" class="btn btn--primary">Valider <span class="btn-arrow">→</span></button> <button type="button" id="guessContinueBtn" class="btn btn--primary" hidden>Continuer <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="pickerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pickerTitle" aria-hidden="true">
+<div class="modal__scrim"></div>
+<div class="modal__panel">
+<div class="modal__stamp" id="pickerStamp">dernier tir</div>
+<div class="modal__owner" id="pickerTitle">Orion, le Chasseur</div>
+<p class="modal__privacy" id="pickerIntro"></p>
+<div class="picker-list" id="pickerList" role="group" aria-label="Cibles possibles"></div>
+<div class="modal__buttons">
+<button type="button" id="pickerConfirmBtn" class="btn btn--primary" disabled>Confirmer la cible <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="customModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="customTitle" aria-hidden="true">
+<div class="modal__scrim" id="customScrim"></div>
+<div class="modal__panel summary-panel custom-panel">
+<h3 id="customTitle">Mes paires</h3>
+<p class="summary-sub">Vos propres paires de mots, enregistrées sur cet appareil. Elles apparaissent dans le thème « Mes paires ».</p>
+<div class="custom-import" id="customImportBanner" hidden>
+<p id="customImportText"></p>
+<div class="modal__buttons">
+<button type="button" id="customImportDismiss" class="btn btn--ghost btn--small">Ignorer</button> <button type="button" id="customImportConfirm" class="btn btn--primary btn--small">Ajouter</button>
+</div>
+</div>
+<div class="custom-form">
+<div class="custom-form__words">
+<input type="text" id="customWordA" class="paper-input" maxlength="40" autocomplete="off" placeholder="Mot des Civils" aria-label="Premier mot"> <input type="text" id="customWordB" class="paper-input" maxlength="40" autocomplete="off" placeholder="Mot de l'Undercover" aria-label="Second mot">
+</div>
+<div class="custom-form__row">
+<select id="customDifficulty" class="field-select" aria-label="Difficulté de la paire"> <option value="1">Facile</option> <option value="2" selected>Moyenne</option> <option value="3">Difficile</option> </select> <button type="button" id="customAddBtn" class="btn btn--primary btn--small">Ajouter la paire</button>
+</div>
+<p class="hint-text custom-form__hint">Les deux mots sont tirés au hasard entre Civils et Undercover à chaque manche : leur ordre n'a pas d'importance.</p>
+</div>
+<h4 class="score-section-title" id="customCount">0 paire</h4>
+<p class="score-empty" id="customEmpty">Aucune paire pour l'instant. Ajoutez-en une ci-dessus, ou importez un fichier / un lien de partage.</p>
+<ul class="custom-list" id="customList"></ul>
+<div class="modal__buttons custom-tools">
+<button type="button" id="customExportBtn" class="btn btn--ghost btn--small">Exporter</button> <button type="button" id="customImportBtn" class="btn btn--ghost btn--small">Importer</button> <button type="button" id="customShareBtn" class="btn btn--ghost btn--small">Partager par lien</button> <input type="file" id="customImportFile" accept="application/json,.json" hidden>
+</div>
+<div class="modal__buttons">
+<button type="button" id="customCloseBtn" class="btn btn--primary">Fermer <span class="btn-arrow">→</span></button>
+</div>
+</div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div class="visually-hidden" aria-live="polite" id="srAnnounce"></div>
+<script type="module" src="js/main.js"></script>
 </body>
-
 </html>

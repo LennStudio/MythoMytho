@@ -1,51 +1,5 @@
-// Missions secrètes d'Hercule : chargées depuis missions.json. [chunk de jeu]
-
-import { normalizeWord, shuffle } from './core.js';
-
-var data = null;
-var loading = null;
-
-export function missionsReady() {
-  return !!data;
-}
-
-export function loadMissions() {
-  if (!loading) {
-    loading = fetch('missions.json').then(function (res) {
-      if (!res.ok) throw new Error('http ' + res.status);
-      return res.json();
-    }).then(function (d) {
-      var missions = Array.isArray(d && d.missions) ? d.missions.filter(function (m) {
-        return typeof m === 'string' && m.trim();
-      }) : [];
-      var words = Array.isArray(d && d.words) ? d.words.filter(function (w) {
-        return typeof w === 'string' && w.trim();
-      }) : [];
-      if (!missions.length) throw new Error('format');
-      data = {
-        missions: missions,
-        words: words
-      };
-      return data;
-    });
-    loading.catch(function () {
-      loading = null;
-    });
-  }
-  return loading;
-}
-
-// Tire une mission au hasard ; le mot imposé (« {mot} ») n'est jamais l'un des mots de la manche.
-export function pickMission(avoidWords) {
-  if (!data || !data.missions.length) return '';
-  var text = shuffle(data.missions.slice())[0];
-  if (text.indexOf('{mot}') !== -1 && data.words.length) {
-    var avoid = (avoidWords || []).map(normalizeWord);
-    var pool = data.words.filter(function (w) {
-      return avoid.indexOf(normalizeWord(w)) === -1;
-    });
-    var word = shuffle((pool.length ? pool : data.words).slice())[0];
-    text = text.replace(/\{mot\}/g, word);
-  }
-  return text;
-}
+import{normalizeWord as e,shuffle as f}from"./core.js";
+var n=null,o=null;
+export function missionsReady(){return!!n}
+export function loadMissions(){return o||(o=fetch("missions.json").then(function(r){if(!r.ok)throw new Error("http "+r.status);return r.json()}).then(function(r){var t=Array.isArray(r&&r.missions)?r.missions.filter(function(i){return typeof i=="string"&&i.trim()}):[],s=Array.isArray(r&&r.words)?r.words.filter(function(i){return typeof i=="string"&&i.trim()}):[];if(!t.length)throw new Error("format");return n={missions:t,words:s},n}),o.catch(function(){o=null})),o}
+export function pickMission(r){if(!n||!n.missions.length)return"";var t=f(n.missions.slice())[0];if(t.indexOf("{mot}")!==-1&&n.words.length){var s=(r||[]).map(e),i=n.words.filter(function(u){return s.indexOf(e(u))===-1}),a=f((i.length?i:n.words).slice())[0];t=t.replace(/\{mot\}/g,a)}return t}

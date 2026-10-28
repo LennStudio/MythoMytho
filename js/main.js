@@ -1,149 +1,20 @@
-// Point d'entrée : démarrage de l'accueil et chargement à la demande.
-
-import { bootAudio } from './audio.js';
-import { bootBalance } from './balance.js';
-import { el, showToast } from './core.js';
-import { bootGroups } from './groups.js';
-import { initOptionsUI, loadOptions } from './options.js';
-import { bootPwa } from './pwa.js';
-import { bootSetup, renderNameFields, renderSetupRecap, updateCounter, updateUnderCounter } from './setup.js';
-import { bootTheme } from './theme.js';
-import { loadWords } from './themes.js';
-
-var chunks = {};
-
-function loadChunk(name, loader) {
-  if (!chunks[name]) {
-    chunks[name] = loader().then(function (m) {
-      m.boot();
-      return m;
-    });
-    chunks[name].catch(function () {
-      chunks[name] = null;
-    });
-  }
-  return chunks[name];
-}
-
-function loadGame() {
-  return loadChunk('game', function () {
-    return import('./game-chunk.js');
-  });
-}
-
-function loadJournalUi() {
-  return loadChunk('journal', function () {
-    return import('./journal-ui.js');
-  });
-}
-
-function loadCustomUi() {
-  return loadChunk('custom', function () {
-    return import('./custom-ui.js');
-  });
-}
-
-function loadFailed() {
-  showToast('Chargement impossible : vérifiez la connexion puis réessayez.', 3600);
-}
-
-function requestScoreModal() {
-  loadJournalUi().then(function (m) {
-    m.openScoreModal();
-  }).catch(loadFailed);
-}
-
-function requestCustomModal() {
-  loadCustomUi().then(function (m) {
-    m.openCustomModal();
-  }).catch(loadFailed);
-}
-
-function whenIdle(fn) {
-  if ('requestIdleCallback' in window) window.requestIdleCallback(fn, { timeout: 2500 });
-  else setTimeout(fn, 800);
-}
-
-function handleLaunchActions() {
-  var action = null;
-  try {
-    action = new URLSearchParams(window.location.search).get('action');
-  } catch (e) {}
-  var hash = window.location.hash || '';
-  var encoded = hash.indexOf('#paires=') === 0 ? hash.slice(8) : '';
-
-  if (action || hash) {
-    try {
-      window.history.replaceState(null, '', window.location.pathname);
-    } catch (e) {}
-  }
-
-  function runAction() {
-    if (action === 'scores') {
-      requestScoreModal();
-    } else if (action === 'new') {
-      el.startBtn.scrollIntoView({
-        block: 'center'
-      });
-      el.startBtn.focus();
-    }
-  }
-
-  if (encoded) {
-    loadCustomUi().then(function (m) {
-      var shared = m.decodeShared(encoded);
-      if (shared && shared.length) m.openCustomModal(shared);
-      else runAction();
-    }).catch(loadFailed);
-  } else {
-    runAction();
-  }
-}
-
-loadOptions();
-
-bootTheme();
-
-bootSetup();
-
-bootAudio();
-
-bootGroups();
-
-bootBalance();
-
-bootPwa();
-
-el.startBtn.addEventListener('click', function () {
-  loadGame().then(function (g) {
-    g.handleStartClick();
-  }).catch(loadFailed);
-});
-
-if (el.scoreLogToggle) el.scoreLogToggle.addEventListener('click', requestScoreModal);
-
-if (el.scoreLogBtnGame) el.scoreLogBtnGame.addEventListener('click', requestScoreModal);
-
-el.customManageBtn.addEventListener('click', requestCustomModal);
-
-updateCounter();
-
-updateUnderCounter();
-
-renderNameFields();
-
-renderSetupRecap();
-
-initOptionsUI();
-
-loadWords();
-
-handleLaunchActions();
-
-whenIdle(function () {
-  loadGame().catch(function () {});
-});
-
-// Signale au garde-fou de chargement (index.html) que le démarrage s'est bien passé.
-window.__mythoBooted = true;
-if (window.__mythoGuard) window.__mythoGuard.ok();
+import{bootAudio as h}from"./audio.js";
+import{bootBalance as m}from"./balance.js";
+import{el as t,showToast as p}from"./core.js";
+import{bootGroups as w}from"./groups.js";
+import{initOptionsUI as g,loadOptions as b}from"./options.js";
+import{bootPwa as k}from"./pwa.js";
+import{bootSetup as C,renderNameFields as v,renderSetupRecap as L,updateCounter as B,updateUnderCounter as S}from"./setup.js";
+import{bootTheme as y}from"./theme.js";
+import{loadWords as G}from"./themes.js";
+var i={};
+function u(o,n){return i[o]||(i[o]=n().then(function(e){return e.boot(),e}),i[o].catch(function(){i[o]=null})),i[o]}
+function s(){return u("game",function(){return import("./game-chunk.js")})}
+function M(){return u("journal",function(){return import("./journal-ui.js")})}
+function f(){return u("custom",function(){return import("./custom-ui.js")})}
+function c(){p("Chargement impossible : vérifiez la connexion puis réessayez.",3600)}
+function l(){M().then(function(o){o.openScoreModal()}).catch(c)}
+function _(){f().then(function(o){o.openCustomModal()}).catch(c)}
+function I(o){"requestIdleCallback"in window?window.requestIdleCallback(o,{timeout:2500}):setTimeout(o,800)}
+function T(){var o=null;try{o=new URLSearchParams(window.location.search).get("action")}catch{}var n=window.location.hash||"",e=n.indexOf("#paires=")===0?n.slice(8):"";if(o||n)try{window.history.replaceState(null,"",window.location.pathname)}catch{}function d(){o==="scores"?l():o==="new"&&(t.startBtn.scrollIntoView({block:"center"}),t.startBtn.focus())}e?f().then(function(r){var a=r.decodeShared(e);a&&a.length?r.openCustomModal(a):d()}).catch(c):d()}
+b(),y(),C(),h(),w(),m(),k(),t.startBtn.addEventListener("click",function(){s().then(function(o){o.handleStartClick()}).catch(c)}),t.scoreLogToggle&&t.scoreLogToggle.addEventListener("click",l),t.scoreLogBtnGame&&t.scoreLogBtnGame.addEventListener("click",l),t.customManageBtn.addEventListener("click",_),B(),S(),v(),L(),g(),G(),T(),I(function(){s().catch(function(){})}),window.__mythoBooted=!0,window.__mythoGuard&&window.__mythoGuard.ok();
