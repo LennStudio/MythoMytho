@@ -3,18 +3,17 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import {
   FILTER_ALL, FILTER_NONE, ROLE_NAMES, buildCsv, buildScoreJson, computeStats, filterByGroup, groupNames,
-  leaderboard, percent, type RoleKey,
+  leaderboard, percent, plural, type RoleKey,
 } from '@/domain';
 import { exportText } from '@/services/files';
 import { useLibrary } from '@/state/library';
 import { useToast } from '@/state/toast';
-import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 import { AppText, Button, Chip, Panel } from '../ui/primitives';
+import { Screen } from '../ui/Screen';
 
 export function ScoresScreen(): React.JSX.Element {
   const router = useRouter();
-  const { colors } = useTheme();
   const toast = useToast();
   const { scoreLog, clearScoreLog } = useLibrary();
   const [group, setGroup] = useState(FILTER_ALL);
@@ -34,7 +33,8 @@ export function ScoresScreen(): React.JSX.Element {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ padding: space.lg, gap: space.md, maxWidth: 640, width: '100%', alignSelf: 'center', paddingBottom: 48 }}>
+    <Screen>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: space.lg, gap: space.md, maxWidth: 640, width: '100%', alignSelf: 'center', paddingBottom: 48 }}>
       <AppText title size={32}>Journal des scores</AppText>
       {scoreLog.length === 0 ? <AppText tone="muted">Aucune manche enregistrée pour l'instant. Jouez une partie pour alimenter le journal.</AppText> : null}
 
@@ -52,7 +52,7 @@ export function ScoresScreen(): React.JSX.Element {
           {board.map((r, i) => (
             <AppText key={r.name} size={14}>
               {`${i + 1}. ${r.name} — ${r.wins} victoire${r.wins > 1 ? 's' : ''}`}
-              {r.stat ? ` · ${percent(r.stat.wins, r.stat.games)} % sur ${r.stat.games} manches · série max ${r.stat.best}` : ''}
+              {r.stat ? ` · ${percent(r.stat.wins, r.stat.games)} % sur ${r.stat.games} ${plural(r.stat.games, 'manche', 'manches')} · série max ${r.stat.best}` : ''}
             </AppText>
           ))}
         </Panel>
@@ -63,6 +63,24 @@ export function ScoresScreen(): React.JSX.Element {
           <AppText bold>Taux de victoire par rôle</AppText>
           {Object.entries(stats.byRole).map(([role, v]) => (
             <AppText key={role} size={14}>{`${ROLE_NAMES[role as RoleKey] ?? role} — ${percent(v.wins, v.games)} % (${v.games})`}</AppText>
+          ))}
+        </Panel>
+      ) : null}
+
+      {Object.keys(stats.lies).length > 0 ? (
+        <Panel style={{ gap: 6 }}>
+          <AppText bold>Mensonges du Mytho</AppText>
+          {Object.entries(stats.lies).map(([name, v]) => (
+            <AppText key={name} size={14}>{`${name} — ${percent(v.passed, v.games)} % passés inaperçus (${v.passed}/${v.games})`}</AppText>
+          ))}
+        </Panel>
+      ) : null}
+
+      {Object.keys(stats.missions).length > 0 ? (
+        <Panel style={{ gap: 6 }}>
+          <AppText bold>Missions d'Hercule</AppText>
+          {Object.entries(stats.missions).map(([name, v]) => (
+            <AppText key={name} size={14}>{`${name} — ${percent(v.success, v.games)} % accomplies (${v.success}/${v.games})`}</AppText>
           ))}
         </Panel>
       ) : null}
@@ -88,5 +106,6 @@ export function ScoresScreen(): React.JSX.Element {
       </View>
       <Button variant="ghost" label="Retour" onPress={() => router.back()} />
     </ScrollView>
+    </Screen>
   );
 }

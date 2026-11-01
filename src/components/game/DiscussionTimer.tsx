@@ -19,6 +19,7 @@ export function DiscussionTimer({ minutes, sound, active, resetKey, onRunningCha
     if (active && !started) { endAt.current = Date.now() + total * 1000; setStarted(true); setRunning(true); }
   }, [active, started, total]);
   useEffect(() => { onRunningChange?.(running); }, [running, onRunningChange]);
+  useEffect(() => () => onRunningChange?.(false), [onRunningChange]);
 
   useEffect(() => {
     if (!running) return;

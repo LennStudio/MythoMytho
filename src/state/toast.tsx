@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { fonts, radius } from '@/theme/tokens';
 
@@ -10,6 +11,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }): Reac
   const [msg, setMsg] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const show = useCallback<Show>((m) => {
     setMsg(m);
     if (timer.current) clearTimeout(timer.current);
@@ -19,8 +21,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }): Reac
     <Ctx.Provider value={show}>
       {children}
       {msg !== null && (
-        <View pointerEvents="none" accessibilityLiveRegion="polite"
-          style={{ position: 'absolute', left: 16, right: 16, bottom: 28, alignItems: 'center', zIndex: 999 }}>
+        <View accessibilityLiveRegion="polite"
+          style={{ position: 'absolute', left: 16, right: 16, bottom: 28 + insets.bottom, alignItems: 'center', zIndex: 999, pointerEvents: 'none' }}>
           <View style={{ backgroundColor: colors.ink, borderRadius: radius.md, paddingVertical: 10, paddingHorizontal: 14, maxWidth: 520 }}>
             <Text style={{ color: colors.paper, fontFamily: fonts.body, fontSize: 14, textAlign: 'center' }}>{msg}</Text>
           </View>

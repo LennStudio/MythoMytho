@@ -8,15 +8,14 @@ import {
 import { canPickFile, exportText, pickTextFile, shareLink, webLocation } from '@/services/files';
 import { useLibrary } from '@/state/library';
 import { useToast } from '@/state/toast';
-import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 import { AppText, Button, Chip, Field, Panel } from '../ui/primitives';
+import { Screen } from '../ui/Screen';
 
 const MESSAGES = { invalid: 'Paire invalide : deux mots différents de 40 caractères maximum.', duplicate: 'Cette paire existe déjà.', full: `Limite de ${MAX_CUSTOM_PAIRS} paires atteinte.` } as const;
 
 export function CustomPairsScreen(): React.JSX.Element {
   const router = useRouter();
-  const { colors } = useTheme();
   const toast = useToast();
   const { customPairs, setCustomPairs, loaded } = useLibrary();
   const { import: importCode } = useLocalSearchParams<{ import?: string }>();
@@ -55,7 +54,8 @@ export function CustomPairsScreen(): React.JSX.Element {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ padding: space.lg, gap: space.md, maxWidth: 640, width: '100%', alignSelf: 'center', paddingBottom: 48 }}>
+    <Screen>
+    <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: space.lg, gap: space.md, maxWidth: 640, width: '100%', alignSelf: 'center', paddingBottom: 48 }}>
       <AppText title size={32}>Mes paires</AppText>
       <AppText tone="muted">{`${customPairs.length}/${MAX_CUSTOM_PAIRS} paires personnalisées. Elles forment le thème « Mes paires ».`}</AppText>
       <Panel style={{ gap: 10 }}>
@@ -97,5 +97,6 @@ export function CustomPairsScreen(): React.JSX.Element {
       ) : null}
       <Button variant="ghost" label="Retour" onPress={() => router.back()} />
     </ScrollView>
+    </Screen>
   );
 }

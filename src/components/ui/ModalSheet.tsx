@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { radius, space } from '@/theme/tokens';
 import { AppText } from './primitives';
@@ -10,7 +10,8 @@ export function ModalSheet({ visible, title, onClose, children, paper }: {
 }): React.JSX.Element {
   const { colors } = useTheme();
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose ?? (() => undefined)} statusBarTranslucent>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
       <Pressable onPress={onClose} accessibilityLabel="Fermer" style={{ flex: 1, backgroundColor: colors.overlay, justifyContent: 'center', padding: space.lg }}>
         <Pressable onPress={() => undefined} accessible={false}
           style={{ alignSelf: 'center', width: '100%', maxWidth: 520, maxHeight: '90%', backgroundColor: paper ? colors.paper : colors.panel, borderRadius: radius.md, borderWidth: 1, borderColor: colors.line }}>
@@ -20,6 +21,7 @@ export function ModalSheet({ visible, title, onClose, children, paper }: {
           </ScrollView>
         </Pressable>
       </Pressable>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

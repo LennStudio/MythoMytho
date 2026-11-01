@@ -8,13 +8,28 @@
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/favicon-512.png",
     "backgroundColor": "#10161a",
-    "ios": { "supportsTablet": true, "bundleIdentifier": "fr.lennouille.mythomytho" },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "fr.lennouille.mythomytho"
+    },
     "android": {
       "package": "fr.lennouille.mythomytho",
-      "adaptiveIcon": { "foregroundImage": "./assets/images/favicon-maskable-512.png", "backgroundColor": "#10161a" }
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/favicon-maskable-512.png",
+        "backgroundColor": "#10161a"
+      }
     },
-    "web": { "bundler": "metro", "output": "static", "favicon": "./assets/images/favicon-192.png" },
-    "plugins": ["expo-router", "expo-font"],
-    "experiments": { "typedRoutes": true }
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/images/favicon-192.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

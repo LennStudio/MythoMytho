@@ -67,7 +67,7 @@ export function GameOverPhase({ state, dispatch, onNextRound, onQuit, onScores }
   return (
     <View style={{ gap: 12 }}>
       <Panel style={{ alignItems: 'center', gap: 8, borderColor: colors.gold }}>
-        <AppText title size={32} center>{text.title}</AppText>
+        <AppText title size={32} center>{text.title.replace(/ ([!?:;])/g, '\u00A0$1')}</AppText>
         <AppText center tone="muted">{text.subtitle}</AppText>
         <AppText center tone="gold" bold>{`Civils : ${state.civilWord} · Undercover : ${state.undercoverWord}`}</AppText>
       </Panel>

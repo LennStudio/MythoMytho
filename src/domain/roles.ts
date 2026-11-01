@@ -78,7 +78,8 @@ export const ROLE_INFO: Readonly<Record<InfoKey, RoleInfo>> = {
  */
 export function makeTiresiasHint(word: string): TiresiasHint {
   const chars = Array.from(word);
-  const isLetter = (c: string): boolean => /[\p{L}\p{N}]/u.test(c);
+  // Lettre (toute écriture à casse) ou chiffre — sans propriété Unicode `\p{…}`, dont le support Hermes n'est pas garanti.
+  const isLetter = (c: string): boolean => c.toLowerCase() !== c.toUpperCase() || (c >= '0' && c <= '9');
   const count = chars.filter(isLetter).length;
   const wanted = count <= 3 ? 1 : 2;
   let prefix = '';

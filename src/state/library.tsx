@@ -25,7 +25,8 @@ interface LibraryValue {
 const Ctx = createContext<LibraryValue | null>(null);
 
 const parseUsed = (r: unknown): UsedPairs => {
-  if (typeof r !== 'object' || r === null || Array.isArray(r)) return {};
+  if (Array.isArray(r)) return Object.fromEntries(r.filter((x): x is string => typeof x === 'string').map((k) => [k, true as const]));
+  if (typeof r !== 'object' || r === null) return {};
   return Object.fromEntries(Object.keys(r).map((k) => [k, true as const]));
 };
 
