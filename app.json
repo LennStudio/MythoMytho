@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "MythoMytho",
+    "slug": "mythomytho",
+    "scheme": "mythomytho",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "icon": "./assets/images/favicon-512.png",
+    "backgroundColor": "#10161a",
+    "ios": { "supportsTablet": true, "bundleIdentifier": "fr.lennouille.mythomytho" },
+    "android": {
+      "package": "fr.lennouille.mythomytho",
+      "adaptiveIcon": { "foregroundImage": "./assets/images/favicon-maskable-512.png", "backgroundColor": "#10161a" }
+    },
+    "web": { "bundler": "metro", "output": "static", "favicon": "./assets/images/favicon-192.png" },
+    "plugins": ["expo-router", "expo-font"],
+    "experiments": { "typedRoutes": true }
+  }
+}

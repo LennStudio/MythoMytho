@@ -1,8 +1,0 @@
-import{announce as a,el as n,state as i}from"./core.js";
-import{saveScoreLog as f}from"./journal.js";
-var r=[{flag:"isMytho",field:"lie",panel:"mythoPanel",question:"mythoQuestion",done:"mythoDone",first:"mythoSpotted",firstValue:"spotted",second:"mythoPassed",secondValue:"passed",ask:function(e){return"Le groupe a-t-il repéré le mensonge du Mytho ("+e.name+") ?"},answered:function(e){return e==="spotted"?"Enregistré : mensonge repéré.":"Enregistré : mensonge réussi, il est passé inaperçu !"}},{flag:"isHercule",field:"mission",panel:"herculePanel",question:"herculeQuestion",done:"herculeDone",first:"herculeSuccess",firstValue:"success",second:"herculeFail",secondValue:"fail",ask:function(e){return"Hercule ("+e.name+") a-t-il accompli sa mission ? « "+e.mission+" »"},answered:function(e){return e==="success"?"Enregistré : mission accomplie !":"Enregistré : mission ratée."}}];
-function u(e){n[e.panel].hidden=!0,n[e.done].hidden=!0,n[e.done].textContent="",n[e.first].hidden=!1,n[e.second].hidden=!1}
-export function hideQuestionPanels(){r.forEach(u)}
-export function showEndQuestions(){r.forEach(function(e){u(e);var t=i.players.filter(function(s){return s[e.flag]})[0];t&&(n[e.question].textContent=e.ask(t),n[e.panel].hidden=!1,a(n[e.question].textContent))})}
-function c(e,t){var s=-1;i.players.forEach(function(d,l){d[e.flag]&&(s=l)});var o=i.lastScoreEntry;o&&o.players&&o.players[s]&&(o.players[s][e.field]=t,f()),n[e.first].hidden=!0,n[e.second].hidden=!0,n[e.done].textContent=e.answered(t),n[e.done].hidden=!1,a(n[e.done].textContent)}
-export function bootQuestions(){r.forEach(function(e){n[e.first].addEventListener("click",function(){c(e,e.firstValue)}),n[e.second].addEventListener("click",function(){c(e,e.secondValue)})})}
