@@ -17,6 +17,14 @@ npm run build:web           # export statique dans dist/
 > `package.json` laisse volontairement `*` pour les bibliothèques Expo : `npx expo install --fix` choisit les versions
 > compatibles avec votre SDK (testé sur la base d'Expo SDK 58).
 
+## Design
+
+Le design reprend celui de l'application HTML/CSS/JS : fond en dégradé radial avec quadrillage (SVG), logo « Mytho Mytho »
+avec reflet (le SVG d'origine, converti en composant), panneau « dossier » à onglet, blocs numérotés en pointillés,
+compteurs en pilule, cartes de joueur inclinées, modale « carte secrète » à tampon « confidentiel », thème clair/sombre.
+Les composants visuels sont dans `src/components/ui/` ; la palette dans `src/theme/tokens.ts`.
+Dépendance ajoutée : `react-native-svg` (`npx expo install react-native-svg`).
+
 ## Premier lancement : à regarder en priorité
 
 1. `npm run typecheck` — la première compilation contre les vrais types React Native / Expo peut révéler des détails de typage

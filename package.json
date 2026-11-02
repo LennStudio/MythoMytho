@@ -13,23 +13,24 @@
     "test:domain": "tsc -p tsconfig.domain.json && node build-domain/scripts/domain-smoke.js && node scripts/run-flow.cjs"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "*",
     "expo": "^58.0.0",
-    "expo-router": "*",
+    "expo-asset": "*",
+    "expo-audio": "*",
+    "expo-constants": "*",
     "expo-font": "*",
     "expo-keep-awake": "*",
     "expo-linking": "*",
-    "expo-constants": "*",
-    "expo-asset": "*",
-    "expo-audio": "*",
+    "expo-router": "*",
     "expo-splash-screen": "*",
     "expo-status-bar": "*",
     "react": "*",
     "react-dom": "*",
     "react-native": "*",
-    "react-native-web": "*",
     "react-native-safe-area-context": "*",
     "react-native-screens": "*",
-    "@react-native-async-storage/async-storage": "*"
+    "react-native-svg": "15.16.0",
+    "react-native-web": "*"
   },
   "devDependencies": {
     "typescript": "*",

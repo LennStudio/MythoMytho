@@ -5,7 +5,7 @@ import { dictationAvailable, startDictation } from '@/services/speech';
 import { useLibrary } from '@/state/library';
 import { useSettingsActions } from '@/state/settings';
 import { useToast } from '@/state/toast';
-import { AppText, Block, Button, Chip, Field } from '../ui/primitives';
+import { AppText, Button, Field, Segmented, SetupBlock } from '../ui/primitives';
 
 export function NamesBlock({ names, count, onChange }: {
   names: readonly string[]; count: number; onChange: (n: readonly string[]) => void;
@@ -35,12 +35,18 @@ export function NamesBlock({ names, count, onChange }: {
   };
 
   return (
-    <Block title="Noms des joueurs" summary={current ? `Groupe « ${current.name} »` : 'Facultatif — « Joueur N » par défaut'}>
+    <SetupBlock num={4} title="Noms des joueurs" summary="Optionnel">
+      <AppText bold size={15}>Groupes de joueurs</AppText>
       {groups.length > 0 ? (
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-          {groups.map((g) => <Chip key={g.id} label={g.name} selected={current?.id === g.id} onPress={() => load(g)} />)}
-        </View>
-      ) : null}
+        <Segmented<string> options={groups.map((g) => ({ key: g.id, label: g.name }))} value={current?.id ?? ''} onChange={(id) => { const g = groups.find((x) => x.id === id); if (g) load(g); }} />
+      ) : (
+        <AppText tone="muted" size={11.5}>Aucun groupe enregistré. Saisissez les noms ci-dessous, donnez un nom au groupe (« Famille », « Soirée du samedi »…) puis enregistrez-le pour le recharger en un tap.</AppText>
+      )}
+      <Field label="Nom du groupe" value={groupName} onChangeText={setGroupName} maxLength={MAX_GROUP_NAME} placeholder="Ex. Famille" />
+      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+        <Button small variant="ghost" label="Enregistrer les noms" onPress={save} />
+        {current ? <Button small variant="ghost" label="Supprimer le groupe" onPress={() => deleteGroup(current.id)} /> : null}
+      </View>
       {filled.map((n, i) => (
         <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}>
           <View style={{ flex: 1 }}>
@@ -53,12 +59,7 @@ export function NamesBlock({ names, count, onChange }: {
           ) : null}
         </View>
       ))}
-      <Field label="Enregistrer ces joueurs comme groupe" value={groupName} onChangeText={setGroupName} maxLength={MAX_GROUP_NAME} placeholder="Ex. Famille" />
-      <View style={{ flexDirection: 'row', gap: 8 }}>
-        <Button small variant="ghost" label="Enregistrer" onPress={save} />
-        {current ? <Button small variant="ghost" label="Supprimer le groupe" onPress={() => deleteGroup(current.id)} /> : null}
-      </View>
-      <AppText tone="muted" size={12}>Les groupes alimentent le journal : filtrez les scores par groupe.</AppText>
-    </Block>
+      <AppText tone="muted" size={11.5}>Laissez un champ vide pour garder le nom par défaut « Joueur ».</AppText>
+    </SetupBlock>
   );
 }
