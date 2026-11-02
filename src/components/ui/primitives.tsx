@@ -25,7 +25,10 @@ export function AppText({ children, tone = 'default', size = 16, bold, title, ce
       {runs
         ? runs.map((r, i) => (r.letters
           ? <Text key={i} style={{ fontFamily: fonts.title }}>{native ? noLigatures(r.text) : r.text}</Text>
-          : r.text))
+          : /^['’]$/.test(r.text)
+            // Apostrophe : absente de Sirelia, rendue en Courier (large) → on resserre pour éviter « d ' elimination ».
+            ? <Text key={i} style={{ letterSpacing: -size * 0.28 }}>{r.text}</Text>
+            : r.text))
         : children}
     </Text>
   );
@@ -127,20 +130,21 @@ export function SetupBlock({ num, title, summary, children, collapsible = true, 
 }
 
 /** Compteur en pilule : − valeur (+ plage) +. */
-export function Counter({ label, value, min, max, onChange, range, title }: {
-  label?: string; value: number; min: number; max: number; onChange: (n: number) => void; range?: string; title?: boolean;
+export function Counter({ label, a11y, value, min, max, onChange, range }: {
+  label?: string; /** Libellé lu par les lecteurs d'écran quand aucun titre visible n'est affiché. */ a11y?: string;
+  value: number; min: number; max: number; onChange: (n: number) => void; range?: string;
 }): React.JSX.Element {
   const { colors } = useTheme();
   const btn = (sym: string, delta: number, off: boolean): React.JSX.Element => (
     <Pressable onPress={() => onChange(value + delta)} disabled={off} accessibilityRole="button"
-      accessibilityLabel={`${delta > 0 ? 'Ajouter' : 'Retirer'} ${label ?? ''}`.trim()}
+      accessibilityLabel={`${delta > 0 ? 'Ajouter' : 'Retirer'} ${a11y ?? label ?? ''}`.trim()}
       style={{ width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: colors.goldSoft, alignItems: 'center', justifyContent: 'center', opacity: off ? 0.4 : 1 }}>
       <Text style={{ color: colors.gold, fontSize: 17.6, fontFamily: fonts.body }}>{sym}</Text>
     </Pressable>
   );
   return (
     <View style={{ gap: 8, width: 178, alignSelf: 'flex-start' }}>
-      {label ? (title ? <AppText bold size={17.6}>{label}</AppText> : <AppText bold size={17.6}>{label}</AppText>) : null}
+      {label ? <AppText bold size={17.6}>{label}</AppText> : null}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.line, borderRadius: 999, paddingVertical: 6, paddingHorizontal: 8 }}>
         {btn('−', -1, value <= min)}
         <View style={{ minWidth: 64, alignItems: 'center' }}>

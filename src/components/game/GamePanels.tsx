@@ -90,6 +90,7 @@ function BottomRow({ actions, extra }: { actions: BottomActions; extra?: React.R
 }
 
 export function RevealPhase({ state, dispatch, actions }: { state: GameState; dispatch: D; actions: BottomActions }): React.JSX.Element {
+  const { colors } = useTheme();
   const all = state.players.length > 0 && state.players.every((p) => p.viewed);
   return (
     <View>
@@ -102,7 +103,7 @@ export function RevealPhase({ state, dispatch, actions }: { state: GameState; di
       <View style={{ height: 22 }} />
       {all ? (
         <View style={{ marginBottom: 18 }}>
-          <Callout tone="green"><AppText size={12} style={{ color: '#bfe0bd', lineHeight: 18 }}>Toutes les cartes ont été consultées. La discussion peut commencer, puis lancez le vote.</AppText></Callout>
+          <Callout tone="green"><AppText size={12.5} style={{ color: colors.okText, lineHeight: 19 }}>Toutes les cartes ont été consultées. La discussion peut commencer, puis lancez le vote.</AppText></Callout>
         </View>
       ) : null}
       {/* Le minuteur s'insère ici (voir GameScreen). */}

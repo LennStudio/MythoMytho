@@ -61,12 +61,12 @@ export function RolesBlock(): React.JSX.Element {
     <SetupBlock num={3} title="Roles speciaux" summary={active === 0 ? 'Aucun rôle activé' : `${active} rôle${plural(active, '', 's')} activé${plural(active, '', 's')}`}>
       <View style={{ gap: 6 }}>
         <AppText bold size={15}>Mr. White</AppText>
-        <Counter value={s.mrWhiteCount} min={0} max={Math.max(0, cap - s.undercoverCount - s.espionCount)} range={`de 0 à ${Math.max(0, cap - s.undercoverCount - s.espionCount)}`} label="Mr. White" onChange={(n) => a.setCount('mrWhiteCount', n)} />
+        <Counter value={s.mrWhiteCount} min={0} max={Math.max(0, cap - s.undercoverCount - s.espionCount)} range={`de 0 à ${Math.max(0, cap - s.undercoverCount - s.espionCount)}`} a11y="Mr. White" onChange={(n) => a.setCount('mrWhiteCount', n)} />
         <AppText tone="muted" size={11.5}>{MR_WHITE_DESC}</AppText>
       </View>
       <View style={{ gap: 6 }}>
         <AppText bold size={15}>Espion</AppText>
-        <Counter value={s.espionCount} min={0} max={Math.max(0, cap - s.undercoverCount - s.mrWhiteCount)} range={`de 0 à ${Math.max(0, cap - s.undercoverCount - s.mrWhiteCount)}`} label="Espion" onChange={(n) => a.setCount('espionCount', n)} />
+        <Counter value={s.espionCount} min={0} max={Math.max(0, cap - s.undercoverCount - s.mrWhiteCount)} range={`de 0 à ${Math.max(0, cap - s.undercoverCount - s.mrWhiteCount)}`} a11y="Espion" onChange={(n) => a.setCount('espionCount', n)} />
         <AppText tone="muted" size={11.5}>{ESPION_DESC}</AppText>
       </View>
       <AppText tone="muted" size={11.5}>Un joueur ne peut recevoir qu'un seul rôle spécial ci-dessous. Être Undercover ou Mr. White ne compte pas dans cette limite.</AppText>

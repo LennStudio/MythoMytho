@@ -55,7 +55,7 @@ export function NamesBlock({ names, count, onChange }: {
           </View>
           {dictationAvailable() ? (
             <Button small variant="ghost" label={listening === i ? '…' : '🎤'} accessibilityLabel={`Dicter le nom du joueur ${i + 1}`}
-              onPress={() => dictate(i)} style={{ minWidth: 48, minHeight: 44 }} />
+              onPress={() => dictate(i)} style={{ minWidth: 48, minHeight: 42, alignSelf: 'flex-end' }} />
           ) : null}
         </View>
       ))}
