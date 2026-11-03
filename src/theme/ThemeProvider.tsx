@@ -1,7 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { loadRaw, saveRaw } from '@/services/storage';
 import { STORAGE_KEYS, type ThemeMode } from '@/domain';
-import './webFixes'; // correctif web des ligatures de la police titre (effet de bord voulu)
 import { palettes, type Palette } from './tokens';
 
 interface ThemeValue { readonly mode: ThemeMode; readonly colors: Palette; readonly toggle: () => void }

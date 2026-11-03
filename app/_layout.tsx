@@ -28,7 +28,8 @@ export default function RootLayout(): React.JSX.Element | null {
     CourierPrime: require('../assets/fonts/CourierPrime-Regular.ttf'),
     'CourierPrime-Bold': require('../assets/fonts/CourierPrime-Bold.ttf'),
     'CourierPrime-Italic': require('../assets/fonts/CourierPrime-Italic.ttf'),
-    Sirelia: require('../assets/fonts/Sirelia.otf'),
+    // Sirelia sans ses 36 ligatures vides (« el », « ma », « er »… faisaient disparaître des lettres).
+    Sirelia: require('../assets/fonts/SireliaFixed.otf'),
   });
   useEffect(() => { if (loaded || error) void SplashScreen.hideAsync(); }, [loaded, error]);
   if (!loaded && !error) return null;

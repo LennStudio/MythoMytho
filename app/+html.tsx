@@ -25,8 +25,6 @@ export default function Root({ children }: { children: React.ReactNode }): React
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/favicon-apple-touch.png" />
         <ScrollViewStyleReset />
-        {/* La police titre Sirelia a des ligatures vides (« ca », « eu »…) : on les désactive, comme l'ancienne version. */}
-        <style dangerouslySetInnerHTML={{ __html: '*{font-variant-ligatures:none}' }} />
         <script dangerouslySetInnerHTML={{ __html: SW_SCRIPT }} />
       </head>
       <body>{children}</body>

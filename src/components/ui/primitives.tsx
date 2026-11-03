@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
-  Platform, Pressable, Text, TextInput, View, useWindowDimensions, type StyleProp, type TextInputProps, type TextStyle, type ViewStyle,
+  Pressable, Text, TextInput, View, useWindowDimensions, type StyleProp, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { fonts, radius, space } from '@/theme/tokens';
-import { noLigatures, titleRuns } from '@/theme/typography';
+import { titleRuns } from '@/theme/typography';
 
 type Tone = 'default' | 'muted' | 'gold' | 'red';
 
@@ -18,13 +18,12 @@ export function AppText({ children, tone = 'default', size = 16, bold, title, ce
   // des glyphes vides, comme l'indiquait le `unicode-range` de l'ancienne version). On rend donc les suites de
   // lettres en Sirelia et le reste en Courier Prime.
   const runs = title && typeof children === 'string' ? titleRuns(children) : null;
-  const native = Platform.OS !== 'web';
   return (
-    <Text {...rest} accessibilityLabel={runs && native && typeof children === 'string' ? children : undefined}
+    <Text {...rest}
       style={[{ color, fontSize: size, fontFamily: title ? fonts.body : bold ? fonts.bold : fonts.body, textAlign: center ? 'center' : 'left', lineHeight: Math.round(size * 1.4) }, style]}>
       {runs
         ? runs.map((r, i) => (r.letters
-          ? <Text key={i} style={{ fontFamily: fonts.title }}>{native ? noLigatures(r.text) : r.text}</Text>
+          ? <Text key={i} style={{ fontFamily: fonts.title }}>{r.text}</Text>
           : /^['’]$/.test(r.text)
             // Apostrophe : absente de Sirelia, rendue en Courier (large) → on resserre pour éviter « d ' elimination ».
             ? <Text key={i} style={{ letterSpacing: -size * 0.28 }}>{r.text}</Text>
