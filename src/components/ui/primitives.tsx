@@ -24,10 +24,7 @@ export function AppText({ children, tone = 'default', size = 16, bold, title, ce
       {runs
         ? runs.map((r, i) => (r.letters
           ? <Text key={i} style={{ fontFamily: fonts.title }}>{r.text}</Text>
-          : /^['’]$/.test(r.text)
-            // Apostrophe : absente de Sirelia, rendue en Courier (large) → on resserre pour éviter « d ' elimination ».
-            ? <Text key={i} style={{ letterSpacing: -size * 0.28 }}>{r.text}</Text>
-            : r.text))
+          : r.text))
         : children}
     </Text>
   );
@@ -65,6 +62,8 @@ export function Panel({ children, style }: { children: React.ReactNode; style?: 
   return <View style={[{ backgroundColor: colors.panel, borderColor: colors.line, borderWidth: 1, borderRadius: radius.md, padding: space.lg }, style]}>{children}</View>;
 }
 
+const SHOW_FOLDER_TAB = false;
+
 /** Panneau principal « dossier » : onglet en haut, bordure fine, grand padding. */
 export function Dossier({ children }: { children: React.ReactNode }): React.JSX.Element {
   const { colors } = useTheme();
@@ -72,7 +71,14 @@ export function Dossier({ children }: { children: React.ReactNode }): React.JSX.
   const pad = width < 600 ? 16 : Math.max(20, Math.min(36, width * 0.04));
   return (
     <View style={{ backgroundColor: colors.panel, borderColor: colors.line, borderWidth: 1, borderRadius: radius.md, padding: pad }}>
-      <View style={{ position: 'absolute', top: -1, left: 24, right: 24, height: 10, backgroundColor: colors.panel, borderColor: colors.line, borderWidth: 1, borderBottomWidth: 0, borderTopLeftRadius: radius.sm, borderTopRightRadius: radius.sm }} />
+      {/* Onglet décoratif de l'original (deux petits repères verticaux au bord haut). Retiré à la demande :
+          passer SHOW_FOLDER_TAB à true pour le rétablir. */}
+      {SHOW_FOLDER_TAB ? (
+        <>
+          <View style={{ position: 'absolute', top: 0, left: 24, width: 1, height: 9, backgroundColor: colors.line }} />
+          <View style={{ position: 'absolute', top: 0, right: 24, width: 1, height: 9, backgroundColor: colors.line }} />
+        </>
+      ) : null}
       {children}
     </View>
   );

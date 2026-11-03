@@ -170,7 +170,7 @@ export function GameOverPhase({ state, dispatch, actions, onNextRound }: {
   return (
     <View style={{ gap: 16 }}>
       <View style={{ alignItems: 'center', gap: 10, paddingVertical: 28, paddingHorizontal: 20, borderRadius: radius.md, borderWidth: 1, borderColor: b.border, backgroundColor: b.bg }}>
-        <AppText title size={32} center>{text.title.replace(/ ([!?:;])/g, '\u00A0$1')}</AppText>
+        <AppText title size={32} center>{text.title.replace(/ ([!?:;])/g, '\u202F$1')}</AppText>
         <AppText center tone="muted" size={13.5}>{text.subtitle}</AppText>
         <AppText center tone="gold" bold size={13}>{`Civils : ${state.civilWord} · Undercover : ${state.undercoverWord}`}</AppText>
       </View>

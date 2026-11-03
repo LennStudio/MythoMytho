@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { MAX_GROUP_NAME, MAX_PLAYER_NAME, findGroup, type GroupDef } from '@/domain';
-import { dictationAvailable, startDictation } from '@/services/speech';
 import { useLibrary } from '@/state/library';
 import { useSettingsActions } from '@/state/settings';
 import { useToast } from '@/state/toast';
@@ -14,7 +13,6 @@ export function NamesBlock({ names, count, onChange }: {
   const toast = useToast();
   const { setPlayers } = useSettingsActions();
   const [groupName, setGroupName] = useState('');
-  const [listening, setListening] = useState<number | null>(null);
   const filled = Array.from({ length: count }, (_, i) => names[i] ?? '');
   const current = findGroup(groups, filled.map((n) => n.trim()).filter(Boolean));
 
@@ -25,15 +23,6 @@ export function NamesBlock({ names, count, onChange }: {
     if (list.length < 3) return toast('Un groupe compte au moins 3 joueurs nommés.');
     saveGroup(groupName, list); setGroupName(''); toast('Groupe enregistré.');
   };
-  /** Dicte un nom directement dans le champ choisi (navigateur uniquement). */
-  const dictate = (index: number): void => {
-    const stop = startDictation((t: string) => {
-      const name = t.trim().replace(/[.,!?]+$/, '').slice(0, MAX_PLAYER_NAME);
-      onChange(filled.map((x, j) => (j === index ? name : x)));
-    }, () => setListening(null));
-    if (stop) setListening(index); else toast('Dictée vocale indisponible sur cet appareil.');
-  };
-
   return (
     <SetupBlock num={4} title="Noms des joueurs" summary="Optionnel">
       <AppText bold size={15}>Groupes de joueurs</AppText>
@@ -48,16 +37,8 @@ export function NamesBlock({ names, count, onChange }: {
         {current ? <Button small variant="ghost" label="Supprimer le groupe" onPress={() => deleteGroup(current.id)} /> : null}
       </View>
       {filled.map((n, i) => (
-        <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}>
-          <View style={{ flex: 1 }}>
-            <Field label={`Joueur ${i + 1}`} value={n} placeholder={`Joueur ${i + 1}`} maxLength={MAX_PLAYER_NAME}
-              onChangeText={(t: string) => onChange(filled.map((x, j) => (j === i ? t : x)))} />
-          </View>
-          {dictationAvailable() ? (
-            <Button small variant="ghost" label={listening === i ? '…' : '🎤'} accessibilityLabel={`Dicter le nom du joueur ${i + 1}`}
-              onPress={() => dictate(i)} style={{ minWidth: 48, minHeight: 42, alignSelf: 'flex-end' }} />
-          ) : null}
-        </View>
+        <Field key={i} label={`Joueur ${i + 1}`} value={n} placeholder={`Joueur ${i + 1}`} maxLength={MAX_PLAYER_NAME}
+          onChangeText={(t: string) => onChange(filled.map((x, j) => (j === i ? t : x)))} />
       ))}
       <AppText tone="muted" size={11.5}>Laissez un champ vide pour garder le nom par défaut « Joueur ».</AppText>
     </SetupBlock>

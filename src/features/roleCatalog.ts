@@ -21,6 +21,6 @@ export const ROLE_CATALOG: readonly RoleCatalogItem[] = [
   { key: 'judas', label: 'Judas', desc: "Un Faux-Frère informé : il a le mot des Civils, gagne avec les imposteurs et connaît le nom d'un imposteur. Compte comme un imposteur de plus. Conseillé à partir de 8 joueurs." },
 ];
 
-export const MR_WHITE_DESC = "Ne reçoit aucun mot : il doit improviser pour ne pas se faire repérer. S'il est éliminé, il a toujours une dernière chance : saisir ou dicter le mot des Civils pour gagner seul.";
+export const MR_WHITE_DESC = "Ne reçoit aucun mot : il doit improviser pour ne pas se faire repérer. S'il est éliminé, il a toujours une dernière chance : saisir le mot des Civils pour gagner seul.";
 export const ESPION_DESC = 'Ne reçoit aucun mot lui non plus, mais est autorisé à connaître la première lettre du mot des Civils — un indice discret pour se fondre dans la masse.';
 export const RULES_TEXT = "Chaque joueur reçoit un mot en secret. Tous les civils reçoivent le même mot ; l'Undercover reçoit un mot différent, mais proche. À vous de démasquer l'imposteur avant qu'il ne devine votre mot.";

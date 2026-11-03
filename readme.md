@@ -85,10 +85,11 @@ même clé, donc réglages, groupes, paires et journaux existants sont relus. L'
 
 ## Police titre « Sirelia » : piège connu
 
-Seules les lettres A–Z / a–z y sont dessinées : chiffres, accents et ponctuation sont des **glyphes vides**, et ses 36
-ligatures (« ca », « eu », « er »…) sont vides aussi. L'ancienne version le contournait par `unicode-range` et
-`font-variant-ligatures: none`. Ici, `AppText title` rend les suites de lettres en Sirelia et le reste en Courier Prime
-(`src/theme/typography.ts`), `app/+html.tsx` désactive les ligatures sur le web, et un séparateur invisible le fait sur mobile.
+Seules les lettres A–Z / a–z y sont dessinées : chiffres, accents et ponctuation sont des **glyphes vides**. Ses 36 ligatures
+(« ca », « eu », « er », « em »…) étaient vides aussi, d'où des titres amputés (« Nouvelle manche » → « Nouvle nche »).
+`assets/fonts/SireliaFixed.otf` est la même police **sans la fonctionnalité `liga`** (le fichier d'origine `Sirelia.otf` est
+conservé tel quel). `AppText title` rend les suites de lettres en Sirelia et le reste en Courier Prime
+(`src/theme/typography.ts`), comme l'`unicode-range` de l'ancienne version.
 
 ## Limites à connaître
 
@@ -97,7 +98,6 @@ ligatures (« ca », « eu », « er »…) sont vides aussi. L'ancienne version
   mes composants dans Chrome avec un substitut HTML des primitives React Native (parcours complet, Orion, Prométhée,
   Mr. White, journal, paires, thème sombre : 0 erreur console). Ce substitut approche `react-native-web` sans être
   identique : le premier `npx expo start` reste la vraie recette, surtout sur mobile.
-* Dictée vocale : un micro par champ de nom, **web uniquement** (API du navigateur) ; masquée sur mobile.
 * Bouton « Installer l'application » : web uniquement (événement `beforeinstallprompt`) ; il n'apparaît que si le navigateur propose l'installation.
 * Export/import : téléchargement et sélecteur de fichier sur le web ; sur mobile, feuille de partage native et import par
   collage du JSON.

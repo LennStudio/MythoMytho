@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
-import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { setKeepAwake } from '@/services/keepAwake';
 import { allViewed } from '@/state/gameReducer';
 import { useGame } from '@/state/game';
 import { useSettings } from '@/state/settings';
@@ -9,8 +9,6 @@ import { Page, Screen } from '../ui/Screen';
 import { DiscussionTimer } from './DiscussionTimer';
 import { AnnounceModal, ConfirmModal, GuessModal, PickModal, SecretCardModal, SummaryModal } from './GameModals';
 import { GameHeader, GameOverPhase, RevealPhase, VotePhase, type BottomActions } from './GamePanels';
-
-const WAKE_TAG = 'mythomytho-game';
 
 export function GameScreen(): React.JSX.Element {
   const router = useRouter();
@@ -28,12 +26,10 @@ export function GameScreen(): React.JSX.Element {
     return () => clearTimeout(t);
   }, [armed]);
 
-  // Garde l'écran allumé pendant les cartes et le minuteur.
-  useEffect(() => {
-    if (state.phase === 'reveal' || timerRunning) void activateKeepAwakeAsync(WAKE_TAG);
-    else void deactivateKeepAwake(WAKE_TAG);
-    return () => { void deactivateKeepAwake(WAKE_TAG); };
-  }, [state.phase, timerRunning]);
+  // Garde l'écran allumé pendant les cartes et le minuteur ; relâché à la fin et en quittant l'écran.
+  const keepAwake = state.phase === 'reveal' || timerRunning;
+  useEffect(() => { void setKeepAwake(keepAwake); }, [keepAwake]);
+  useEffect(() => () => { void setKeepAwake(false); }, []);
 
   const gameOver = state.phase === 'gameover';
   const newGame = (): void => {
