@@ -24,10 +24,11 @@ export const DIFFICULTY_LABELS: Readonly<Record<Difficulty, string>> = {
  * Clés de persistance. Le préfixe `undercover_` est volontairement conservé :
  * sur le web, AsyncStorage s'appuie sur localStorage avec la même clé, donc les
  * réglages, groupes, paires et journaux déjà enregistrés par l'ancienne PWA
- * sont relus tels quels.
+ * sont relus tels quels. Exception : le thème (clé v2) — le mode SOMBRE est désormais le défaut, et un ancien
+ * choix « clair » mémorisé ne doit pas l'écraser.
  */
 export const STORAGE_KEYS = {
-  theme: 'undercover_theme_v1',
+  theme: 'mythomytho_theme_v2',
   options: 'undercover_options_v1',
   groups: 'undercover_groups_v1',
   timer: 'undercover_timer_settings_v1',

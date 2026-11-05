@@ -17,6 +17,14 @@ npm run build:web           # export statique dans dist/
 > `package.json` laisse volontairement `*` pour les bibliothèques Expo : `npx expo install --fix` choisit les versions
 > compatibles avec votre SDK (testé sur la base d'Expo SDK 58).
 
+## Écran de configuration : tableau de bord
+
+Mode **sombre par défaut** (le thème se mémorise sous la clé `mythomytho_theme_v2`). L'écran s'organise en cartes
+(`src/components/dashboard/`) : sélecteur de joueurs en piste, jauge de composition Civils ⟷ imposteurs (touchez la barre
+pour régler les imposteurs), jetons de rôles classiques (− / +) et spéciaux (+ / ✕, pastille « ? » pour l'explication),
+thèmes, noms et groupes, minuteur et confidentialité. Deux colonnes dès 980 px de large ; en dessous, une colonne et une
+barre de lancement fixe. Les icônes des 19 rôles sont des SVG (`RoleIcon.tsx`).
+
 ## Design
 
 Le design reprend celui de l'application HTML/CSS/JS : fond en dégradé radial avec quadrillage (SVG), logo « Mytho Mytho »

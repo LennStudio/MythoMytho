@@ -7,7 +7,7 @@ interface ThemeValue { readonly mode: ThemeMode; readonly colors: Palette; reado
 const ThemeContext = createContext<ThemeValue | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
-  const [mode, setMode] = useState<ThemeMode>('light');
+  const [mode, setMode] = useState<ThemeMode>('dark');
   useEffect(() => {
     void loadRaw(STORAGE_KEYS.theme).then((v) => { if (v === 'dark' || v === 'light') setMode(v); });
   }, []);

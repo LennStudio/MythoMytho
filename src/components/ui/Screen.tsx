@@ -22,12 +22,12 @@ export function Screen({ children }: { children: React.ReactNode }): React.JSX.E
 }
 
 /** Colonne centrée (880 px max) avec le logo en tête, défilante. */
-export function Page({ children, logo = true }: { children: React.ReactNode; logo?: boolean }): React.JSX.Element {
+export function Page({ children, logo = true, maxWidth = 880 }: { children: React.ReactNode; logo?: boolean; maxWidth?: number }): React.JSX.Element {
   const { width } = useWindowDimensions();
   const pad = width < 600 ? 12 : Math.max(16, Math.min(40, width * 0.04));
   return (
     <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" contentContainerStyle={{ alignItems: 'center', paddingTop: pad, paddingHorizontal: Math.max(12, pad / 2), paddingBottom: 60 }}>
-      <View style={{ width: '100%', maxWidth: 880 }}>
+      <View style={{ width: '100%', maxWidth }}>
         {logo ? <Wordmark /> : null}
         {children}
       </View>
