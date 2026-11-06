@@ -6,7 +6,7 @@
 import words from '../src/data/words.json';
 import missionsFile from '../src/data/missions.json';
 import {
-  assignRound, balancePosition, buildCsv, buildScoreEntry, computeStats, decodeShared, deadlockRuleActive, eliminate,
+  assignRound, balancePosition, balanceTier, isLoneHero, buildCsv, buildScoreEntry, computeStats, decodeShared, deadlockRuleActive, eliminate,
   encodeShared, isCorrectGuess, isImpostor, makeTiresiasHint, maxImpostors, mergeCustomPairs,
   parseWordsFile, pickWordPair, recommendedImpostors, recommendedUndercovers, resolveElimination,
   specialLabels, describeCard, gameOverText, checkBalance, SPECIAL_KEYS,
@@ -67,6 +67,23 @@ eq(balancePosition(2, 8), 0.5, 'équilibre : 2 imposteurs / 8 joueurs = centre e
 ok(balancePosition(2, 6) > 0.5 && balancePosition(3, 6) > balancePosition(2, 6), 'équilibre : plus d\'imposteurs → vers la droite');
 ok(balancePosition(1, 12) < 0.5, 'équilibre : moins d\'imposteurs que conseillé → vers les Civils');
 ok(balancePosition(20, 6) <= 1 && balancePosition(0, 20) >= 0, 'équilibre : borné entre 0 et 1');
+
+/* 1c — Paliers de texte : toujours cohérents avec la position du curseur */
+eq(balanceTier(1, 4), 'even', 'palier : 3 Civils / 1 imposteur = équilibré');
+eq(balanceTier(3, 7), 'impostors1', 'palier : 4 Civils / 3 imposteurs (7 joueurs) = favorable aux imposteurs (et plus « équilibré »)');
+eq(balanceTier(1, 7), 'civils1', 'palier : 7 joueurs, 1 imposteur = favorable aux Civils');
+eq(balanceTier(1, 13), 'civils1', 'palier : 13 joueurs, 1 imposteur = favorable aux Civils');
+eq(balanceTier(1, 18), 'civils2', 'palier : 18 joueurs, 1 imposteur = très favorable aux Civils');
+eq(balanceTier(1, 20), 'civils2', 'palier : 20 joueurs, 1 imposteur = très favorable aux Civils');
+eq(balanceTier(6, 12), 'impostors2', 'palier : 12 joueurs, 6 imposteurs = très favorable aux imposteurs');
+eq(balanceTier(3, 16), 'even', 'palier : borne 0,4 incluse dans « équilibré »');
+ok(isLoneHero(1, 20) && !isLoneHero(1, 19) && !isLoneHero(2, 20), 'réplique spéciale : uniquement 1 imposteur contre 19 Civils ou plus');
+for (let n = 3; n <= 20; n++) for (let imp = 1; imp <= n; imp++) {
+  const pos = balancePosition(imp, n);
+  const tier = balanceTier(imp, n);
+  const side = pos < 0.4 ? 'civils' : pos > 0.6 ? 'impostors' : 'even';
+  ok(tier.startsWith(side), `cohérence palier/curseur : ${imp} imposteur(s) sur ${n}`);
+}
 
 /* 2 — Tirésias (exemples du readme) */
 eq(makeTiresiasHint('Pomme de terre'), { prefix: 'Po', count: 12 }, 'Tirésias : Pomme de terre');

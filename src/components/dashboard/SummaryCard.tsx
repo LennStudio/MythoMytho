@@ -28,7 +28,7 @@ export function SummaryCard({ settings: s, names, onStart }: { settings: GameSet
   const items = checkBalance(s, names.slice(0, s.playerCount).map((n) => n.trim()));
   const v = verdict(s);
   return (
-    <DashCard title="Prêt à jouer ?" right={<AppText bold size={12.5} tone={v.tone === 'impostor' ? 'red' : v.tone === 'civil' ? 'gold' : 'muted'}>{v.label}</AppText>}>
+    <DashCard title="Prêt à jouer ?" right={<AppText bold size={12.5} tone={v.tone === 'impostor' ? 'red' : v.tone === 'civil' ? 'gold' : 'muted'}>{v.short}</AppText>}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>{pills.map((p) => <Pill key={p} label={p} />)}</View>
       <View style={{ gap: 2 }}>
         {items.length === 0

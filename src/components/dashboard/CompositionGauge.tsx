@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { balancePosition, maxImpostors, plural, recommendedImpostors, type GameSettings } from '@/domain';
+import { balancePosition, balanceTier, isLoneHero, maxImpostors, plural, recommendedImpostors, type BalanceTier, type GameSettings } from '@/domain';
+import { BALANCE_TEXT, LONE_HERO_TEXT } from '@/features/balanceTexts';
 import { useSettingsActions } from '@/state/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 import { fonts } from '@/theme/tokens';
@@ -12,14 +13,26 @@ export function impostorTeamSize(s: GameSettings): number {
   return s.undercoverCount + s.mrWhiteCount + s.espionCount + (s.roles.fauxfrere ? 1 : 0) + (s.roles.judas ? 1 : 0);
 }
 
-export type Verdict = { readonly label: string; readonly tone: 'ok' | 'civil' | 'impostor' };
+export type Verdict = {
+  readonly tier: BalanceTier;
+  /** Phrase affichée sur la jauge (peut être la réplique spéciale du cas extrême). */
+  readonly label: string;
+  /** Libellé court pour le récapitulatif. */
+  readonly short: string;
+  readonly tone: 'ok' | 'civil' | 'impostor';
+};
 
 export function verdict(s: GameSettings): Verdict {
-  const imp = impostorTeamSize(s);
-  const rec = recommendedImpostors(s.playerCount);
-  if (imp < rec) return { label: 'Favorable aux Civils', tone: 'civil' };
-  if (imp > rec + 1) return { label: 'Favorable aux imposteurs', tone: 'impostor' };
-  return { label: 'Équilibrée', tone: 'ok' };
+  const n = s.playerCount;
+  const imp = Math.min(n, impostorTeamSize(s));
+  const tier = balanceTier(imp, n);
+  const text = BALANCE_TEXT[tier];
+  return {
+    tier,
+    label: isLoneHero(imp, n) ? LONE_HERO_TEXT : text.headline,
+    short: text.short,
+    tone: tier === 'even' ? 'ok' : tier.startsWith('civils') ? 'civil' : 'impostor',
+  };
 }
 
 /**
@@ -48,7 +61,7 @@ export function CompositionGauge({ settings: s }: { settings: GameSettings }): R
   const setTotal = (t: number): void => a.setCount('undercoverCount', Math.max(1, t - fixed));
 
   return (
-    <DashCard title="Composition" right={<Text style={{ color: vColor, fontFamily: fonts.bold, fontSize: 12.5 }}>{v.label}</Text>}
+    <DashCard title="Composition" right={<Text style={{ color: vColor, fontFamily: fonts.bold, fontSize: 12.5, textAlign: 'right' }}>{v.label}</Text>}
       hint="Touchez la barre pour régler le nombre d'imposteurs.">
       <View style={{ paddingTop: 14 }}>
         <View pointerEvents="none" style={{ position: 'absolute', top: 0, left: '50%', width: 0, height: 0, marginLeft: -6, borderLeftWidth: 6, borderRightWidth: 6, borderTopWidth: 8, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderTopColor: colors.text, opacity: 0.85 }} />

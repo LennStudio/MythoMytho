@@ -14,7 +14,7 @@ export function DashCard({ title, right, hint, children, style }: {
         <View style={{ gap: 4 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
             <AppText bold size={17.6}>{title}</AppText>
-            {right}
+            {right ? <View style={{ flexShrink: 1 }}>{right}</View> : null}
           </View>
           {hint ? <AppText tone="muted" size={11.5}>{hint}</AppText> : null}
         </View>

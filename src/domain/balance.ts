@@ -37,6 +37,26 @@ export function balancePosition(impostors: number, playerCount: number): number 
   return clamp(0.5 + (impostors - rec) / (2 * (rec + 1)), 0, 1);
 }
 
+export type BalanceTier = 'civils2' | 'civils1' | 'even' | 'impostors1' | 'impostors2';
+
+/**
+ * Palier d'équilibre, déduit de la position du curseur (donc toujours cohérent avec la barre) :
+ * ≤ 0,2 très favorable aux Civils · < 0,4 favorable · 0,4 à 0,6 équilibré · > 0,6 favorable aux imposteurs · ≥ 0,8 très.
+ */
+export function balanceTier(impostors: number, playerCount: number): BalanceTier {
+  const p = Math.round(balancePosition(impostors, playerCount) * 1000) / 1000;
+  if (p <= 0.2) return 'civils2';
+  if (p < 0.4) return 'civils1';
+  if (p <= 0.6) return 'even';
+  if (p < 0.8) return 'impostors1';
+  return 'impostors2';
+}
+
+/** Cas extrême : un seul imposteur face à au moins 19 Civils. */
+export function isLoneHero(impostors: number, playerCount: number): boolean {
+  return impostors === 1 && playerCount - impostors >= 19;
+}
+
 /** Nombre de joueurs distincts mobilisés par les rôles spéciaux activés. */
 export function specialSeatsNeeded(roles: SpecialRolesConfig): number {
   const one = (on: boolean): number => (on ? 1 : 0);
