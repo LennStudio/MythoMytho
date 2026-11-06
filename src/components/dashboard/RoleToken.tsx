@@ -7,6 +7,8 @@ import { fonts } from '@/theme/tokens';
 import { RoleIcon } from './RoleIcon';
 
 export const DISC = 72;
+/** Largeur de cellule commune à tous les jetons : la grille affiche au plus 5 jetons par ligne. */
+export const CELL = 112;
 
 function toneColor(tone: Tone, c: { civil: string; red: string; gold: string }): string {
   return tone === 'civil' ? c.civil : tone === 'impostor' ? c.red : c.gold;
@@ -51,7 +53,7 @@ function InfoBadge({ label, onPress }: { label: string; onPress: () => void }): 
 
 const Caption = ({ children, active }: { children: string; active?: boolean }): React.JSX.Element => {
   const { colors } = useTheme();
-  return <Text numberOfLines={2} style={{ color: active === false ? colors.muted : colors.text, fontFamily: fonts.body, fontSize: 11.5, textAlign: 'center', marginTop: 6, maxWidth: 92 }}>{children}</Text>;
+  return <Text numberOfLines={2} style={{ color: active === false ? colors.muted : colors.text, fontFamily: fonts.body, fontSize: 11.5, textAlign: 'center', marginTop: 6, maxWidth: CELL - 8 }}>{children}</Text>;
 };
 
 /** Rôle spécial : toucher le disque (ou le bouton) l'active ; « ? » ouvre son explication. */
@@ -60,7 +62,7 @@ export function SpecialToken({ icon, label, short, active, onToggle, onInfo }: {
 }): React.JSX.Element {
   const { colors } = useTheme();
   return (
-    <View style={{ width: 96, alignItems: 'center' }}>
+    <View style={{ width: CELL, alignItems: 'center' }}>
       <View style={{ width: DISC + 16, alignItems: 'center' }}>
         <Pressable onPress={onToggle} accessibilityRole="switch" accessibilityLabel={label} accessibilityState={{ checked: active }}>
           <Disc icon={icon} active={active} />
@@ -83,16 +85,16 @@ export function CountToken({ icon, short, value, min, max, onChange, onInfo, fix
   const { colors } = useTheme();
   const tone = toneColor(TONE[icon], colors);
   return (
-    <View style={{ width: 128, alignItems: 'center' }}>
-      <View style={{ width: 128, height: DISC, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ width: CELL, alignItems: 'center' }}>
+      <View style={{ width: CELL, height: DISC, alignItems: 'center', justifyContent: 'center' }}>
         <Disc icon={icon} active={value > 0} />
         <InfoBadge label={short} onPress={onInfo} />
         {!fixed && onChange ? (
           <>
-            <View style={{ position: 'absolute', left: (128 - DISC) / 2 - 16, top: DISC - 36 }}>
+            <View style={{ position: 'absolute', left: (CELL - DISC) / 2 - 14, top: DISC - 36 }}>
               <Round label={`Retirer ${short}`} onPress={() => onChange(value - 1)} disabled={value <= min} bg={colors.gold} fg={colors.ink} glyph="−" />
             </View>
-            <View style={{ position: 'absolute', right: (128 - DISC) / 2 - 16, top: DISC - 36 }}>
+            <View style={{ position: 'absolute', right: (CELL - DISC) / 2 - 14, top: DISC - 36 }}>
               <Round label={`Ajouter ${short}`} onPress={() => onChange(value + 1)} disabled={value >= max} bg={colors.gold} fg={colors.ink} glyph="+" />
             </View>
           </>

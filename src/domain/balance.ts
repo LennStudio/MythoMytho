@@ -27,6 +27,16 @@ export function recommendedUndercovers(s: CountsInput): number {
   );
 }
 
+/**
+ * Position sur l'échelle d'équilibre : 0,5 quand le nombre d'imposteurs est celui qui est conseillé, vers 0 quand il
+ * est plus faible (avantage aux Civils), vers 1 quand il est plus fort (avantage aux imposteurs). Ce n'est PAS la
+ * proportion de joueurs : 1 imposteur contre 3 Civils est la situation de référence, donc exactement au centre.
+ */
+export function balancePosition(impostors: number, playerCount: number): number {
+  const rec = recommendedImpostors(playerCount);
+  return clamp(0.5 + (impostors - rec) / (2 * (rec + 1)), 0, 1);
+}
+
 /** Nombre de joueurs distincts mobilisés par les rôles spéciaux activés. */
 export function specialSeatsNeeded(roles: SpecialRolesConfig): number {
   const one = (on: boolean): number => (on ? 1 : 0);

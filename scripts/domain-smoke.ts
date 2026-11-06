@@ -6,7 +6,7 @@
 import words from '../src/data/words.json';
 import missionsFile from '../src/data/missions.json';
 import {
-  assignRound, buildCsv, buildScoreEntry, computeStats, decodeShared, deadlockRuleActive, eliminate,
+  assignRound, balancePosition, buildCsv, buildScoreEntry, computeStats, decodeShared, deadlockRuleActive, eliminate,
   encodeShared, isCorrectGuess, isImpostor, makeTiresiasHint, maxImpostors, mergeCustomPairs,
   parseWordsFile, pickWordPair, recommendedImpostors, recommendedUndercovers, resolveElimination,
   specialLabels, describeCard, gameOverText, checkBalance, SPECIAL_KEYS,
@@ -60,6 +60,13 @@ for (const [lo, hi, expected] of table) {
 }
 eq([3, 4, 5, 6, 7, 8, 20].map(maxImpostors), [1, 1, 2, 2, 3, 3, 9], 'plafond ⌈n/2⌉−1, au moins 1');
 eq(recommendedUndercovers({ playerCount: 12, mrWhiteCount: 1, espionCount: 0, roles: { fauxfrere: true, judas: false } }), 1, 'Undercovers auto : décompte Mr. White + Faux-Frère');
+
+/* 1b — Échelle d'équilibre : 1 imposteur pour 3 Civils est au centre, pas à 75 % */
+eq(balancePosition(1, 4), 0.5, 'équilibre : 1 imposteur / 4 joueurs = centre exact');
+eq(balancePosition(2, 8), 0.5, 'équilibre : 2 imposteurs / 8 joueurs = centre exact');
+ok(balancePosition(2, 6) > 0.5 && balancePosition(3, 6) > balancePosition(2, 6), 'équilibre : plus d\'imposteurs → vers la droite');
+ok(balancePosition(1, 12) < 0.5, 'équilibre : moins d\'imposteurs que conseillé → vers les Civils');
+ok(balancePosition(20, 6) <= 1 && balancePosition(0, 20) >= 0, 'équilibre : borné entre 0 et 1');
 
 /* 2 — Tirésias (exemples du readme) */
 eq(makeTiresiasHint('Pomme de terre'), { prefix: 'Po', count: 12 }, 'Tirésias : Pomme de terre');

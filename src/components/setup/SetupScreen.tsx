@@ -32,20 +32,23 @@ export function SetupScreen(): React.JSX.Element {
 
   const start = (): void => { if (startGame(names)) router.push('/game'); };
 
+  // Colonne de droite (grand écran) : « Prêt à jouer ? » puis « Noms des joueurs », puis le reste.
+  // Une seule colonne (mobile) : même enchaînement, « Noms des joueurs » reste juste après « Prêt à jouer ? ».
+  const summary = <SummaryCard settings={s} names={names} onStart={start} />;
+  const seats = <SeatsCard names={names} count={s.playerCount} onChange={setNames} />;
   const main = (
     <View style={{ gap: 18, flex: wide ? 1.65 : undefined, width: wide ? undefined : '100%' }}>
       <PlayerTrack value={s.playerCount} onChange={a.setPlayers} />
       <CompositionGauge settings={s} />
       <RolesCard settings={s} onInfo={setInfo} />
+      {!wide ? <>{summary}{seats}</> : null}
     </View>
   );
   const side = (
     <View style={{ gap: 18, flex: wide ? 1 : undefined, width: wide ? undefined : '100%', minWidth: wide ? 340 : 0 }}>
-      {wide ? <SummaryCard settings={s} names={names} onStart={start} /> : null}
+      {wide ? <>{summary}{seats}</> : null}
       <ThemesCard settings={s} />
-      <SeatsCard names={names} count={s.playerCount} onChange={setNames} />
       <ComfortCard settings={s} />
-      {!wide ? <SummaryCard settings={s} names={names} onStart={start} /> : null}
     </View>
   );
 
